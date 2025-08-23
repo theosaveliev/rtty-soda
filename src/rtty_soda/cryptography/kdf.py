@@ -1,0 +1,42 @@
+from nacl.hash import blake2b
+from nacl.public import PrivateKey
+from nacl.pwhash import argon2id
+from nacl.pwhash.argon2id import (
+    MEMLIMIT_INTERACTIVE,
+    MEMLIMIT_MODERATE,
+    MEMLIMIT_SENSITIVE,
+    OPSLIMIT_INTERACTIVE,
+    OPSLIMIT_MODERATE,
+    OPSLIMIT_SENSITIVE,
+    SALTBYTES,
+)
+
+from rtty_soda.encoders import Encoder, RawEncoder
+
+__all__ = ["kdf", "hash_salt", "KdfProfile", "KDF_PROFILES"]
+
+type KdfProfile = tuple[int, int]
+
+KDF_PROFILES: dict[str, KdfProfile] = {
+    "interactive": (OPSLIMIT_INTERACTIVE, MEMLIMIT_INTERACTIVE),
+    "moderate": (OPSLIMIT_MODERATE, MEMLIMIT_MODERATE),
+    "sensitive": (OPSLIMIT_SENSITIVE, MEMLIMIT_SENSITIVE),
+}
+
+SALT_MOD = b"""And here I solemnly protest I have no intention to vilify or asperse any
+one; for though everything is copied from the book of nature, and scarce a character or
+action produced which I have not taken from my own observations or experience; yet I
+have used the utmost care to obscure the persons by such different circumstances,
+degrees, and colors, that it will be impossible to guess at them with any degree of
+certainty;
+(c) Henry Fielding
+"""
+
+
+def hash_salt(salt: bytes) -> bytes:
+    return blake2b(salt, digest_size=SALTBYTES, encoder=RawEncoder)
+
+
+def kdf(password: bytes, profile: KdfProfile, out_enc: Encoder) -> bytes:
+    salt = hash_salt(password + SALT_MOD)
+    return argon2id.kdf(PrivateKey.SIZE, password, salt, *profile, encoder=out_enc)

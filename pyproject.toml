@@ -1,0 +1,41 @@
+[project]
+name = "rtty-soda"
+version = "0.1.0"
+description = "A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl"
+readme = "README.md"
+authors = [
+    { name = "Theo Saveliev", email = "89431871+theosaveliev@users.noreply.github.com" }
+]
+license = {text = "MIT"}
+requires-python = ">=3.13,<4.0"
+
+dependencies = [
+    "click>=8.2.1,<9.0.0",
+    "click-aliases>=1.0.5,<2.0.0",
+    "pynacl>=1.5.0,<2.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.17.1,<2.0.0",
+    "pre-commit>=4.3.0,<5.0.0",
+    "pylint>=3.3.8,<4.0.0",
+    "pytest>=8.4.1,<9.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+soda = "rtty_soda.main:cli"
+
+[tool.uv]
+add-bounds = "major"
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 88
+target-version = ['py313']
