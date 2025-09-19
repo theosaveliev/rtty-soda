@@ -1,12 +1,12 @@
 [project]
 name = "rtty-soda"
-version = "0.1.0"
+version = "0.1.1"
 description = "A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl"
 readme = "README.md"
 authors = [
-    { name = "Theo Saveliev", email = "89431871+theosaveliev@users.noreply.github.com" }
+    { name = "Theo Saveliev", email = "89431871+theosaveliev@users.noreply.github.com" },
 ]
-license = {text = "MIT"}
+license = { text = "MIT" }
 requires-python = ">=3.13,<4.0"
 
 dependencies = [
@@ -17,9 +17,9 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "mypy>=1.17.1,<2.0.0",
     "pre-commit>=4.3.0,<5.0.0",
-    "pylint>=3.3.8,<4.0.0",
+    "mypy>=1.17.1,<2.0.0",
+    "basedpyright>=1.31.4,<2.0.0",
     "pytest>=8.4.1,<9.0.0",
 ]
 
@@ -32,10 +32,3 @@ soda = "rtty_soda.main:cli"
 
 [tool.uv]
 add-bounds = "major"
-
-[tool.isort]
-profile = "black"
-
-[tool.black]
-line-length = 88
-target-version = ['py313']

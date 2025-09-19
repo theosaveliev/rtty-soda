@@ -13,7 +13,7 @@ from nacl.pwhash.argon2id import (
 
 from rtty_soda.encoders import Encoder, RawEncoder
 
-__all__ = ["kdf", "hash_salt", "KdfProfile", "KDF_PROFILES"]
+__all__ = ["KDF_PROFILES", "KdfProfile", "hash_salt", "kdf"]
 
 type KdfProfile = tuple[int, int]
 

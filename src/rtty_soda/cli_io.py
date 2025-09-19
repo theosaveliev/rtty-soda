@@ -1,25 +1,26 @@
 import re
 from pathlib import Path
+from typing import TextIO, cast
 
 import click
 
 from rtty_soda.encoders import Encoder, RawEncoder, encode_str
 
 __all__ = [
-    "read_str",
+    "print_stats",
     "read_bytes",
-    "remove_whitespace",
+    "read_ciphertext_bytes",
     "read_clean_bytes",
     "read_plaintext_bytes",
-    "read_ciphertext_bytes",
+    "read_str",
+    "remove_whitespace",
     "write_output",
-    "print_stats",
 ]
 
 
 def read_str(source: Path) -> str:
     with click.open_file(source, mode="rt", encoding="utf-8", errors="strict") as fd:
-        return str(fd.read()).strip()
+        return cast("TextIO", fd).read().strip()
 
 
 def read_bytes(source: Path) -> bytes:

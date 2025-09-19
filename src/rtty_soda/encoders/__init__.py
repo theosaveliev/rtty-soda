@@ -7,14 +7,14 @@ from .functions import decode_bytes, encode_str
 
 __all__ = [
     "ENCODERS",
-    "Encoder",
-    "encode_str",
-    "decode_bytes",
     "Base26Encoder",
     "Base36Encoder",
     "Base64Encoder",
     "Base94Encoder",
+    "Encoder",
     "RawEncoder",
+    "decode_bytes",
+    "encode_str",
 ]
 
 ENCODERS: dict[str, Encoder] = {

@@ -1,0 +1,6 @@
+{
+  "typeCheckingMode": "strict",
+  "reportUnusedCallResult": false,
+  "reportMissingImports": "error",
+  "reportMissingTypeStubs": false,
+}

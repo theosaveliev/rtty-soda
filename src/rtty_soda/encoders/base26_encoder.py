@@ -1,10 +1,10 @@
 import string
 
-from nacl.encoding import _Encoder as EncoderABC
+from nacl.encoding import _Encoder as EncoderABC  # pyright: ignore [reportPrivateUsage]
 
 from .functions import base_to_bytes, bytes_to_base, decode_bytes, encode_str
 
-__all__ = ["Base26Encoder", "ALPHABET"]
+__all__ = ["ALPHABET", "Base26Encoder"]
 
 ALPHABET = string.ascii_uppercase
 

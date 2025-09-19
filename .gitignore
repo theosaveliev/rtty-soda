@@ -1,5 +1,9 @@
-.idea
 .venv
+
 .pytest_cache
-.DS_Store
 __pycache__
+
+.DS_Store
+
+.idea
+.vscode

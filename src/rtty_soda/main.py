@@ -1,3 +1,6 @@
+# ruff: noqa: PLR0913 - not applicable because we don't call Click Commands directly
+# ruff: noqa: ANN201 - not applicable because the Click Commands are untyped
+# mypy: disable-error-code = "no-untyped-def, misc"
 from pathlib import Path
 
 import click
@@ -27,11 +30,7 @@ in_path = click.Path(
 )
 
 out_path = click.Path(
-    file_okay=True,
-    dir_okay=False,
-    writable=True,
-    allow_dash=True,
-    path_type=Path,
+    file_okay=True, dir_okay=False, writable=True, allow_dash=True, path_type=Path
 )
 
 CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}

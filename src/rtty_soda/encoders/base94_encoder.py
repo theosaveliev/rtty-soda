@@ -1,8 +1,8 @@
-from nacl.encoding import _Encoder as EncoderABC
+from nacl.encoding import _Encoder as EncoderABC  # pyright: ignore [reportPrivateUsage]
 
 from .functions import base_to_bytes, bytes_to_base, decode_bytes, encode_str
 
-__all__ = ["Base94Encoder", "ALPHABET"]
+__all__ = ["ALPHABET", "Base94Encoder"]
 
 ALPHABET = "".join([chr(i) for i in range(33, 127)])
 

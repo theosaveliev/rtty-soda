@@ -3,7 +3,7 @@ import lzma
 import zlib
 from collections.abc import Callable
 
-__all__ = ["Archiver", "ARCHIVERS", "UNARCHIVERS"]
+__all__ = ["ARCHIVERS", "UNARCHIVERS", "Archiver"]
 
 
 type Archiver = Callable[[bytes], bytes]

@@ -3,7 +3,7 @@ from nacl.utils import EncryptedMessage
 
 from rtty_soda.encoders import Encoder
 
-__all__ = ["encrypt", "decrypt"]
+__all__ = ["decrypt", "encrypt"]
 
 
 def encrypt(

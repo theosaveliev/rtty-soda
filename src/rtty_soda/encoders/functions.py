@@ -1,4 +1,4 @@
-__all__ = ["encode_str", "decode_bytes", "bytes_to_base", "base_to_bytes"]
+__all__ = ["base_to_bytes", "bytes_to_base", "decode_bytes", "encode_str"]
 
 
 def encode_str(data: str) -> bytes:
@@ -10,7 +10,7 @@ def decode_bytes(data: bytes) -> str:
 
 
 def int_to_base(number: int, alphabet: str) -> str:
-    result = []
+    result: list[str] = []
     base = len(alphabet)
     abs_number = abs(number)
     while abs_number:

@@ -2,7 +2,7 @@ from nacl.encoding import Encoder
 from nacl.secret import SecretBox
 from nacl.utils import EncryptedMessage
 
-__all__ = ["encrypt", "decrypt"]
+__all__ = ["decrypt", "encrypt"]
 
 
 def encrypt(

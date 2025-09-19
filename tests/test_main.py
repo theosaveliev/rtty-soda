@@ -1,4 +1,3 @@
-# pylint: disable=redefined-outer-name
 import pytest
 from click.testing import CliRunner
 
@@ -7,43 +6,43 @@ from rtty_soda.main import cli
 
 @pytest.fixture
 def password():
-    """Random password."""
+    """Return a password."""
     return "qwerty"
 
 
 @pytest.fixture
 def private_key():
-    """The Private key derived from the password."""
+    """Return the Private key derived from the password."""
     return "HqbvUXflAG+no3YS9njezZ3leyr8IwERAyeNoG2l41U="
 
 
 @pytest.fixture
 def private_key_b36():
-    """The Private key in base36."""
+    """Return the Private key in base36."""
     return "RI3SPTQ4MKW711QVZJYE9WIIG8HNBAE3ZFNQVM2QBN6S250ET"
 
 
 @pytest.fixture
 def public_key():
-    """The Public key for the Private key."""
+    """Return the Public key for the Private key."""
     return "oRwsrjBbIWddLRrpZ+HlX6eErIEzn9PiAj8TL6B4uh4="
 
 
 @pytest.fixture
 def encrypted_public():
-    """The password encrypted with the Public module."""
+    """Return the password encrypted with the Public module."""
     return "ZGDZTg5dUxd8GBxDXQlNuoVmjaJk5dPWboCgqnnZRbtBsFrFp11Wri69CbLFyA=="
 
 
 @pytest.fixture
 def encrypted_secret():
-    """The password encrypted with the Secret module."""
+    """Return the password encrypted with the Secret module."""
     return "lRNA/8yQDMZv1MT45Pbt57/e7NHFupsbdjNkwqCY7GNIr+s9+fl6jSZapDcYug=="
 
 
 @pytest.fixture
 def encrypted_pw():
-    """The password encrypted with the Password option."""
+    """Return the password encrypted with the Password option."""
     return "ltZ0JPwwAVAlGOrrlGR/niKiMOQYmwryuBpPx+0EwCr7smb5sHTnte6S7EjPiw=="
 
 
@@ -74,14 +73,7 @@ def test_kdf(password, private_key):
         with open("password", "w", encoding="utf-8") as fd:
             fd.write(password)
 
-        args = [
-            "kdf",
-            "password",
-            "--encoding",
-            "base64",
-            "--profile",
-            "interactive",
-        ]
+        args = ["kdf", "password", "--encoding", "base64", "--profile", "interactive"]
         result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == private_key
@@ -293,12 +285,7 @@ def test_encrypt_password(password):
 
 def test_encode_cmd(private_key, private_key_b36):
     runner = CliRunner()
-    args = [
-        "encode",
-        "base64",
-        "base36",
-        "-",
-    ]
+    args = ["encode", "base64", "base36", "-"]
     result = runner.invoke(cli, args=args, input=private_key)
     assert result.exit_code == 0
     assert result.stdout.strip() == private_key_b36
