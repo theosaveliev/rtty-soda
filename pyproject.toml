@@ -1,12 +1,14 @@
 [project]
 name = "rtty-soda"
-version = "0.1.1"
+version = "0.1.2"
 description = "A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl"
 readme = "README.md"
+license = { text = "MIT" }
+
 authors = [
     { name = "Theo Saveliev", email = "89431871+theosaveliev@users.noreply.github.com" },
 ]
-license = { text = "MIT" }
+
 requires-python = ">=3.13,<4.0"
 
 dependencies = [
@@ -15,20 +17,70 @@ dependencies = [
     "pynacl>=1.5.0,<2.0.0",
 ]
 
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Operating System :: POSIX",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Communications",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Utilities",
+]
+
+keywords = ["cli", "encryption", "libsodium", "nacl", "rtty"]
+
 [dependency-groups]
 dev = [
-    "pre-commit>=4.3.0,<5.0.0",
+    "ruff>=0.13.2,<0.14.0",
     "mypy>=1.17.1,<2.0.0",
     "basedpyright>=1.31.4,<2.0.0",
     "pytest>=8.4.1,<9.0.0",
+    "poethepoet>=0.37.0,<0.38.0",
+    "jinja2-cli[toml]>=0.8.2,<0.9.0",
 ]
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.8.22,<0.9.0"]
+build-backend = "uv_build"
 
 [project.scripts]
 soda = "rtty_soda.main:cli"
 
+[project.urls]
+github = "https://github.com/theosaveliev/rtty-soda"
+issues = "https://github.com/theosaveliev/rtty-soda/issues"
+
 [tool.uv]
 add-bounds = "major"
+
+[tool.poe]
+executor.type = "uv"
+
+[tool.poe.tasks]
+format = "ruff format"
+lint = "ruff check --fix"
+mypy = "mypy src"
+pyright = "basedpyright src"
+test = "pytest"
+readme = "jinja2 README.j2 pyproject.toml --outfile README.md"
+commit = ["lint", "format", "mypy", "pyright", "test", "readme"]
+build = "uv build"
+all = ["commit", "build"]
+docker = ["docker-build", "docker-push"]
+
+[tool.poe.tasks.docker-build]
+shell = """
+    IMAGE_TAG=nett/rtty-soda:$(uv version --short)
+    PLATFORM=linux/amd64,linux/arm64/v8
+    docker build --tag ${IMAGE_TAG} --platform ${PLATFORM} --file Dockerfile .
+    docker build --tag ${IMAGE_TAG}-tools --platform ${PLATFORM} --file Dockerfile-tools .
+"""
+
+[tool.poe.tasks.docker-push]
+shell = """
+    IMAGE_TAG=nett/rtty-soda:$(uv version --short)
+    docker image push ${IMAGE_TAG}
+    docker image push ${IMAGE_TAG}-tools
+"""
