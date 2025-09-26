@@ -1,6 +1,6 @@
 [project]
 name = "rtty-soda"
-version = "0.1.3"
+version = "0.1.4"
 description = "A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl"
 readme = "README.md"
 license = { text = "MIT" }
@@ -95,8 +95,8 @@ docker = ["docker-build", "docker-push"]
 shell = """
     IMAGE_TAG=nett/rtty-soda:$(uv version --short)
     PLATFORM=linux/amd64,linux/arm64/v8
-    docker build --tag ${IMAGE_TAG} --platform ${PLATFORM} --file Dockerfile .
-    docker build --tag ${IMAGE_TAG}-tools --platform ${PLATFORM} --file Dockerfile-tools .
+    docker build --tag ${IMAGE_TAG} --platform ${PLATFORM} --file Dockerfile --no-cache .
+    docker build --tag ${IMAGE_TAG}-tools --platform ${PLATFORM} --file Dockerfile-tools --no-cache .
 """
 
 [tool.poe.tasks.docker-push]

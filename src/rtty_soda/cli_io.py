@@ -1,4 +1,6 @@
+import random
 import re
+import string
 from pathlib import Path
 from typing import TextIO, cast
 
@@ -14,6 +16,7 @@ __all__ = [
     "read_plaintext_bytes",
     "read_str",
     "remove_whitespace",
+    "write_bytes_atomic",
     "write_output",
 ]
 
@@ -51,6 +54,13 @@ def read_ciphertext_bytes(source: Path, in_enc: Encoder) -> bytes:
     return read_clean_bytes(source)
 
 
+def write_bytes_atomic(target: Path, data: bytes) -> None:
+    temp_name = "".join(random.choices(string.ascii_lowercase, k=10))  # noqa: S311
+    temp_path = target.parent / temp_name
+    temp_path.write_bytes(data)
+    temp_path.replace(target)
+
+
 def write_output(target: Path | None, data: bytes, out_enc: Encoder) -> None:
     if target is None or target.stem == "-":
         if out_enc == RawEncoder:
@@ -67,7 +77,7 @@ def write_output(target: Path | None, data: bytes, out_enc: Encoder) -> None:
                 f"Overwrite the output file? ({target})", default=False, abort=True
             )
 
-        target.write_bytes(data)
+        write_bytes_atomic(target, data)
 
 
 def print_stats(plaintext: bytes, ciphertext: bytes) -> None:

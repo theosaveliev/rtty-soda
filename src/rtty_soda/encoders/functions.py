@@ -35,6 +35,9 @@ def bytes_to_base(source: bytes, alphabet: str) -> str:
 
 
 def int_to_bytes(number: int) -> bytes:
+    if number == 0:
+        return b"\x00"
+
     buffer = bytearray()
     while number:
         buffer.append(number & 0xFF)
