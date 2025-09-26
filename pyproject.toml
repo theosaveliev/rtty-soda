@@ -1,6 +1,6 @@
 [project]
 name = "rtty-soda"
-version = "0.1.4"
+version = "0.1.5"
 description = "A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl"
 readme = "README.md"
 license = { text = "MIT" }

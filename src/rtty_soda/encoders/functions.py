@@ -10,6 +10,9 @@ def decode_bytes(data: bytes) -> str:
 
 
 def int_to_base(number: int, alphabet: str) -> str:
+    if number == 0:
+        return alphabet[0]
+
     result: list[str] = []
     base = len(alphabet)
     abs_number = abs(number)
