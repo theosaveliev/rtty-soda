@@ -1,6 +1,6 @@
 [project]
 name = "rtty-soda"
-version = "0.1.5"
+version = "0.1.6"
 description = "A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl"
 readme = "README.md"
 license = { text = "MIT" }
@@ -82,9 +82,9 @@ executor.type = "uv"
 
 [tool.poe.tasks]
 format = "ruff format"
-lint = "ruff check --fix"
-mypy = "mypy src"
-pyright = "basedpyright src"
+lint = "ruff check --fix ."
+mypy = "mypy ."
+pyright = "basedpyright ."
 test = "pytest"
 readme = "jinja2 README.j2 pyproject.toml --outfile README.md"
 all = ["lint", "format", "mypy", "pyright", "test", "readme"]

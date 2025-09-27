@@ -1,85 +1,92 @@
+from typing import TYPE_CHECKING, cast
+
 import pytest
 from click.testing import CliRunner
 
 from rtty_soda.main import cli
 
+if TYPE_CHECKING:
+    from click import Command
+
 
 @pytest.fixture
-def password():
+def password() -> str:
     """Return a password."""
     return "qwerty"
 
 
 @pytest.fixture
-def private_key():
+def private_key() -> str:
     """Return the Private key derived from the password."""
     return "HqbvUXflAG+no3YS9njezZ3leyr8IwERAyeNoG2l41U="
 
 
 @pytest.fixture
-def private_key_b36():
+def private_key_b36() -> str:
     """Return the Private key in base36."""
     return "RI3SPTQ4MKW711QVZJYE9WIIG8HNBAE3ZFNQVM2QBN6S250ET"
 
 
 @pytest.fixture
-def public_key():
+def public_key() -> str:
     """Return the Public key for the Private key."""
     return "oRwsrjBbIWddLRrpZ+HlX6eErIEzn9PiAj8TL6B4uh4="
 
 
 @pytest.fixture
-def encrypted_public():
+def encrypted_public() -> str:
     """Return the password encrypted with the Public module."""
     return "ZGDZTg5dUxd8GBxDXQlNuoVmjaJk5dPWboCgqnnZRbtBsFrFp11Wri69CbLFyA=="
 
 
 @pytest.fixture
-def encrypted_secret():
+def encrypted_secret() -> str:
     """Return the password encrypted with the Secret module."""
     return "lRNA/8yQDMZv1MT45Pbt57/e7NHFupsbdjNkwqCY7GNIr+s9+fl6jSZapDcYug=="
 
 
 @pytest.fixture
-def encrypted_pw():
+def encrypted_pw() -> str:
     """Return the password encrypted with the Password option."""
     return "ltZ0JPwwAVAlGOrrlGR/niKiMOQYmwryuBpPx+0EwCr7smb5sHTnte6S7EjPiw=="
 
 
-def test_genkey():
+def test_genkey() -> None:
     runner = CliRunner()
     text_encoders = ["base26", "base36", "base64", "base94"]
     for enc in text_encoders:
-        result = runner.invoke(cli, ["genkey", "--encoding", enc])
+        result = runner.invoke(cast("Command", cli), ["genkey", "--encoding", enc])
         assert result.exit_code == 0
         assert len(result.stdout) > 30
 
 
-def test_pubkey(private_key, public_key):
+def test_pubkey(private_key: str, public_key: str) -> None:
     runner = CliRunner()
     with runner.isolated_filesystem():
         with open("private_key", "w", encoding="utf-8") as fd:
             fd.write(private_key)
 
         args = ["pubkey", "private_key", "--encoding", "base64"]
-        result = runner.invoke(cli, args=args)
+        result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == public_key
 
 
-def test_kdf(password, private_key):
+def test_kdf(password: str, private_key: str) -> None:
     runner = CliRunner()
     with runner.isolated_filesystem():
         with open("password", "w", encoding="utf-8") as fd:
             fd.write(password)
 
         args = ["kdf", "password", "--encoding", "base64", "--profile", "interactive"]
-        result = runner.invoke(cli, args=args)
+        result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == private_key
 
 
-def test_decrypt_public(private_key, public_key, encrypted_public, password):
+def test_decrypt_public(
+    private_key: str, public_key: str, encrypted_public: str, password: str
+) -> None:
     runner = CliRunner()
     with runner.isolated_filesystem():
         with open("private_key", "w", encoding="utf-8") as fd:
@@ -103,12 +110,12 @@ def test_decrypt_public(private_key, public_key, encrypted_public, password):
             "--compression",
             "raw",
         ]
-        result = runner.invoke(cli, args=args)
+        result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
 
 
-def test_decrypt_secret(private_key, encrypted_secret, password):
+def test_decrypt_secret(private_key: str, encrypted_secret: str, password: str) -> None:
     runner = CliRunner()
     with runner.isolated_filesystem():
         with open("secret_key", "w", encoding="utf-8") as fd:
@@ -128,12 +135,12 @@ def test_decrypt_secret(private_key, encrypted_secret, password):
             "--compression",
             "raw",
         ]
-        result = runner.invoke(cli, args=args)
+        result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
 
 
-def test_decrypt_password(password, encrypted_pw):
+def test_decrypt_password(password: str, encrypted_pw: str) -> None:
     runner = CliRunner()
     with runner.isolated_filesystem():
         with open("password", "w", encoding="utf-8") as fd:
@@ -153,12 +160,12 @@ def test_decrypt_password(password, encrypted_pw):
             "--compression",
             "raw",
         ]
-        result = runner.invoke(cli, args=args)
+        result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
 
 
-def test_encrypt_public(private_key, public_key, password):
+def test_encrypt_public(private_key: str, public_key: str, password: str) -> None:
     runner = CliRunner()
     with runner.isolated_filesystem():
         with open("private_key", "w", encoding="utf-8") as fd:
@@ -184,7 +191,7 @@ def test_encrypt_public(private_key, public_key, password):
             "--output-file",
             "encrypted",
         ]
-        result = runner.invoke(cli, args=args)
+        result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
 
         args = [
@@ -199,12 +206,12 @@ def test_encrypt_public(private_key, public_key, password):
             "--compression",
             "raw",
         ]
-        result = runner.invoke(cli, args=args)
+        result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
 
 
-def test_encrypt_secret(private_key, password):
+def test_encrypt_secret(private_key: str, password: str) -> None:
     runner = CliRunner()
     with runner.isolated_filesystem():
         with open("secret_key", "w", encoding="utf-8") as fd:
@@ -226,7 +233,7 @@ def test_encrypt_secret(private_key, password):
             "--output-file",
             "encrypted",
         ]
-        result = runner.invoke(cli, args=args)
+        result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
 
         args = [
@@ -240,12 +247,12 @@ def test_encrypt_secret(private_key, password):
             "--compression",
             "raw",
         ]
-        result = runner.invoke(cli, args=args)
+        result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
 
 
-def test_encrypt_password(password):
+def test_encrypt_password(password: str) -> None:
     runner = CliRunner()
     with runner.isolated_filesystem():
         with open("password", "w", encoding="utf-8") as fd:
@@ -264,7 +271,7 @@ def test_encrypt_password(password):
             "--output-file",
             "encrypted",
         ]
-        result = runner.invoke(cli, args=args)
+        result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
 
         args = [
@@ -278,14 +285,14 @@ def test_encrypt_password(password):
             "--compression",
             "raw",
         ]
-        result = runner.invoke(cli, args=args)
+        result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
 
 
-def test_encode_cmd(private_key, private_key_b36):
+def test_encode_cmd(private_key: str, private_key_b36: str) -> None:
     runner = CliRunner()
     args = ["encode", "base64", "base36", "-"]
-    result = runner.invoke(cli, args=args, input=private_key)
+    result = runner.invoke(cast("Command", cli), args=args, input=private_key)
     assert result.exit_code == 0
     assert result.stdout.strip() == private_key_b36

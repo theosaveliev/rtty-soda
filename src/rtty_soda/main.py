@@ -1,6 +1,3 @@
-# ruff: noqa: PLR0913 - not applicable because we don't call Click Commands directly
-# ruff: noqa: ANN201 - not applicable because the Click Commands are untyped
-# mypy: disable-error-code = "no-untyped-def, misc"
 from pathlib import Path
 
 import click
@@ -38,13 +35,13 @@ CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}
 
 @click.group(cls=ClickAliasedGroup, context_settings=CONTEXT_SETTINGS)
 @click.version_option(package_name="rtty-soda")
-def cli():
+def cli() -> None:
     pass
 
 
 @cli.command()
 @click.option("--encoding", "-e", default="base64", show_default=True)
-def genkey_cmd(encoding: str):
+def genkey_cmd(encoding: str) -> None:
     """Generate Private Key.
 
     Encoding: base26 | base36 | base64 | base94
@@ -57,7 +54,7 @@ def genkey_cmd(encoding: str):
 @cli.command()
 @click.argument("private_key_file", type=in_path)
 @click.option("--encoding", "-e", default="base64", show_default=True)
-def pubkey_cmd(private_key_file: Path, encoding: str):
+def pubkey_cmd(private_key_file: Path, encoding: str) -> None:
     """Get Public Key.
 
     Encoding: base26 | base36 | base64 | base94
@@ -72,7 +69,7 @@ def pubkey_cmd(private_key_file: Path, encoding: str):
 @click.argument("password_file", type=in_path)
 @click.option("--encoding", "-e", default="base64", show_default=True)
 @click.option("--profile", "-p", default="sensitive", show_default=True)
-def kdf_cmd(password_file: Path, encoding: str, profile: str):
+def kdf_cmd(password_file: Path, encoding: str, profile: str) -> None:
     """Key Derivation Function.
 
     Encoding: base26 | base36 | base64 | base94
@@ -94,7 +91,7 @@ def kdf_cmd(password_file: Path, encoding: str, profile: str):
 @click.option("--data-encoding", "-e", default="base64", show_default=True)
 @click.option("--compression", "-c", default="zlib", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="(Optional)")
-def encrypt_public_cmd(
+def encrypt_public_cmd(  # noqa: PLR0913
     private_key_file: Path,
     public_key_file: Path,
     message_file: Path,
@@ -102,7 +99,7 @@ def encrypt_public_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-):
+) -> None:
     """Encrypt Message (Public).
 
     Encoding: base26 | base36 | base64 | base94 | binary
@@ -130,14 +127,14 @@ def encrypt_public_cmd(
 @click.option("--data-encoding", "-e", default="base64", show_default=True)
 @click.option("--compression", "-c", default="zlib", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="(Optional)")
-def encrypt_secret_cmd(
+def encrypt_secret_cmd(  # noqa: PLR0913
     key_file: Path,
     message_file: Path,
     key_encoding: str,
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-):
+) -> None:
     """Encrypt Message (Secret).
 
     Encoding: base26 | base36 | base64 | base94 | binary
@@ -162,14 +159,14 @@ def encrypt_secret_cmd(
 @click.option("--data-encoding", "-e", default="base64", show_default=True)
 @click.option("--compression", "-c", default="zlib", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="(Optional)")
-def encrypt_password_cmd(
+def encrypt_password_cmd(  # noqa: PLR0913
     password_file: Path,
     message_file: Path,
     kdf_profile: str,
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-):
+) -> None:
     """Encrypt Message (Password).
 
     KDF profile: interactive | moderate | sensitive
@@ -198,7 +195,7 @@ def encrypt_password_cmd(
 @click.option("--data-encoding", "-e", default="base64", show_default=True)
 @click.option("--compression", "-c", default="zlib", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="(Optional)")
-def decrypt_public_cmd(
+def decrypt_public_cmd(  # noqa: PLR0913
     private_key_file: Path,
     public_key_file: Path,
     message_file: Path,
@@ -206,7 +203,7 @@ def decrypt_public_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-):
+) -> None:
     """Decrypt Message (Public).
 
     Encoding: base26 | base36 | base64 | base94 | binary
@@ -234,14 +231,14 @@ def decrypt_public_cmd(
 @click.option("--data-encoding", "-e", default="base64", show_default=True)
 @click.option("--compression", "-c", default="zlib", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="(Optional)")
-def decrypt_secret_cmd(
+def decrypt_secret_cmd(  # noqa: PLR0913
     key_file: Path,
     message_file: Path,
     key_encoding: str,
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-):
+) -> None:
     """Decrypt Message (Secret).
 
     Encoding: base26 | base36 | base64 | base94 | binary
@@ -266,14 +263,14 @@ def decrypt_secret_cmd(
 @click.option("--data-encoding", "-e", default="base64", show_default=True)
 @click.option("--compression", "-c", default="zlib", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="(Optional)")
-def decrypt_password_cmd(
+def decrypt_password_cmd(  # noqa: PLR0913
     password_file: Path,
     message_file: Path,
     kdf_profile: str,
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-):
+) -> None:
     """Decrypt Message (Password).
 
     KDF profile: interactive | moderate | sensitive
@@ -301,7 +298,7 @@ def decrypt_password_cmd(
 @click.option("--output-file", "-o", type=out_path, help="(Optional)")
 def encode_cmd(
     in_encoding: str, out_encoding: str, file: Path, output_file: Path | None
-):
+) -> None:
     """Encode File.
 
     Encoding: base26 | base36 | base64 | base94 | binary

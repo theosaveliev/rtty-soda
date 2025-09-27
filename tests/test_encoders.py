@@ -6,7 +6,7 @@ from rtty_soda.encoders import (
 )
 
 
-def test_encoders():
+def test_encoders() -> None:
     assert Base26Encoder.encode(b"\x64") == b"DW"
     assert Base26Encoder.decode(b"DW") == b"\x64"
 
