@@ -1,6 +1,12 @@
 {
   "typeCheckingMode": "strict",
-  "reportUnusedCallResult": false,
+  "include": [
+    "src",
+    "tests"
+  ],
+  "exclude": [
+    "**/.venv",
+    "**/__pycache__",
+  ],
   "reportMissingImports": "error",
-  "reportMissingTypeStubs": false,
 }

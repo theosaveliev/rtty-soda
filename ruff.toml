@@ -3,12 +3,12 @@ target-version = "py313"
 
 [lint]
 select = ["ALL"]
-ignore = ["D203", "D213", "E501", "COM812", "PTH123"]
+ignore = ["D203", "D213", "COM812", "PTH123"]
 extend-select = ["ALL"]
 extend-ignore = ["D100", "D101", "D102", "D103", "D104"]
 
 [lint.per-file-ignores]
-"tests/**" = ["S101", "ANN001", "ANN201", "PLR2004"]
+"tests/**" = ["S101", "PLR2004"]
 
 [lint.isort]
 split-on-trailing-comma = false
