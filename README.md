@@ -227,3 +227,10 @@ Overhead: 1.347
 
 During the initial development (versions prior to 1.0.0),
 I can break backwards compatibility.
+
+
+## Releases 
+
+This project follows a rolling release cycle. 
+Each version bump represents where I completed a full test cycle. 
+When testing passes successfully, I commit and release - so every release is a verified stable point.
