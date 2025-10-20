@@ -1,20 +1,20 @@
-from nacl.public import Box, PrivateKey, PublicKey
-from nacl.utils import EncryptedMessage
+from typing import TYPE_CHECKING
 
-from rtty_soda.encoders import Encoder
+from nacl.encoding import RawEncoder
+from nacl.public import Box, PrivateKey, PublicKey
+
+if TYPE_CHECKING:
+    from nacl.utils import EncryptedMessage
+
 
 __all__ = ["decrypt", "encrypt"]
 
 
-def encrypt(
-    private: PrivateKey, public: PublicKey, data: bytes, out_enc: Encoder
-) -> EncryptedMessage:
-    box = Box(private, public)
-    return box.encrypt(data, encoder=out_enc)
+def encrypt(private: PrivateKey, public: PublicKey, data: bytes) -> EncryptedMessage:
+    box = Box(private_key=private, public_key=public)
+    return box.encrypt(plaintext=data, encoder=RawEncoder)
 
 
-def decrypt(
-    private: PrivateKey, public: PublicKey, data: bytes, in_enc: Encoder
-) -> bytes:
-    box = Box(private, public)
-    return box.decrypt(data, encoder=in_enc)
+def decrypt(private: PrivateKey, public: PublicKey, data: bytes) -> bytes:
+    box = Box(private_key=private, public_key=public)
+    return box.decrypt(ciphertext=data, encoder=RawEncoder)

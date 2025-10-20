@@ -1,3 +1,4 @@
+from nacl.encoding import RawEncoder
 from nacl.hash import blake2b
 from nacl.public import PrivateKey
 from nacl.pwhash import argon2id
@@ -10,8 +11,6 @@ from nacl.pwhash.argon2id import (
     OPSLIMIT_SENSITIVE,
     SALTBYTES,
 )
-
-from rtty_soda.encoders import Encoder, RawEncoder
 
 __all__ = ["KDF_PROFILES", "KdfProfile", "hash_salt", "kdf"]
 
@@ -34,9 +33,17 @@ certainty;
 
 
 def hash_salt(salt: bytes) -> bytes:
-    return blake2b(salt, digest_size=SALTBYTES, encoder=RawEncoder)
+    return blake2b(data=salt, digest_size=SALTBYTES, encoder=RawEncoder)
 
 
-def kdf(password: bytes, profile: KdfProfile, out_enc: Encoder) -> bytes:
+def kdf(password: bytes, profile: KdfProfile) -> bytes:
     salt = hash_salt(password + SALT_MOD)
-    return argon2id.kdf(PrivateKey.SIZE, password, salt, *profile, encoder=out_enc)
+    ops, mem = profile
+    return argon2id.kdf(
+        size=PrivateKey.SIZE,
+        password=password,
+        salt=salt,
+        opslimit=ops,
+        memlimit=mem,
+        encoder=RawEncoder,
+    )

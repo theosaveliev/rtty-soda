@@ -1,11 +1,57 @@
 line-length = 88
-target-version = "py313"
+target-version = "py314"
 
 [lint]
-select = ["ALL"]
-ignore = ["D203", "D213", "COM812", "PTH123"]
-extend-select = ["ALL"]
-extend-ignore = ["D100", "D101", "D102", "D103", "D104"]
+select = [
+    "A",
+    "ANN",
+    "ARG",
+    "B",
+    "C4",
+    "C90",
+    "COM",
+    "D",
+    "E",
+    "F",
+    "FLY",
+    "I",
+    "ICN",
+    "INP",
+    "ISC",
+    "N",
+    "PGH",
+    "PIE",
+    "PL",
+    "PT",
+    "PTH",
+    "PYI",
+    "Q",
+    "RET",
+    "RUF",
+    "S",
+    "SIM",
+    "SLOT",
+    "T10",
+    "T20",
+    "TC",
+    "TID",
+    "UP",
+    "W",
+    "YTT",
+]
+
+ignore = [
+    "COM812",
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D203",
+    "D213",
+    "PLR0913",
+    "PTH123",
+]
 
 [lint.per-file-ignores]
 "tests/**" = ["S101", "PLR2004"]

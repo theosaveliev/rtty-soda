@@ -1,3 +1,5 @@
+from typing import cast
+
 __all__ = ["base_to_bytes", "bytes_to_base", "decode_bytes", "encode_str"]
 
 
@@ -27,7 +29,7 @@ def base_to_int(source: str, alphabet: str) -> int:
     number = 0
     base = len(alphabet)
     for index, digit in enumerate(reversed(source)):
-        number += alphabet.index(digit) * (base**index)
+        number += alphabet.index(digit) * cast("int", base**index)
 
     return number
 

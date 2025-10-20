@@ -1,6 +1,6 @@
 [project]
 name = "rtty-soda"
-version = "0.1.6"
+version = "0.2.0"
 description = "A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl"
 readme = "README.md"
 license = { text = "MIT" }
@@ -9,22 +9,20 @@ authors = [
     { name = "Theo Saveliev", email = "89431871+theosaveliev@users.noreply.github.com" },
 ]
 
-requires-python = ">=3.13,<4.0"
+requires-python = ">=3.14,<4.0"
 
 dependencies = [
-    "click>=8.2.1,<9.0.0",
     "click-aliases>=1.0.5,<2.0.0",
-    "pynacl>=1.5.0,<2.0.0",
+    "click>=8.3.0,<9.0.0",
+    "pynacl>=1.6.0,<2.0.0",
 ]
 
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: POSIX",
     "Environment :: Console",
-    "Intended Audience :: End Users/Desktop",
     "License :: OSI Approved :: MIT License",
-    "Topic :: Communications",
     "Topic :: Security :: Cryptography",
     "Topic :: Utilities",
 ]
@@ -33,16 +31,16 @@ keywords = ["cli", "encryption", "libsodium", "nacl", "rtty"]
 
 [dependency-groups]
 dev = [
-    "ruff>=0.13.2,<0.14.0",
-    "mypy>=1.17.1,<2.0.0",
-    "basedpyright>=1.31.4,<2.0.0",
-    "pytest>=8.4.1,<9.0.0",
-    "poethepoet>=0.37.0,<0.38.0",
+    "basedpyright>=1.31.7,<2.0.0",
     "jinja2-cli[toml]>=0.8.2,<0.9.0",
+    "mypy>=1.18.2,<2.0.0",
+    "poethepoet>=0.37.0,<0.38.0",
+    "pytest>=8.4.2,<9.0.0",
+    "ruff>=0.14.1,<0.15.0",
 ]
 
 [build-system]
-requires = ["uv_build>=0.8.22,<0.9.0"]
+requires = ["uv_build>=0.9.3,<0.10.0"]
 build-backend = "uv_build"
 
 [project.scripts]
@@ -66,6 +64,7 @@ source-exclude = [
     ".idea",
     ".vscode",
 ]
+
 wheel-exclude = [
     ".env",
     ".mypy_cache",
@@ -87,8 +86,8 @@ mypy = "mypy ."
 pyright = "basedpyright ."
 test = "pytest"
 readme = "jinja2 README.j2 pyproject.toml --outfile README.md"
-all = ["lint", "format", "mypy", "pyright", "test", "readme"]
-build = "uv build"
+dev = ["format", "lint", "mypy", "pyright"]
+pre-build = ["dev", "test", "readme"]
 docker = ["docker-build", "docker-push"]
 
 [tool.poe.tasks.docker-build]
