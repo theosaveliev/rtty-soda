@@ -1,9 +1,11 @@
-from .encoder import Encoder
+from typing import ClassVar
 
 __all__ = ["RawEncoder"]
 
 
-class RawEncoder(Encoder):
+class RawEncoder:
+    is_binary: ClassVar = True
+
     @staticmethod
     def encode(data: bytes) -> bytes:
         return data

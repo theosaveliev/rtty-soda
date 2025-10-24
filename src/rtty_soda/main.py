@@ -6,6 +6,7 @@ from nacl.public import PrivateKey, PublicKey
 
 from rtty_soda.archivers import ARCHIVERS, UNARCHIVERS
 from rtty_soda.cli_io import (
+    format_output,
     print_stats,
     read_bytes,
     read_key_bytes,
@@ -52,19 +53,14 @@ def genkey_cmd(
     Encoding: base26 | base31 | base36 | base64 | base94 | binary
     """
     enc = ENCODERS[encoding]
-    is_bin = encoding == "binary"
 
     key = bytes(PrivateKey.generate())
     key = enc.encode(key)
 
-    write_output(
-        target=output_file,
-        data=key,
-        is_binary=is_bin,
-        group_len=group_len,
-        line_len=line_len,
-        padding=padding,
-    )
+    if not enc.is_binary:
+        key = format_output(key, group_len, line_len, padding)
+
+    write_output(target=output_file, data=key)
 
 
 @cli.command()  # pyright: ignore[reportAny]
@@ -87,21 +83,16 @@ def pubkey_cmd(
     Encoding: base26 | base31 | base36 | base64 | base94 | binary
     """
     enc = ENCODERS[encoding]
-    is_bin = encoding == "binary"
 
-    priv = read_key_bytes(source=private_key_file, is_binary=is_bin, encoder=enc)
+    priv = read_key_bytes(source=private_key_file, encoder=enc)
     priv = PrivateKey(private_key=priv)
     pub = bytes(priv.public_key)
     pub = enc.encode(pub)
 
-    write_output(
-        target=output_file,
-        data=pub,
-        is_binary=is_bin,
-        group_len=group_len,
-        line_len=line_len,
-        padding=padding,
-    )
+    if not enc.is_binary:
+        pub = format_output(pub, group_len, line_len, padding)
+
+    write_output(target=output_file, data=pub)
 
 
 @cli.command()  # pyright: ignore[reportAny]
@@ -129,20 +120,15 @@ def kdf_cmd(
     """
     enc = ENCODERS[encoding]
     prof = KDF_PROFILES[profile]
-    is_bin = encoding == "binary"
 
     pw = read_password_bytes(password_file)
     key = kdf(password=pw, profile=prof)
     key = enc.encode(key)
 
-    write_output(
-        target=output_file,
-        data=key,
-        is_binary=is_bin,
-        group_len=group_len,
-        line_len=line_len,
-        padding=padding,
-    )
+    if not enc.is_binary:
+        key = format_output(key, group_len, line_len, padding)
+
+    write_output(target=output_file, data=key)
 
 
 @cli.command(aliases=["e"])  # pyright: ignore[reportAny]
@@ -179,28 +165,20 @@ def encrypt_public_cmd(
     key_enc = ENCODERS[key_encoding]
     data_enc = ENCODERS[data_encoding]
     archiver = ARCHIVERS[compression]
-    is_bin_key = key_encoding == "binary"
-    is_bin_data = data_encoding == "binary"
 
-    priv = read_key_bytes(
-        source=private_key_file, is_binary=is_bin_key, encoder=key_enc
-    )
+    priv = read_key_bytes(source=private_key_file, encoder=key_enc)
     priv = PrivateKey(private_key=priv)
-    pub = read_key_bytes(source=public_key_file, is_binary=is_bin_key, encoder=key_enc)
+    pub = read_key_bytes(source=public_key_file, encoder=key_enc)
     pub = PublicKey(public_key=pub)
     data = stats = message_file.read_bytes()
     data = archiver(data)
     data = public.encrypt(private=priv, public=pub, data=data)
     data = data_enc.encode(data)
 
-    write_output(
-        target=output_file,
-        data=data,
-        is_binary=is_bin_data,
-        group_len=group_len,
-        line_len=line_len,
-        padding=padding,
-    )
+    if not data_enc.is_binary:
+        data = format_output(data, group_len, line_len, padding)
+
+    write_output(target=output_file, data=data)
     if verbose:
         print_stats(plaintext=stats, ciphertext=data)
 
@@ -237,23 +215,17 @@ def encrypt_secret_cmd(
     key_enc = ENCODERS[key_encoding]
     data_enc = ENCODERS[data_encoding]
     archiver = ARCHIVERS[compression]
-    is_bin_key = key_encoding == "binary"
-    is_bin_data = data_encoding == "binary"
 
-    key = read_key_bytes(source=key_file, is_binary=is_bin_key, encoder=key_enc)
+    key = read_key_bytes(source=key_file, encoder=key_enc)
     data = stats = message_file.read_bytes()
     data = archiver(data)
     data = secret.encrypt(key=key, data=data)
     data = data_enc.encode(data)
 
-    write_output(
-        target=output_file,
-        data=data,
-        is_binary=is_bin_data,
-        group_len=group_len,
-        line_len=line_len,
-        padding=padding,
-    )
+    if not data_enc.is_binary:
+        data = format_output(data, group_len, line_len, padding)
+
+    write_output(target=output_file, data=data)
     if verbose:
         print_stats(plaintext=stats, ciphertext=data)
 
@@ -292,7 +264,6 @@ def encrypt_password_cmd(
     prof = KDF_PROFILES[kdf_profile]
     data_enc = ENCODERS[data_encoding]
     archiver = ARCHIVERS[compression]
-    is_bin_data = data_encoding == "binary"
 
     pw = read_password_bytes(password_file)
     key = kdf(password=pw, profile=prof)
@@ -301,14 +272,10 @@ def encrypt_password_cmd(
     data = secret.encrypt(key=key, data=data)
     data = data_enc.encode(data)
 
-    write_output(
-        target=output_file,
-        data=data,
-        is_binary=is_bin_data,
-        group_len=group_len,
-        line_len=line_len,
-        padding=padding,
-    )
+    if not data_enc.is_binary:
+        data = format_output(data, group_len, line_len, padding)
+
+    write_output(target=output_file, data=data)
     if verbose:
         print_stats(plaintext=stats, ciphertext=data)
 
@@ -321,7 +288,6 @@ def encrypt_password_cmd(
 @click.option("--data-encoding", "-e", default="base64", show_default=True)
 @click.option("--compression", "-c", default="zstd", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
-@click.option("--padding", default=0, show_default=True)
 @click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
 def decrypt_public_cmd(
     private_key_file: Path,
@@ -331,7 +297,6 @@ def decrypt_public_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-    padding: int,
     verbose: bool,
 ) -> None:
     """Decrypt Message (Public).
@@ -343,28 +308,17 @@ def decrypt_public_cmd(
     key_enc = ENCODERS[key_encoding]
     data_enc = ENCODERS[data_encoding]
     unarchiver = UNARCHIVERS[compression]
-    is_bin_key = key_encoding == "binary"
-    is_bin_data = data_encoding == "binary"
 
-    priv = read_key_bytes(
-        source=private_key_file, is_binary=is_bin_key, encoder=key_enc
-    )
+    priv = read_key_bytes(source=private_key_file, encoder=key_enc)
     priv = PrivateKey(private_key=priv)
-    pub = read_key_bytes(source=public_key_file, is_binary=is_bin_key, encoder=key_enc)
+    pub = read_key_bytes(source=public_key_file, encoder=key_enc)
     pub = PublicKey(public_key=pub)
-    data = stats = read_bytes(source=message_file, is_binary=is_bin_data)
+    data = stats = read_bytes(source=message_file, encoder=data_enc)
     data = data_enc.decode(data)
     data = public.decrypt(private=priv, public=pub, data=data)
     data = unarchiver(data)
 
-    write_output(
-        target=output_file,
-        data=data,
-        is_binary=True,
-        group_len=0,
-        line_len=0,
-        padding=padding,
-    )
+    write_output(target=output_file, data=data)
     if verbose:
         print_stats(plaintext=data, ciphertext=stats)
 
@@ -376,7 +330,6 @@ def decrypt_public_cmd(
 @click.option("--data-encoding", "-e", default="base64", show_default=True)
 @click.option("--compression", "-c", default="zstd", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
-@click.option("--padding", default=0, show_default=True)
 @click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
 def decrypt_secret_cmd(
     key_file: Path,
@@ -385,7 +338,6 @@ def decrypt_secret_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-    padding: int,
     verbose: bool,
 ) -> None:
     """Decrypt Message (Secret).
@@ -397,23 +349,14 @@ def decrypt_secret_cmd(
     key_enc = ENCODERS[key_encoding]
     data_enc = ENCODERS[data_encoding]
     unarchiver = UNARCHIVERS[compression]
-    is_bin_key = key_encoding == "binary"
-    is_bin_data = data_encoding == "binary"
 
-    key = read_key_bytes(source=key_file, is_binary=is_bin_key, encoder=key_enc)
-    data = stats = read_bytes(source=message_file, is_binary=is_bin_data)
+    key = read_key_bytes(source=key_file, encoder=key_enc)
+    data = stats = read_bytes(source=message_file, encoder=data_enc)
     data = data_enc.decode(data)
     data = secret.decrypt(key=key, data=data)
     data = unarchiver(data)
 
-    write_output(
-        target=output_file,
-        data=data,
-        is_binary=True,
-        group_len=0,
-        line_len=0,
-        padding=padding,
-    )
+    write_output(target=output_file, data=data)
     if verbose:
         print_stats(plaintext=data, ciphertext=stats)
 
@@ -425,7 +368,6 @@ def decrypt_secret_cmd(
 @click.option("--data-encoding", "-e", default="base64", show_default=True)
 @click.option("--compression", "-c", default="zstd", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
-@click.option("--padding", default=0, show_default=True)
 @click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
 def decrypt_password_cmd(
     password_file: Path,
@@ -434,7 +376,6 @@ def decrypt_password_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-    padding: int,
     verbose: bool,
 ) -> None:
     """Decrypt Message (Password).
@@ -448,23 +389,15 @@ def decrypt_password_cmd(
     prof = KDF_PROFILES[kdf_profile]
     data_enc = ENCODERS[data_encoding]
     unarchiver = UNARCHIVERS[compression]
-    is_bin_data = data_encoding == "binary"
 
     pw = read_password_bytes(password_file)
     key = kdf(password=pw, profile=prof)
-    data = stats = read_bytes(source=message_file, is_binary=is_bin_data)
+    data = stats = read_bytes(source=message_file, encoder=data_enc)
     data = data_enc.decode(data)
     data = secret.decrypt(key=key, data=data)
     data = unarchiver(data)
 
-    write_output(
-        target=output_file,
-        data=data,
-        is_binary=True,
-        group_len=0,
-        line_len=0,
-        padding=padding,
-    )
+    write_output(target=output_file, data=data)
     if verbose:
         print_stats(plaintext=data, ciphertext=stats)
 
@@ -492,21 +425,15 @@ def encode_cmd(
     """
     in_enc = ENCODERS[in_encoding]
     out_enc = ENCODERS[out_encoding]
-    in_bin = in_encoding == "binary"
-    out_bin = out_encoding == "binary"
 
-    data = read_bytes(source=file, is_binary=in_bin)
+    data = read_bytes(source=file, encoder=in_enc)
     data = in_enc.decode(data)
     data = out_enc.encode(data)
 
-    write_output(
-        target=output_file,
-        data=data,
-        is_binary=out_bin,
-        group_len=group_len,
-        line_len=line_len,
-        padding=padding,
-    )
+    if not out_enc.is_binary:
+        data = format_output(data, group_len, line_len, padding)
+
+    write_output(target=output_file, data=data)
 
 
 if __name__ == "__main__":

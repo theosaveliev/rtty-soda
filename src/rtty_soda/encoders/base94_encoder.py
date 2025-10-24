@@ -1,4 +1,5 @@
-from .encoder import Encoder
+from typing import ClassVar
+
 from .functions import base_to_bytes, bytes_to_base, decode_bytes, encode_str
 
 __all__ = ["ALPHABET", "Base94Encoder"]
@@ -6,7 +7,9 @@ __all__ = ["ALPHABET", "Base94Encoder"]
 ALPHABET = "".join([chr(i) for i in range(33, 127)])
 
 
-class Base94Encoder(Encoder):
+class Base94Encoder:
+    is_binary: ClassVar = False
+
     @staticmethod
     def encode(data: bytes) -> bytes:
         return encode_str(bytes_to_base(data, ALPHABET))

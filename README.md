@@ -34,8 +34,8 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.2.0
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.2.0-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.2.1
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.2.1-tools
 ```
 
 
@@ -157,7 +157,6 @@ Options:
   -e, --data-encoding TEXT  [default: base64]
   -c, --compression TEXT    [default: zstd]
   -o, --output-file FILE    Write output to file.
-  --padding INTEGER         [default: 0]
   -v, --verbose             Show verbose output.
   -h, --help                Show this message and exit.
 ```

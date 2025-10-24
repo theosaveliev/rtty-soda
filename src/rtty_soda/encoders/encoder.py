@@ -4,6 +4,8 @@ __all__ = ["Encoder"]
 
 
 class Encoder(Protocol):
+    is_binary: bool
+
     @staticmethod
     def encode(data: bytes) -> bytes: ...
 

@@ -1,6 +1,6 @@
 import string
+from typing import ClassVar
 
-from .encoder import Encoder
 from .functions import base_to_bytes, bytes_to_base, decode_bytes, encode_str
 
 __all__ = ["ALPHABET", "Base26Encoder"]
@@ -8,7 +8,9 @@ __all__ = ["ALPHABET", "Base26Encoder"]
 ALPHABET = string.ascii_uppercase
 
 
-class Base26Encoder(Encoder):
+class Base26Encoder:
+    is_binary: ClassVar = False
+
     @staticmethod
     def encode(data: bytes) -> bytes:
         return encode_str(bytes_to_base(data, ALPHABET))

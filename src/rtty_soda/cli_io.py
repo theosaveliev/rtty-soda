@@ -11,6 +11,7 @@ import click
 from rtty_soda.encoders import Encoder, decode_bytes, encode_str
 
 __all__ = [
+    "format_output",
     "pad_newlines",
     "print_stats",
     "read_bytes",
@@ -40,15 +41,15 @@ def read_encoded_stripped(source: Path) -> bytes:
     return encode_str(data)
 
 
-def read_bytes(source: Path, is_binary: bool) -> bytes:
-    if is_binary:
+def read_bytes(source: Path, encoder: Encoder) -> bytes:
+    if encoder.is_binary:
         return source.read_bytes()
 
     return read_encoded_stripped(source)
 
 
-def read_key_bytes(source: Path, is_binary: bool, encoder: Encoder) -> bytes:
-    key = read_bytes(source, is_binary)
+def read_key_bytes(source: Path, encoder: Encoder) -> bytes:
+    key = read_bytes(source, encoder)
     return encoder.decode(key)
 
 
@@ -84,27 +85,23 @@ def split_groups(data: str, group_len: int, line_len: int) -> str:
     return "\n".join(result)
 
 
-def pad_newlines(data: bytes, count: int) -> bytes:
-    padding = b"\n" * count
-    return padding + data + padding
+def pad_newlines(data: str, count: int) -> str:
+    padding = "\n" * count
+    return padding + data.strip() + "\n" + padding
 
 
-def write_output(
-    target: Path | None,
-    data: bytes,
-    is_binary: bool,
-    group_len: int,
-    line_len: int,
-    padding: int,
-) -> None:
-    if not is_binary and (group_len > 0 or line_len > 0):
-        text = decode_bytes(data)
+def format_output(data: bytes, group_len: int, line_len: int, padding: int) -> bytes:
+    text = decode_bytes(data)
+    if group_len > 0 or line_len > 0:
         text = split_groups(text, group_len, line_len)
-        data = encode_str(text)
 
     if padding > 0:
-        data = pad_newlines(data, padding)
+        text = pad_newlines(text, padding)
 
+    return encode_str(text)
+
+
+def write_output(target: Path | None, data: bytes) -> None:
     if target is None or target.stem == "-":
         add_nl = not data.endswith(b"\n")
         click.echo(data, nl=add_nl)
