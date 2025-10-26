@@ -34,8 +34,8 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.2.1
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.2.1-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.2.2
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.2.2-tools
 ```
 
 
@@ -89,8 +89,9 @@ Options:
   -e, --encoding TEXT     [default: base64]
   -o, --output-file FILE  Write output to file.
   --group-len INTEGER     [default: 0]
-  --line-len INTEGER      [default: 0]
+  --line-len INTEGER      [default: 80]
   --padding INTEGER       [default: 0]
+  -v, --verbose           Show verbose output.
   -h, --help              Show this message and exit.
 ```
 
@@ -105,11 +106,11 @@ transmit text messages in Morse code in a telegraphy system.
 The first telegraph key was invented by Alfred Vail, an associate of Samuel Morse.
 (c) Wikipedia
 
-% soda encrypt-public alice bob_pub message --line-len 80 | tee encrypted
-cCipniCmJVAb2mc3JLoDo/DAun7cMunWS5bMqtKRPc/e3d2vfRm8wnqTsYjOXVOCZRj78/GqcVweBV0
-mE43X7xO8B0OVyKKgqPAqnAJxwggTLPmWtKFrTwKi0utf7n6fIQuDaCths0qO6FF5rm0znc/3KYKP3D
-/WbgE/IBrTOAV6P+mLUnGlzO6U/HdtDCjk1ZB45EN0Q76dDzYav+bliCrVWiAUfZUCtEQ/6B4fi9Aqn
-KRDC4XSnd7nLs/ZkhL8hkM13xJ+1MBGbIvEjaY=
+% soda encrypt-public alice bob_pub message --group-len 79 | tee encrypted
+q+zCgyCfHdlSHrcuyM/Yfw1+ZvqNRXgY0O7gGrauPyQlsI0MdPXoVlkfyKZUtg6Jcqn47d4BGLMBITo
+y3Wp9+9FvI1rolCd7JmyIxRIHHYWqxux+czh88aDdGjbDQ2pRNX68TU33PylBDw/H+VfYSZ6fyw1xdJ
+005pJeEXCzpOXljvXMgAElBIFJ/vsluunrRI9Sw6WcnrCsPYFxTFRZVOvsq6U8PJwnhnaDyLW0Z28Op
+dS71gNH/7xA7P1LbFwxSD0jAjDqPZdLYkPzd94=
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
@@ -127,7 +128,7 @@ Options:
   -c, --compression TEXT    [default: zstd]
   -o, --output-file FILE    Write output to file.
   --group-len INTEGER       [default: 0]
-  --line-len INTEGER        [default: 0]
+  --line-len INTEGER        [default: 80]
   --padding INTEGER         [default: 0]
   -v, --verbose             Show verbose output.
   -h, --help                Show this message and exit.
@@ -186,7 +187,7 @@ Options:
   -c, --compression TEXT    [default: zstd]
   -o, --output-file FILE    Write output to file.
   --group-len INTEGER       [default: 0]
-  --line-len INTEGER        [default: 0]
+  --line-len INTEGER        [default: 80]
   --padding INTEGER         [default: 0]
   -v, --verbose             Show verbose output.
   -h, --help                Show this message and exit.
@@ -215,7 +216,7 @@ Options:
   -c, --compression TEXT    [default: zstd]
   -o, --output-file FILE    Write output to file.
   --group-len INTEGER       [default: 0]
-  --line-len INTEGER        [default: 0]
+  --line-len INTEGER        [default: 80]
   --padding INTEGER         [default: 0]
   -v, --verbose             Show verbose output.
   -h, --help                Show this message and exit.
@@ -245,8 +246,9 @@ Options:
   -p, --profile TEXT      [default: sensitive]
   -o, --output-file FILE  Write output to file.
   --group-len INTEGER     [default: 0]
-  --line-len INTEGER      [default: 0]
+  --line-len INTEGER      [default: 80]
   --padding INTEGER       [default: 0]
+  -v, --verbose           Show verbose output.
   -h, --help              Show this message and exit.
 ```
 
@@ -263,22 +265,27 @@ That works as follows:
 Plaintext: 239
 Ciphertext: 276
 Overhead: 1.155
+Groups: 1
 % soda es shared message -c zlib -v > /dev/null
 Plaintext: 239
 Ciphertext: 280
 Overhead: 1.172
+Groups: 1
 % soda es shared message -c bz2 -v > /dev/null
 Plaintext: 239
 Ciphertext: 340
 Overhead: 1.423
+Groups: 1
 % soda es shared message -c lzma -v > /dev/null
 Plaintext: 239
 Ciphertext: 324
 Overhead: 1.356
+Groups: 1
 % soda es shared message -c raw -v > /dev/null
 Plaintext: 239
 Ciphertext: 372
 Overhead: 1.556
+Groups: 1
 ```
 
 
@@ -287,12 +294,16 @@ Overhead: 1.556
 The rtty-soda supports various encodings:
 
 ```
-% soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --line-len 80
-9TPUZ T8OA3 PNC2Z XEH87 EPMCN NDQJJ GX0DE YW16D OJ2FC D3PCM B148K 6UZFN 9RQX7
-8C83X 6O8WS MQ4CX 26C7H 35EK5 CVSIX IFSVN KPV6A TRV1F 573WI JFFGE I7N3Z Z4N6D
-FSSOB DJUBK PC2YW Z6RG0 SUD2N OIYH8 WHJMN YYSKQ EBEVJ ZT0M1 DYJ7E NJ25J FMXNE
-7LHUQ N5UIH SK5O7 96LWM IZ7BA R8SIV 6G55R Q50L4 PJH5Z 2JQNX JZTPK BG140 AKXOB
-DKR4K POW9A HCQSQ JLSJ1 11AZY P8BM4 F3GUC SFX04 RMD0G 4V0PL RLRHN G8D8
+% soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --verbose
+D0MQT LF0K5 N997D JJXZ9 K85DJ DCEIF 3I2BN GCYOG KN02L 5TPKE 4UV25 AKD0R O9BKS
+6Y40L T2NET GQKXA B4C4X 6J88W N4HZK 5ACFE 8JWTC UZJBH LRXPE CJLL5 N8L2I BX2NS
+D9LYW H6EAT 1J2OA IHZC3 8L2JM 6XLS9 5M6Y2 E9FLU GHDVB WZWK7 WC2RQ OLQH6 OT725
+706MK ZSU6O V6PWA UHOTM XVFSK HE3OO M4E51 4R00I U3YL8 FJXFQ PZLM8 WYO6Z 50G5Q
+SM6BH GT1T7 ZBSDB 8COJ6 7DXCF K7T36 RSU06 6R9AS J7TEA D9BT7 Q8BCG D4YX
+Plaintext: 239
+Ciphertext: 382
+Overhead: 1.598
+Groups: 64
 ```
 
 

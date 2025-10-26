@@ -43,10 +43,16 @@ def cli() -> None:
 @click.option("--encoding", "-e", default="base64", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
 @click.option("--group-len", default=0, show_default=True)
-@click.option("--line-len", default=0, show_default=True)
+@click.option("--line-len", default=80, show_default=True)
 @click.option("--padding", default=0, show_default=True)
+@click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
 def genkey_cmd(
-    encoding: str, output_file: Path | None, group_len: int, line_len: int, padding: int
+    encoding: str,
+    output_file: Path | None,
+    group_len: int,
+    line_len: int,
+    padding: int,
+    verbose: bool,
 ) -> None:
     """Generate Private Key.
 
@@ -57,10 +63,13 @@ def genkey_cmd(
     key = bytes(PrivateKey.generate())
     key = enc.encode(key)
 
-    if not enc.is_binary:
-        key = format_output(key, group_len, line_len, padding)
-
+    key, groups = format_output(
+        data=key, encoder=enc, group_len=group_len, line_len=line_len, padding=padding
+    )
     write_output(target=output_file, data=key)
+
+    if verbose:
+        click.echo(f"Groups: {groups}", err=True)
 
 
 @cli.command()  # pyright: ignore[reportAny]
@@ -68,8 +77,9 @@ def genkey_cmd(
 @click.option("--encoding", "-e", default="base64", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
 @click.option("--group-len", default=0, show_default=True)
-@click.option("--line-len", default=0, show_default=True)
+@click.option("--line-len", default=80, show_default=True)
 @click.option("--padding", default=0, show_default=True)
+@click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
 def pubkey_cmd(
     private_key_file: Path,
     encoding: str,
@@ -77,6 +87,7 @@ def pubkey_cmd(
     group_len: int,
     line_len: int,
     padding: int,
+    verbose: bool,
 ) -> None:
     """Get Public Key.
 
@@ -89,10 +100,13 @@ def pubkey_cmd(
     pub = bytes(priv.public_key)
     pub = enc.encode(pub)
 
-    if not enc.is_binary:
-        pub = format_output(pub, group_len, line_len, padding)
-
+    pub, groups = format_output(
+        data=pub, encoder=enc, group_len=group_len, line_len=line_len, padding=padding
+    )
     write_output(target=output_file, data=pub)
+
+    if verbose:
+        click.echo(f"Groups: {groups}", err=True)
 
 
 @cli.command()  # pyright: ignore[reportAny]
@@ -101,8 +115,9 @@ def pubkey_cmd(
 @click.option("--profile", "-p", default="sensitive", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
 @click.option("--group-len", default=0, show_default=True)
-@click.option("--line-len", default=0, show_default=True)
+@click.option("--line-len", default=80, show_default=True)
 @click.option("--padding", default=0, show_default=True)
+@click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
 def kdf_cmd(
     password_file: Path,
     encoding: str,
@@ -111,6 +126,7 @@ def kdf_cmd(
     group_len: int,
     line_len: int,
     padding: int,
+    verbose: bool,
 ) -> None:
     """Key Derivation Function.
 
@@ -125,10 +141,13 @@ def kdf_cmd(
     key = kdf(password=pw, profile=prof)
     key = enc.encode(key)
 
-    if not enc.is_binary:
-        key = format_output(key, group_len, line_len, padding)
-
+    key, groups = format_output(
+        data=key, encoder=enc, group_len=group_len, line_len=line_len, padding=padding
+    )
     write_output(target=output_file, data=key)
+
+    if verbose:
+        click.echo(f"Groups: {groups}", err=True)
 
 
 @cli.command(aliases=["e"])  # pyright: ignore[reportAny]
@@ -140,7 +159,7 @@ def kdf_cmd(
 @click.option("--compression", "-c", default="zstd", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
 @click.option("--group-len", default=0, show_default=True)
-@click.option("--line-len", default=0, show_default=True)
+@click.option("--line-len", default=80, show_default=True)
 @click.option("--padding", default=0, show_default=True)
 @click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
 def encrypt_public_cmd(
@@ -175,12 +194,18 @@ def encrypt_public_cmd(
     data = public.encrypt(private=priv, public=pub, data=data)
     data = data_enc.encode(data)
 
-    if not data_enc.is_binary:
-        data = format_output(data, group_len, line_len, padding)
-
+    data, groups = format_output(
+        data=data,
+        encoder=data_enc,
+        group_len=group_len,
+        line_len=line_len,
+        padding=padding,
+    )
     write_output(target=output_file, data=data)
+
     if verbose:
         print_stats(plaintext=stats, ciphertext=data)
+        click.echo(f"Groups: {groups}", err=True)
 
 
 @cli.command(aliases=["es"])  # pyright: ignore[reportAny]
@@ -191,7 +216,7 @@ def encrypt_public_cmd(
 @click.option("--compression", "-c", default="zstd", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
 @click.option("--group-len", default=0, show_default=True)
-@click.option("--line-len", default=0, show_default=True)
+@click.option("--line-len", default=80, show_default=True)
 @click.option("--padding", default=0, show_default=True)
 @click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
 def encrypt_secret_cmd(
@@ -222,12 +247,18 @@ def encrypt_secret_cmd(
     data = secret.encrypt(key=key, data=data)
     data = data_enc.encode(data)
 
-    if not data_enc.is_binary:
-        data = format_output(data, group_len, line_len, padding)
-
+    data, groups = format_output(
+        data=data,
+        encoder=data_enc,
+        group_len=group_len,
+        line_len=line_len,
+        padding=padding,
+    )
     write_output(target=output_file, data=data)
+
     if verbose:
         print_stats(plaintext=stats, ciphertext=data)
+        click.echo(f"Groups: {groups}", err=True)
 
 
 @cli.command(aliases=["ep"])  # pyright: ignore[reportAny]
@@ -238,7 +269,7 @@ def encrypt_secret_cmd(
 @click.option("--compression", "-c", default="zstd", show_default=True)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
 @click.option("--group-len", default=0, show_default=True)
-@click.option("--line-len", default=0, show_default=True)
+@click.option("--line-len", default=80, show_default=True)
 @click.option("--padding", default=0, show_default=True)
 @click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
 def encrypt_password_cmd(
@@ -272,12 +303,18 @@ def encrypt_password_cmd(
     data = secret.encrypt(key=key, data=data)
     data = data_enc.encode(data)
 
-    if not data_enc.is_binary:
-        data = format_output(data, group_len, line_len, padding)
-
+    data, groups = format_output(
+        data=data,
+        encoder=data_enc,
+        group_len=group_len,
+        line_len=line_len,
+        padding=padding,
+    )
     write_output(target=output_file, data=data)
+
     if verbose:
         print_stats(plaintext=stats, ciphertext=data)
+        click.echo(f"Groups: {groups}", err=True)
 
 
 @cli.command(aliases=["d"])  # pyright: ignore[reportAny]
@@ -319,6 +356,7 @@ def decrypt_public_cmd(
     data = unarchiver(data)
 
     write_output(target=output_file, data=data)
+
     if verbose:
         print_stats(plaintext=data, ciphertext=stats)
 
@@ -357,6 +395,7 @@ def decrypt_secret_cmd(
     data = unarchiver(data)
 
     write_output(target=output_file, data=data)
+
     if verbose:
         print_stats(plaintext=data, ciphertext=stats)
 
@@ -398,6 +437,7 @@ def decrypt_password_cmd(
     data = unarchiver(data)
 
     write_output(target=output_file, data=data)
+
     if verbose:
         print_stats(plaintext=data, ciphertext=stats)
 
@@ -408,8 +448,9 @@ def decrypt_password_cmd(
 @click.argument("file", type=in_path)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
 @click.option("--group-len", default=0, show_default=True)
-@click.option("--line-len", default=0, show_default=True)
+@click.option("--line-len", default=80, show_default=True)
 @click.option("--padding", default=0, show_default=True)
+@click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
 def encode_cmd(
     in_encoding: str,
     out_encoding: str,
@@ -418,6 +459,7 @@ def encode_cmd(
     group_len: int,
     line_len: int,
     padding: int,
+    verbose: bool,
 ) -> None:
     """Encode File.
 
@@ -430,10 +472,17 @@ def encode_cmd(
     data = in_enc.decode(data)
     data = out_enc.encode(data)
 
-    if not out_enc.is_binary:
-        data = format_output(data, group_len, line_len, padding)
-
+    data, groups = format_output(
+        data=data,
+        encoder=out_enc,
+        group_len=group_len,
+        line_len=line_len,
+        padding=padding,
+    )
     write_output(target=output_file, data=data)
+
+    if verbose:
+        click.echo(f"Groups: {groups}", err=True)
 
 
 if __name__ == "__main__":

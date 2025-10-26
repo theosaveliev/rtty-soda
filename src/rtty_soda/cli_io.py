@@ -64,25 +64,11 @@ def write_bytes_atomic(target: Path, data: bytes) -> None:
     temp_path.replace(target)
 
 
-def split_groups(data: str, group_len: int, line_len: int) -> str:
-    step = group_len if group_len > 0 else line_len - 1
-    groups = (data[i : i + step] for i in range(0, len(data), step))
-    result: list[str] = []
-    line: list[str] = []
-    i = 0
-    gpl = line_len // (step + 1)
-    for group in groups:
-        line.append(group)
-        i += 1
-        if i == gpl:
-            result.append(" ".join(line))
-            i = 0
-            line = []
-
-    if line:
-        result.append(" ".join(line))
-
-    return "\n".join(result)
+def split_groups(data: str, group_len: int, line_len: int) -> tuple[str, int]:
+    step, gpl = group_len, line_len // (group_len + 1)
+    groups = [data[i : i + step] for i in range(0, len(data), step)]
+    lines = [" ".join(groups[i : i + gpl]) for i in range(0, len(groups), gpl)]
+    return "\n".join(lines), len(groups)
 
 
 def pad_newlines(data: str, count: int) -> str:
@@ -90,15 +76,21 @@ def pad_newlines(data: str, count: int) -> str:
     return padding + data.strip() + "\n" + padding
 
 
-def format_output(data: bytes, group_len: int, line_len: int, padding: int) -> bytes:
+def format_output(
+    data: bytes, encoder: Encoder, group_len: int, line_len: int, padding: int
+) -> tuple[bytes, int]:
+    groups = 1
+    if encoder.is_binary:
+        return data, groups
+
     text = decode_bytes(data)
-    if group_len > 0 or line_len > 0:
-        text = split_groups(text, group_len, line_len)
+    if 0 < group_len < line_len:
+        text, groups = split_groups(text, group_len, line_len)
 
     if padding > 0:
         text = pad_newlines(text, padding)
 
-    return encode_str(text)
+    return encode_str(text), groups
 
 
 def write_output(target: Path | None, data: bytes) -> None:

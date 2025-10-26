@@ -2,7 +2,12 @@ from pathlib import Path
 
 def cli() -> None: ...
 def genkey_cmd(
-    encoding: str, output_file: Path | None, group_len: int, line_len: int, padding: int
+    encoding: str,
+    output_file: Path | None,
+    group_len: int,
+    line_len: int,
+    padding: int,
+    verbose: bool,
 ) -> None: ...
 def pubkey_cmd(
     private_key_file: Path,
@@ -11,6 +16,7 @@ def pubkey_cmd(
     group_len: int,
     line_len: int,
     padding: int,
+    verbose: bool,
 ) -> None: ...
 def kdf_cmd(
     password_file: Path,
@@ -20,6 +26,7 @@ def kdf_cmd(
     group_len: int,
     line_len: int,
     padding: int,
+    verbose: bool,
 ) -> None: ...
 def encrypt_public_cmd(
     private_key_file: Path,
@@ -66,7 +73,6 @@ def decrypt_public_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-    padding: int,
     verbose: bool,
 ) -> None: ...
 def decrypt_secret_cmd(
@@ -76,7 +82,6 @@ def decrypt_secret_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-    padding: int,
     verbose: bool,
 ) -> None: ...
 def decrypt_password_cmd(
@@ -86,7 +91,6 @@ def decrypt_password_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-    padding: int,
     verbose: bool,
 ) -> None: ...
 def encode_cmd(
@@ -97,4 +101,5 @@ def encode_cmd(
     group_len: int,
     line_len: int,
     padding: int,
+    verbose: bool,
 ) -> None: ...
