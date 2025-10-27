@@ -34,8 +34,8 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.2.2
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.2.2-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.2.3
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.2.3-tools
 ```
 
 
@@ -142,24 +142,6 @@ A telegraph key is a specialized electrical switch used by a trained operator to
 transmit text messages in Morse code in a telegraphy system.
 The first telegraph key was invented by Alfred Vail, an associate of Samuel Morse.
 (c) Wikipedia
-
-% soda decrypt-public -h
-Usage: soda decrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
-                           MESSAGE_FILE
-
-  Decrypt Message (Public).
-
-  Encoding: base26 | base31 | base36 | base64 | base94 | binary
-
-  Compression: zstd | zlib | bz2 | lzma | raw
-
-Options:
-  --key-encoding TEXT       [default: base64]
-  -e, --data-encoding TEXT  [default: base64]
-  -c, --compression TEXT    [default: zstd]
-  -o, --output-file FILE    Write output to file.
-  -v, --verbose             Show verbose output.
-  -h, --help                Show this message and exit.
 ```
 
 
@@ -171,26 +153,6 @@ Alice and Bob share a key for symmetric encryption:
 % soda genkey > shared
 % soda encrypt-secret shared message -o encrypted
 % soda decrypt-secret shared encrypted -o message
-
-% soda encrypt-secret -h
-Usage: soda encrypt-secret [OPTIONS] KEY_FILE MESSAGE_FILE
-
-  Encrypt Message (Secret).
-
-  Encoding: base26 | base31 | base36 | base64 | base94 | binary
-
-  Compression: zstd | zlib | bz2 | lzma | raw
-
-Options:
-  --key-encoding TEXT       [default: base64]
-  -e, --data-encoding TEXT  [default: base64]
-  -c, --compression TEXT    [default: zstd]
-  -o, --output-file FILE    Write output to file.
-  --group-len INTEGER       [default: 0]
-  --line-len INTEGER        [default: 80]
-  --padding INTEGER         [default: 0]
-  -v, --verbose             Show verbose output.
-  -h, --help                Show this message and exit.
 ```
 
 Another day, they share a password:
@@ -198,28 +160,6 @@ Another day, they share a password:
 ```
 % echo qwerty | soda encrypt-password - message -p interactive -o encrypted
 % echo qwerty | soda decrypt-password - encrypted -p interactive -o message
-
-% soda encrypt-password -h
-Usage: soda encrypt-password [OPTIONS] PASSWORD_FILE MESSAGE_FILE
-
-  Encrypt Message (Password).
-
-  KDF profile: interactive | moderate | sensitive
-
-  Encoding: base26 | base31 | base36 | base64 | base94 | binary
-
-  Compression: zstd | zlib | bz2 | lzma | raw
-
-Options:
-  -p, --kdf-profile TEXT    [default: sensitive]
-  -e, --data-encoding TEXT  [default: base64]
-  -c, --compression TEXT    [default: zstd]
-  -o, --output-file FILE    Write output to file.
-  --group-len INTEGER       [default: 0]
-  --line-len INTEGER        [default: 80]
-  --padding INTEGER         [default: 0]
-  -v, --verbose             Show verbose output.
-  -h, --help                Show this message and exit.
 ```
 
 
@@ -295,16 +235,56 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --verbose
-D0MQT LF0K5 N997D JJXZ9 K85DJ DCEIF 3I2BN GCYOG KN02L 5TPKE 4UV25 AKD0R O9BKS
-6Y40L T2NET GQKXA B4C4X 6J88W N4HZK 5ACFE 8JWTC UZJBH LRXPE CJLL5 N8L2I BX2NS
-D9LYW H6EAT 1J2OA IHZC3 8L2JM 6XLS9 5M6Y2 E9FLU GHDVB WZWK7 WC2RQ OLQH6 OT725
-706MK ZSU6O V6PWA UHOTM XVFSK HE3OO M4E51 4R00I U3YL8 FJXFQ PZLM8 WYO6Z 50G5Q
-SM6BH GT1T7 ZBSDB 8COJ6 7DXCF K7T36 RSU06 6R9AS J7TEA D9BT7 Q8BCG D4YX
+9URCN ARRN8 MSE7G G9980 37D8S 568QP 16AZW TOHAI KYP5W VAK7R VZ6YO GZ38A QOIP7
+60P2E GWWOG DSHDD EG2TZ 7PSZM 7FKBX 50TAD RHS2E VM063 N297Y 753BP TLUX0 9K8BD
+DZF8O 7TPUG MJV4R T2C92 HU1G8 KGJCN URU1F 9COP9 EFLZO BSL2V 171DS 2HKPE JY2GY
+V86IT T0HBR 9B08H M9R2V IEM7A R91IF UWQYM ZV4JN 7YU3K ILPJY E8OMA NWQC5 Q6BG7
+PXM4I 9UU9E J9IRU HSZ41 RPZQG XTDC6 E5NMS B4HBQ 7QRI2 RRUYH HSHGQ 7USN
 Plaintext: 239
-Ciphertext: 382
-Overhead: 1.598
+Ciphertext: 319
+Overhead: 1.335
 Groups: 64
 ```
+
+
+## Environment variables
+
+Common options can be set in the environment variables:
+
+```
+% cat .env 
+KEY_ENCODING=base26
+DATA_ENCODING=base26
+COMPRESSION=bz2
+KDF_PROFILE=moderate
+VERBOSE=1
+GROUP_LEN=5
+LINE_LEN=80
+PADDING=1
+
+% set -a
+% source .env
+```
+
+
+## Alternative usage
+
+- Password source
+  ```
+  % echo 'A line from a book or a poem' | soda kdf - -e base94           
+  wN/K.@3Q#]Czn4kk3(negX=R|*xvvPQmk'XW$-s
+  ```
+
+- WireGuard keyer
+  ```
+  % echo 'A line from a book or a poem' | soda kdf - -o privkey
+  % cat privkey 
+  thyA4dlQgg93+rQj/evBbBymw82GTwQCh3RJ0I6GOsY=
+  % soda pubkey privkey 
+  ruIUMqbUtyqRVSIBLSGI7AOruE2DLWgTe9o+h7Yktkw=
+  % cat privkey | wg pubkey 
+  ruIUMqbUtyqRVSIBLSGI7AOruE2DLWgTe9o+h7Yktkw=
+  ```
 
 
 ## Compatibility

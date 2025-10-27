@@ -53,11 +53,23 @@ def encrypted_pw() -> str:
 
 def test_genkey() -> None:
     runner = CliRunner()
-    text_encoders = ["base26", "base36", "base64", "base94"]
-    for enc in text_encoders:
-        result = runner.invoke(cast("Command", cli), ["genkey", "--encoding", enc])
+    encoders = ["base26", "base31", "base36", "base64", "base94", "binary"]
+    args = [
+        "genkey",
+        "--group-len",
+        "0",
+        "--line-len",
+        "0",
+        "--padding",
+        "0",
+        "--encoding",
+        "base64",
+    ]
+    for enc in encoders:
+        args[-1] = enc
+        result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
-        assert len(result.stdout) > 30
+        assert len(result.stdout) > 25
 
 
 def test_pubkey(private_key: str, public_key: str) -> None:
@@ -66,7 +78,18 @@ def test_pubkey(private_key: str, public_key: str) -> None:
         with open("private_key", "w", encoding="utf-8") as fd:
             fd.write(private_key)
 
-        args = ["pubkey", "private_key", "--encoding", "base64"]
+        args = [
+            "pubkey",
+            "private_key",
+            "--encoding",
+            "base64",
+            "--group-len",
+            "0",
+            "--line-len",
+            "0",
+            "--padding",
+            "0",
+        ]
         result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == public_key
@@ -78,7 +101,20 @@ def test_kdf(password: str, private_key: str) -> None:
         with open("password", "w", encoding="utf-8") as fd:
             fd.write(password)
 
-        args = ["kdf", "password", "--encoding", "base64", "--profile", "interactive"]
+        args = [
+            "kdf",
+            "password",
+            "--encoding",
+            "base64",
+            "--profile",
+            "interactive",
+            "--group-len",
+            "0",
+            "--line-len",
+            "0",
+            "--padding",
+            "0",
+        ]
         result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == private_key
@@ -190,6 +226,12 @@ def test_encrypt_public(private_key: str, public_key: str, password: str) -> Non
             "raw",
             "--output-file",
             "encrypted",
+            "--group-len",
+            "0",
+            "--line-len",
+            "0",
+            "--padding",
+            "0",
         ]
         result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
@@ -232,6 +274,12 @@ def test_encrypt_secret(private_key: str, password: str) -> None:
             "raw",
             "--output-file",
             "encrypted",
+            "--group-len",
+            "0",
+            "--line-len",
+            "0",
+            "--padding",
+            "0",
         ]
         result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
@@ -270,6 +318,12 @@ def test_encrypt_password(password: str) -> None:
             "raw",
             "--output-file",
             "encrypted",
+            "--group-len",
+            "0",
+            "--line-len",
+            "0",
+            "--padding",
+            "0",
         ]
         result = runner.invoke(cast("Command", cli), args=args)
         assert result.exit_code == 0
@@ -292,7 +346,18 @@ def test_encrypt_password(password: str) -> None:
 
 def test_encode_cmd(private_key: str, private_key_b36: str) -> None:
     runner = CliRunner()
-    args = ["encode", "base64", "base36", "-"]
+    args = [
+        "encode",
+        "base64",
+        "base36",
+        "--group-len",
+        "0",
+        "--line-len",
+        "0",
+        "--padding",
+        "0",
+        "-",
+    ]
     result = runner.invoke(cast("Command", cli), args=args, input=private_key)
     assert result.exit_code == 0
     assert result.stdout.strip() == private_key_b36

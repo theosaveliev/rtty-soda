@@ -106,8 +106,8 @@ def write_output(target: Path | None, data: bytes) -> None:
         write_bytes_atomic(target, data)
 
 
-def print_stats(plaintext: bytes, ciphertext: bytes) -> None:
-    click.echo(f"Plaintext: {len(plaintext)}", err=True)
-    click.echo(f"Ciphertext: {len(ciphertext)}", err=True)
-    overhead = len(ciphertext) / len(plaintext)
+def print_stats(plaintext: int, ciphertext: int) -> None:
+    click.echo(f"Plaintext: {plaintext}", err=True)
+    click.echo(f"Ciphertext: {ciphertext}", err=True)
+    overhead = ciphertext / plaintext
     click.echo(f"Overhead: {overhead:.3f}", err=True)

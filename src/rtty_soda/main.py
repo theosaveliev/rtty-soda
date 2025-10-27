@@ -40,12 +40,16 @@ def cli() -> None:
 
 
 @cli.command()  # pyright: ignore[reportAny]
-@click.option("--encoding", "-e", default="base64", show_default=True)
+@click.option(
+    "--encoding", "-e", default="base64", show_default=True, envvar="KEY_ENCODING"
+)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
-@click.option("--group-len", default=0, show_default=True)
-@click.option("--line-len", default=80, show_default=True)
-@click.option("--padding", default=0, show_default=True)
-@click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
+@click.option("--group-len", default=0, show_default=True, envvar="GROUP_LEN")
+@click.option("--line-len", default=80, show_default=True, envvar="LINE_LEN")
+@click.option("--padding", default=0, show_default=True, envvar="PADDING")
+@click.option(
+    "--verbose", "-v", is_flag=True, envvar="VERBOSE", help="Show verbose output."
+)
 def genkey_cmd(
     encoding: str,
     output_file: Path | None,
@@ -63,10 +67,10 @@ def genkey_cmd(
     key = bytes(PrivateKey.generate())
     key = enc.encode(key)
 
-    key, groups = format_output(
+    formatted, groups = format_output(
         data=key, encoder=enc, group_len=group_len, line_len=line_len, padding=padding
     )
-    write_output(target=output_file, data=key)
+    write_output(target=output_file, data=formatted)
 
     if verbose:
         click.echo(f"Groups: {groups}", err=True)
@@ -74,12 +78,16 @@ def genkey_cmd(
 
 @cli.command()  # pyright: ignore[reportAny]
 @click.argument("private_key_file", type=in_path)
-@click.option("--encoding", "-e", default="base64", show_default=True)
+@click.option(
+    "--encoding", "-e", default="base64", show_default=True, envvar="KEY_ENCODING"
+)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
-@click.option("--group-len", default=0, show_default=True)
-@click.option("--line-len", default=80, show_default=True)
-@click.option("--padding", default=0, show_default=True)
-@click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
+@click.option("--group-len", default=0, show_default=True, envvar="GROUP_LEN")
+@click.option("--line-len", default=80, show_default=True, envvar="LINE_LEN")
+@click.option("--padding", default=0, show_default=True, envvar="PADDING")
+@click.option(
+    "--verbose", "-v", is_flag=True, envvar="VERBOSE", help="Show verbose output."
+)
 def pubkey_cmd(
     private_key_file: Path,
     encoding: str,
@@ -100,10 +108,10 @@ def pubkey_cmd(
     pub = bytes(priv.public_key)
     pub = enc.encode(pub)
 
-    pub, groups = format_output(
+    formatted, groups = format_output(
         data=pub, encoder=enc, group_len=group_len, line_len=line_len, padding=padding
     )
-    write_output(target=output_file, data=pub)
+    write_output(target=output_file, data=formatted)
 
     if verbose:
         click.echo(f"Groups: {groups}", err=True)
@@ -111,13 +119,19 @@ def pubkey_cmd(
 
 @cli.command()  # pyright: ignore[reportAny]
 @click.argument("password_file", type=in_path)
-@click.option("--encoding", "-e", default="base64", show_default=True)
-@click.option("--profile", "-p", default="sensitive", show_default=True)
+@click.option(
+    "--encoding", "-e", default="base64", show_default=True, envvar="KEY_ENCODING"
+)
+@click.option(
+    "--profile", "-p", default="sensitive", show_default=True, envvar="KDF_PROFILE"
+)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
-@click.option("--group-len", default=0, show_default=True)
-@click.option("--line-len", default=80, show_default=True)
-@click.option("--padding", default=0, show_default=True)
-@click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
+@click.option("--group-len", default=0, show_default=True, envvar="GROUP_LEN")
+@click.option("--line-len", default=80, show_default=True, envvar="LINE_LEN")
+@click.option("--padding", default=0, show_default=True, envvar="PADDING")
+@click.option(
+    "--verbose", "-v", is_flag=True, envvar="VERBOSE", help="Show verbose output."
+)
 def kdf_cmd(
     password_file: Path,
     encoding: str,
@@ -141,10 +155,10 @@ def kdf_cmd(
     key = kdf(password=pw, profile=prof)
     key = enc.encode(key)
 
-    key, groups = format_output(
+    formatted, groups = format_output(
         data=key, encoder=enc, group_len=group_len, line_len=line_len, padding=padding
     )
-    write_output(target=output_file, data=key)
+    write_output(target=output_file, data=formatted)
 
     if verbose:
         click.echo(f"Groups: {groups}", err=True)
@@ -154,14 +168,22 @@ def kdf_cmd(
 @click.argument("private_key_file", type=in_path)
 @click.argument("public_key_file", type=in_path)
 @click.argument("message_file", type=in_path)
-@click.option("--key-encoding", default="base64", show_default=True)
-@click.option("--data-encoding", "-e", default="base64", show_default=True)
-@click.option("--compression", "-c", default="zstd", show_default=True)
+@click.option(
+    "--key-encoding", default="base64", show_default=True, envvar="KEY_ENCODING"
+)
+@click.option(
+    "--data-encoding", "-e", default="base64", show_default=True, envvar="DATA_ENCODING"
+)
+@click.option(
+    "--compression", "-c", default="zstd", show_default=True, envvar="COMPRESSION"
+)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
-@click.option("--group-len", default=0, show_default=True)
-@click.option("--line-len", default=80, show_default=True)
-@click.option("--padding", default=0, show_default=True)
-@click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
+@click.option("--group-len", default=0, show_default=True, envvar="GROUP_LEN")
+@click.option("--line-len", default=80, show_default=True, envvar="LINE_LEN")
+@click.option("--padding", default=0, show_default=True, envvar="PADDING")
+@click.option(
+    "--verbose", "-v", is_flag=True, envvar="VERBOSE", help="Show verbose output."
+)
 def encrypt_public_cmd(
     private_key_file: Path,
     public_key_file: Path,
@@ -189,36 +211,44 @@ def encrypt_public_cmd(
     priv = PrivateKey(private_key=priv)
     pub = read_key_bytes(source=public_key_file, encoder=key_enc)
     pub = PublicKey(public_key=pub)
-    data = stats = message_file.read_bytes()
-    data = archiver(data)
+    plaintext = message_file.read_bytes()
+    data = archiver(plaintext)
     data = public.encrypt(private=priv, public=pub, data=data)
-    data = data_enc.encode(data)
+    ciphertext = data_enc.encode(data)
 
-    data, groups = format_output(
-        data=data,
+    formatted, groups = format_output(
+        data=ciphertext,
         encoder=data_enc,
         group_len=group_len,
         line_len=line_len,
         padding=padding,
     )
-    write_output(target=output_file, data=data)
+    write_output(target=output_file, data=formatted)
 
     if verbose:
-        print_stats(plaintext=stats, ciphertext=data)
+        print_stats(len(plaintext), len(ciphertext))
         click.echo(f"Groups: {groups}", err=True)
 
 
 @cli.command(aliases=["es"])  # pyright: ignore[reportAny]
 @click.argument("key_file", type=in_path)
 @click.argument("message_file", type=in_path)
-@click.option("--key-encoding", default="base64", show_default=True)
-@click.option("--data-encoding", "-e", default="base64", show_default=True)
-@click.option("--compression", "-c", default="zstd", show_default=True)
+@click.option(
+    "--key-encoding", default="base64", show_default=True, envvar="KEY_ENCODING"
+)
+@click.option(
+    "--data-encoding", "-e", default="base64", show_default=True, envvar="DATA_ENCODING"
+)
+@click.option(
+    "--compression", "-c", default="zstd", show_default=True, envvar="COMPRESSION"
+)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
-@click.option("--group-len", default=0, show_default=True)
-@click.option("--line-len", default=80, show_default=True)
-@click.option("--padding", default=0, show_default=True)
-@click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
+@click.option("--group-len", default=0, show_default=True, envvar="GROUP_LEN")
+@click.option("--line-len", default=80, show_default=True, envvar="LINE_LEN")
+@click.option("--padding", default=0, show_default=True, envvar="PADDING")
+@click.option(
+    "--verbose", "-v", is_flag=True, envvar="VERBOSE", help="Show verbose output."
+)
 def encrypt_secret_cmd(
     key_file: Path,
     message_file: Path,
@@ -242,36 +272,44 @@ def encrypt_secret_cmd(
     archiver = ARCHIVERS[compression]
 
     key = read_key_bytes(source=key_file, encoder=key_enc)
-    data = stats = message_file.read_bytes()
-    data = archiver(data)
+    plaintext = message_file.read_bytes()
+    data = archiver(plaintext)
     data = secret.encrypt(key=key, data=data)
-    data = data_enc.encode(data)
+    ciphertext = data_enc.encode(data)
 
-    data, groups = format_output(
-        data=data,
+    formatted, groups = format_output(
+        data=ciphertext,
         encoder=data_enc,
         group_len=group_len,
         line_len=line_len,
         padding=padding,
     )
-    write_output(target=output_file, data=data)
+    write_output(target=output_file, data=formatted)
 
     if verbose:
-        print_stats(plaintext=stats, ciphertext=data)
+        print_stats(len(plaintext), len(ciphertext))
         click.echo(f"Groups: {groups}", err=True)
 
 
 @cli.command(aliases=["ep"])  # pyright: ignore[reportAny]
 @click.argument("password_file", type=in_path)
 @click.argument("message_file", type=in_path)
-@click.option("--kdf-profile", "-p", default="sensitive", show_default=True)
-@click.option("--data-encoding", "-e", default="base64", show_default=True)
-@click.option("--compression", "-c", default="zstd", show_default=True)
+@click.option(
+    "--kdf-profile", "-p", default="sensitive", show_default=True, envvar="KDF_PROFILE"
+)
+@click.option(
+    "--data-encoding", "-e", default="base64", show_default=True, envvar="DATA_ENCODING"
+)
+@click.option(
+    "--compression", "-c", default="zstd", show_default=True, envvar="COMPRESSION"
+)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
-@click.option("--group-len", default=0, show_default=True)
-@click.option("--line-len", default=80, show_default=True)
-@click.option("--padding", default=0, show_default=True)
-@click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
+@click.option("--group-len", default=0, show_default=True, envvar="GROUP_LEN")
+@click.option("--line-len", default=80, show_default=True, envvar="LINE_LEN")
+@click.option("--padding", default=0, show_default=True, envvar="PADDING")
+@click.option(
+    "--verbose", "-v", is_flag=True, envvar="VERBOSE", help="Show verbose output."
+)
 def encrypt_password_cmd(
     password_file: Path,
     message_file: Path,
@@ -298,22 +336,22 @@ def encrypt_password_cmd(
 
     pw = read_password_bytes(password_file)
     key = kdf(password=pw, profile=prof)
-    data = stats = message_file.read_bytes()
-    data = archiver(data)
+    plaintext = message_file.read_bytes()
+    data = archiver(plaintext)
     data = secret.encrypt(key=key, data=data)
-    data = data_enc.encode(data)
+    ciphertext = data_enc.encode(data)
 
-    data, groups = format_output(
-        data=data,
+    formatted, groups = format_output(
+        data=ciphertext,
         encoder=data_enc,
         group_len=group_len,
         line_len=line_len,
         padding=padding,
     )
-    write_output(target=output_file, data=data)
+    write_output(target=output_file, data=formatted)
 
     if verbose:
-        print_stats(plaintext=stats, ciphertext=data)
+        print_stats(len(plaintext), len(ciphertext))
         click.echo(f"Groups: {groups}", err=True)
 
 
@@ -321,11 +359,19 @@ def encrypt_password_cmd(
 @click.argument("private_key_file", type=in_path)
 @click.argument("public_key_file", type=in_path)
 @click.argument("message_file", type=in_path)
-@click.option("--key-encoding", default="base64", show_default=True)
-@click.option("--data-encoding", "-e", default="base64", show_default=True)
-@click.option("--compression", "-c", default="zstd", show_default=True)
+@click.option(
+    "--key-encoding", default="base64", show_default=True, envvar="KEY_ENCODING"
+)
+@click.option(
+    "--data-encoding", "-e", default="base64", show_default=True, envvar="DATA_ENCODING"
+)
+@click.option(
+    "--compression", "-c", default="zstd", show_default=True, envvar="COMPRESSION"
+)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
-@click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
+@click.option(
+    "--verbose", "-v", is_flag=True, envvar="VERBOSE", help="Show verbose output."
+)
 def decrypt_public_cmd(
     private_key_file: Path,
     public_key_file: Path,
@@ -350,25 +396,33 @@ def decrypt_public_cmd(
     priv = PrivateKey(private_key=priv)
     pub = read_key_bytes(source=public_key_file, encoder=key_enc)
     pub = PublicKey(public_key=pub)
-    data = stats = read_bytes(source=message_file, encoder=data_enc)
-    data = data_enc.decode(data)
+    ciphertext = read_bytes(source=message_file, encoder=data_enc)
+    data = data_enc.decode(ciphertext)
     data = public.decrypt(private=priv, public=pub, data=data)
-    data = unarchiver(data)
+    plaintext = unarchiver(data)
 
-    write_output(target=output_file, data=data)
+    write_output(target=output_file, data=plaintext)
 
     if verbose:
-        print_stats(plaintext=data, ciphertext=stats)
+        print_stats(len(plaintext), len(ciphertext))
 
 
 @cli.command(aliases=["ds"])  # pyright: ignore[reportAny]
 @click.argument("key_file", type=in_path)
 @click.argument("message_file", type=in_path)
-@click.option("--key-encoding", default="base64", show_default=True)
-@click.option("--data-encoding", "-e", default="base64", show_default=True)
-@click.option("--compression", "-c", default="zstd", show_default=True)
+@click.option(
+    "--key-encoding", default="base64", show_default=True, envvar="KEY_ENCODING"
+)
+@click.option(
+    "--data-encoding", "-e", default="base64", show_default=True, envvar="DATA_ENCODING"
+)
+@click.option(
+    "--compression", "-c", default="zstd", show_default=True, envvar="COMPRESSION"
+)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
-@click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
+@click.option(
+    "--verbose", "-v", is_flag=True, envvar="VERBOSE", help="Show verbose output."
+)
 def decrypt_secret_cmd(
     key_file: Path,
     message_file: Path,
@@ -389,25 +443,33 @@ def decrypt_secret_cmd(
     unarchiver = UNARCHIVERS[compression]
 
     key = read_key_bytes(source=key_file, encoder=key_enc)
-    data = stats = read_bytes(source=message_file, encoder=data_enc)
-    data = data_enc.decode(data)
+    ciphertext = read_bytes(source=message_file, encoder=data_enc)
+    data = data_enc.decode(ciphertext)
     data = secret.decrypt(key=key, data=data)
-    data = unarchiver(data)
+    plaintext = unarchiver(data)
 
-    write_output(target=output_file, data=data)
+    write_output(target=output_file, data=plaintext)
 
     if verbose:
-        print_stats(plaintext=data, ciphertext=stats)
+        print_stats(len(plaintext), len(ciphertext))
 
 
 @cli.command(aliases=["dp"])  # pyright: ignore[reportAny]
 @click.argument("password_file", type=in_path)
 @click.argument("message_file", type=in_path)
-@click.option("--kdf-profile", "-p", default="sensitive", show_default=True)
-@click.option("--data-encoding", "-e", default="base64", show_default=True)
-@click.option("--compression", "-c", default="zstd", show_default=True)
+@click.option(
+    "--kdf-profile", "-p", default="sensitive", show_default=True, envvar="KDF_PROFILE"
+)
+@click.option(
+    "--data-encoding", "-e", default="base64", show_default=True, envvar="DATA_ENCODING"
+)
+@click.option(
+    "--compression", "-c", default="zstd", show_default=True, envvar="COMPRESSION"
+)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
-@click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
+@click.option(
+    "--verbose", "-v", is_flag=True, envvar="VERBOSE", help="Show verbose output."
+)
 def decrypt_password_cmd(
     password_file: Path,
     message_file: Path,
@@ -431,15 +493,15 @@ def decrypt_password_cmd(
 
     pw = read_password_bytes(password_file)
     key = kdf(password=pw, profile=prof)
-    data = stats = read_bytes(source=message_file, encoder=data_enc)
-    data = data_enc.decode(data)
+    ciphertext = read_bytes(source=message_file, encoder=data_enc)
+    data = data_enc.decode(ciphertext)
     data = secret.decrypt(key=key, data=data)
-    data = unarchiver(data)
+    plaintext = unarchiver(data)
 
-    write_output(target=output_file, data=data)
+    write_output(target=output_file, data=plaintext)
 
     if verbose:
-        print_stats(plaintext=data, ciphertext=stats)
+        print_stats(len(plaintext), len(ciphertext))
 
 
 @cli.command()  # pyright: ignore[reportAny]
@@ -447,10 +509,12 @@ def decrypt_password_cmd(
 @click.argument("out_encoding")
 @click.argument("file", type=in_path)
 @click.option("--output-file", "-o", type=out_path, help="Write output to file.")
-@click.option("--group-len", default=0, show_default=True)
-@click.option("--line-len", default=80, show_default=True)
-@click.option("--padding", default=0, show_default=True)
-@click.option("--verbose", "-v", is_flag=True, help="Show verbose output.")
+@click.option("--group-len", default=0, show_default=True, envvar="GROUP_LEN")
+@click.option("--line-len", default=80, show_default=True, envvar="LINE_LEN")
+@click.option("--padding", default=0, show_default=True, envvar="PADDING")
+@click.option(
+    "--verbose", "-v", is_flag=True, envvar="VERBOSE", help="Show verbose output."
+)
 def encode_cmd(
     in_encoding: str,
     out_encoding: str,
@@ -472,14 +536,14 @@ def encode_cmd(
     data = in_enc.decode(data)
     data = out_enc.encode(data)
 
-    data, groups = format_output(
+    formatted, groups = format_output(
         data=data,
         encoder=out_enc,
         group_len=group_len,
         line_len=line_len,
         padding=padding,
     )
-    write_output(target=output_file, data=data)
+    write_output(target=output_file, data=formatted)
 
     if verbose:
         click.echo(f"Groups: {groups}", err=True)
