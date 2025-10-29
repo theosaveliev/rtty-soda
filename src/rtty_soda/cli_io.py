@@ -1,7 +1,7 @@
 import random
 import re
 import string
-from typing import TYPE_CHECKING, TextIO, cast
+from typing import TYPE_CHECKING, BinaryIO, TextIO, cast
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -15,6 +15,7 @@ __all__ = [
     "pad_newlines",
     "print_stats",
     "read_bytes",
+    "read_ciphertext_bytes",
     "read_encoded_stripped",
     "read_key_bytes",
     "read_password_bytes",
@@ -31,6 +32,11 @@ def read_str(source: Path) -> str:
         return cast("TextIO", fd).read()
 
 
+def read_bytes(source: Path) -> bytes:
+    with click.open_file(source, mode="rb") as fd:
+        return cast("BinaryIO", fd).read()
+
+
 def remove_whitespace(data: str) -> str:
     return re.sub(r"\s", "", data)
 
@@ -41,15 +47,15 @@ def read_encoded_stripped(source: Path) -> bytes:
     return encode_str(data)
 
 
-def read_bytes(source: Path, encoder: Encoder) -> bytes:
+def read_ciphertext_bytes(source: Path, encoder: Encoder) -> bytes:
     if encoder.is_binary:
-        return source.read_bytes()
+        return read_bytes(source)
 
     return read_encoded_stripped(source)
 
 
 def read_key_bytes(source: Path, encoder: Encoder) -> bytes:
-    key = read_bytes(source, encoder)
+    key = read_ciphertext_bytes(source, encoder)
     return encoder.decode(key)
 
 

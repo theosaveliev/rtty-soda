@@ -9,6 +9,7 @@ from rtty_soda.cli_io import (
     format_output,
     print_stats,
     read_bytes,
+    read_ciphertext_bytes,
     read_key_bytes,
     read_password_bytes,
     write_output,
@@ -211,7 +212,7 @@ def encrypt_public_cmd(
     priv = PrivateKey(private_key=priv)
     pub = read_key_bytes(source=public_key_file, encoder=key_enc)
     pub = PublicKey(public_key=pub)
-    plaintext = message_file.read_bytes()
+    plaintext = read_bytes(message_file)
     data = archiver(plaintext)
     data = public.encrypt(private=priv, public=pub, data=data)
     ciphertext = data_enc.encode(data)
@@ -272,7 +273,7 @@ def encrypt_secret_cmd(
     archiver = ARCHIVERS[compression]
 
     key = read_key_bytes(source=key_file, encoder=key_enc)
-    plaintext = message_file.read_bytes()
+    plaintext = read_bytes(message_file)
     data = archiver(plaintext)
     data = secret.encrypt(key=key, data=data)
     ciphertext = data_enc.encode(data)
@@ -336,7 +337,7 @@ def encrypt_password_cmd(
 
     pw = read_password_bytes(password_file)
     key = kdf(password=pw, profile=prof)
-    plaintext = message_file.read_bytes()
+    plaintext = read_bytes(message_file)
     data = archiver(plaintext)
     data = secret.encrypt(key=key, data=data)
     ciphertext = data_enc.encode(data)
@@ -396,7 +397,7 @@ def decrypt_public_cmd(
     priv = PrivateKey(private_key=priv)
     pub = read_key_bytes(source=public_key_file, encoder=key_enc)
     pub = PublicKey(public_key=pub)
-    ciphertext = read_bytes(source=message_file, encoder=data_enc)
+    ciphertext = read_ciphertext_bytes(source=message_file, encoder=data_enc)
     data = data_enc.decode(ciphertext)
     data = public.decrypt(private=priv, public=pub, data=data)
     plaintext = unarchiver(data)
@@ -443,7 +444,7 @@ def decrypt_secret_cmd(
     unarchiver = UNARCHIVERS[compression]
 
     key = read_key_bytes(source=key_file, encoder=key_enc)
-    ciphertext = read_bytes(source=message_file, encoder=data_enc)
+    ciphertext = read_ciphertext_bytes(source=message_file, encoder=data_enc)
     data = data_enc.decode(ciphertext)
     data = secret.decrypt(key=key, data=data)
     plaintext = unarchiver(data)
@@ -493,7 +494,7 @@ def decrypt_password_cmd(
 
     pw = read_password_bytes(password_file)
     key = kdf(password=pw, profile=prof)
-    ciphertext = read_bytes(source=message_file, encoder=data_enc)
+    ciphertext = read_ciphertext_bytes(source=message_file, encoder=data_enc)
     data = data_enc.decode(ciphertext)
     data = secret.decrypt(key=key, data=data)
     plaintext = unarchiver(data)
@@ -532,7 +533,7 @@ def encode_cmd(
     in_enc = ENCODERS[in_encoding]
     out_enc = ENCODERS[out_encoding]
 
-    data = read_bytes(source=file, encoder=in_enc)
+    data = read_ciphertext_bytes(source=file, encoder=in_enc)
     data = in_enc.decode(data)
     data = out_enc.encode(data)
 
