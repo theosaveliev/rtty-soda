@@ -1,0 +1,10 @@
+set nobackup
+set nowritebackup
+set noundofile
+set noswapfile
+set viminfo=""
+set noshelltemp
+set nomodeline
+set secure
+set nofixendofline
+set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz

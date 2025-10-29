@@ -94,8 +94,8 @@ docker = ["docker-build", "docker-push"]
 shell = """
     IMAGE_TAG=nett/rtty-soda:$(uv version --short)
     PLATFORM=linux/amd64,linux/arm64/v8
-    docker build --tag ${IMAGE_TAG} --platform ${PLATFORM} --file Dockerfile --no-cache .
-    docker build --tag ${IMAGE_TAG}-tools --platform ${PLATFORM} --file Dockerfile-tools --no-cache .
+    docker build --tag ${IMAGE_TAG} --platform ${PLATFORM} --file docker/Dockerfile --no-cache docker
+    docker build --tag ${IMAGE_TAG}-tools --platform ${PLATFORM} --file docker/Dockerfile-tools --no-cache docker
 """
 
 [tool.poe.tasks.docker-push]
