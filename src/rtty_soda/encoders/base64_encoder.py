@@ -1,16 +1,16 @@
 import base64
-from typing import ClassVar
+
+from .encoder import Encoder
+from .functions import decode_bytes, encode_str
 
 __all__ = ["Base64Encoder"]
 
 
-class Base64Encoder:
-    is_binary: ClassVar = False
+class Base64Encoder(Encoder):
+    @staticmethod
+    def encode(data: bytes) -> str:
+        return decode_bytes(base64.b64encode(data))
 
     @staticmethod
-    def encode(data: bytes) -> bytes:
-        return base64.b64encode(data)
-
-    @staticmethod
-    def decode(data: bytes) -> bytes:
-        return base64.b64decode(data)
+    def decode(data: str) -> bytes:
+        return base64.b64decode(encode_str(data))

@@ -44,16 +44,11 @@ def decompress_lzma(data: bytes) -> bytes:
     return lzma.decompress(data, format=lzma.FORMAT_ALONE)
 
 
-def noop(data: bytes) -> bytes:
-    return data
-
-
 ARCHIVERS: dict[str, Archiver] = {
     "zstd": compress_zstd,
     "zlib": compress_zlib,
     "bz2": compress_bz2,
     "lzma": compress_lzma,
-    "raw": noop,
 }
 
 UNARCHIVERS: dict[str, Archiver] = {
@@ -61,5 +56,4 @@ UNARCHIVERS: dict[str, Archiver] = {
     "zlib": decompress_zlib,
     "bz2": decompress_bz2,
     "lzma": decompress_lzma,
-    "raw": noop,
 }

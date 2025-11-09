@@ -20,4 +20,4 @@ ADD --chown=ubuntu:ubuntu https://astral.sh/uv/install.sh uv-installer.sh
 RUN sh uv-installer.sh && rm uv-installer.sh
 ENV PATH="/home/ubuntu/.local/bin/:$PATH"
 
-RUN uv tool install --no-cache rtty-soda
+RUN uv tool install --no-cache "rtty-soda[cli]"

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, cast
 import pytest
 from click.testing import CliRunner
 
-from rtty_soda.main import cli
+from rtty_soda.cli import cli
 
 if TYPE_CHECKING:
     from click import Command

@@ -13,7 +13,7 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
   - Base26 (Latin)
   - Base31 (Cyrillic)
   - Base36 (Latin with numbers)
-  - Base64 (RFC 3548)
+  - Base64 (RFC 4648)
   - Base94 (ASCII printable)
   - Binary
 
@@ -24,7 +24,7 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
 1. [Install uv](https://docs.astral.sh/uv/getting-started/installation/)
 2. Install rtty-soda:
    ```
-   % uv tool install rtty-soda
+   % uv tool install "rtty-soda[cli]"
    ```
 3. Remove rtty-soda:
    ```
@@ -34,8 +34,8 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.2.4
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.2.4-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.0
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.0-tools
 ```
 
 
@@ -202,30 +202,30 @@ That works as follows:
 
 ```
 % soda es shared message -c zstd -v > /dev/null
+Groups: 1
 Plaintext: 239
 Ciphertext: 276
 Overhead: 1.155
-Groups: 1
 % soda es shared message -c zlib -v > /dev/null
+Groups: 1
 Plaintext: 239
 Ciphertext: 280
 Overhead: 1.172
-Groups: 1
 % soda es shared message -c bz2 -v > /dev/null
+Groups: 1
 Plaintext: 239
 Ciphertext: 340
 Overhead: 1.423
-Groups: 1
 % soda es shared message -c lzma -v > /dev/null
+Groups: 1
 Plaintext: 239
 Ciphertext: 324
 Overhead: 1.356
-Groups: 1
 % soda es shared message -c raw -v > /dev/null
+Groups: 1
 Plaintext: 239
 Ciphertext: 372
 Overhead: 1.556
-Groups: 1
 ```
 
 
@@ -234,16 +234,16 @@ Groups: 1
 The rtty-soda supports various encodings:
 
 ```
-% soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --verbose
+% soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 -v
 9URCN ARRN8 MSE7G G9980 37D8S 568QP 16AZW TOHAI KYP5W VAK7R VZ6YO GZ38A QOIP7
 60P2E GWWOG DSHDD EG2TZ 7PSZM 7FKBX 50TAD RHS2E VM063 N297Y 753BP TLUX0 9K8BD
 DZF8O 7TPUG MJV4R T2C92 HU1G8 KGJCN URU1F 9COP9 EFLZO BSL2V 171DS 2HKPE JY2GY
 V86IT T0HBR 9B08H M9R2V IEM7A R91IF UWQYM ZV4JN 7YU3K ILPJY E8OMA NWQC5 Q6BG7
 PXM4I 9UU9E J9IRU HSZ41 RPZQG XTDC6 E5NMS B4HBQ 7QRI2 RRUYH HSHGQ 7USN
-Plaintext: 239
-Ciphertext: 319
-Overhead: 1.335
 Groups: 64
+Plaintext: 239
+Ciphertext: 382
+Overhead: 1.598
 ```
 
 

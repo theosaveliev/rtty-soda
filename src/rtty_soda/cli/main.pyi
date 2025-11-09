@@ -73,7 +73,6 @@ def decrypt_public_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-    verbose: bool,
 ) -> None: ...
 def decrypt_secret_cmd(
     key_file: Path,
@@ -82,7 +81,6 @@ def decrypt_secret_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-    verbose: bool,
 ) -> None: ...
 def decrypt_password_cmd(
     password_file: Path,
@@ -91,7 +89,6 @@ def decrypt_password_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
-    verbose: bool,
 ) -> None: ...
 def encode_cmd(
     in_encoding: str,

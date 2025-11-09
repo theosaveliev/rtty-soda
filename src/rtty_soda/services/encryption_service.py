@@ -1,0 +1,127 @@
+from typing import TYPE_CHECKING
+
+from nacl.public import PrivateKey, PublicKey
+
+from rtty_soda.archivers import ARCHIVERS, UNARCHIVERS
+from rtty_soda.cryptography import public, secret
+from rtty_soda.encoders import ENCODERS
+
+from .key_service import KeyService
+from .service import Service
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from rtty_soda.formatters import Formatter
+    from rtty_soda.interfaces import Reader, Writer
+
+__all__ = ["EncryptionService", "Keypair", "Pipe"]
+
+type Keypair = tuple[PrivateKey, PublicKey]
+type Pipe = Callable[[bytes], bytes]
+
+
+class EncryptionService(Service):
+    def __init__(
+        self,
+        key_encoding: str,
+        data_encoding: str,
+        compression: str,
+        formatter: Formatter | None,
+        writer: Writer,
+        verbose: bool,
+    ) -> None:
+        super().__init__(formatter, writer, verbose)
+        self.key_encoder = ENCODERS.get(key_encoding)
+        self.data_encoder = ENCODERS.get(data_encoding)
+        self.archiver = ARCHIVERS.get(compression)
+        self.unarchiver = UNARCHIVERS.get(compression)
+
+    def read_keypair(self, private_key: Reader, public_key: Reader) -> Keypair:
+        priv_seed = self.read_input(private_key, self.key_encoder)
+        priv = PrivateKey(private_key=priv_seed)
+        pub_seed = self.read_input(public_key, self.key_encoder)
+        pub = PublicKey(public_key=pub_seed)
+        return priv, pub
+
+    def encryption_flow(self, message: Reader, encrypt: Pipe) -> None:
+        data = message.read_bytes()
+        plaintext_len = len(data)
+        if self.archiver is not None:
+            data = self.archiver(data)
+
+        data = encrypt(data)
+        data, groups = self.format_data(data, self.data_encoder)
+        writer = self.writer
+        writer.write_bytes(data)
+        if self.verbose:
+            ciphertext_len = len(data)
+            overhead = ciphertext_len / plaintext_len
+            writer.write_diag(f"Groups: {groups}")
+            writer.write_diag(f"Plaintext: {plaintext_len}")
+            writer.write_diag(f"Ciphertext: {ciphertext_len}")
+            writer.write_diag(f"Overhead: {overhead:.3f}")
+
+    def encrypt_public(
+        self, private_key: Reader, public_key: Reader, message: Reader
+    ) -> None:
+        priv, pub = self.read_keypair(private_key, public_key)
+
+        def encrypt(data: bytes) -> bytes:
+            return public.encrypt(private=priv, public=pub, data=data)
+
+        self.encryption_flow(message, encrypt)
+
+    def encrypt_secret(self, key: Reader, message: Reader) -> None:
+        sk = self.read_input(key, self.key_encoder)
+
+        def encrypt(data: bytes) -> bytes:
+            return secret.encrypt(key=sk, data=data)
+
+        self.encryption_flow(message, encrypt)
+
+    def encrypt_password(
+        self, password: Reader, message: Reader, kdf_profile: str
+    ) -> None:
+        key = KeyService.derive_key(password, kdf_profile)
+
+        def encrypt(data: bytes) -> bytes:
+            return secret.encrypt(key, data)
+
+        self.encryption_flow(message, encrypt)
+
+    def decryption_flow(self, message: Reader, decrypt: Pipe) -> None:
+        data = self.read_input(message, self.data_encoder)
+        data = decrypt(data)
+        if self.unarchiver is not None:
+            data = self.unarchiver(data)
+
+        self.writer.write_bytes(data)
+
+    def decrypt_public(
+        self, private_key: Reader, public_key: Reader, message: Reader
+    ) -> None:
+        priv, pub = self.read_keypair(private_key, public_key)
+
+        def decrypt(data: bytes) -> bytes:
+            return public.decrypt(private=priv, public=pub, data=data)
+
+        self.decryption_flow(message, decrypt)
+
+    def decrypt_secret(self, key: Reader, message: Reader) -> None:
+        sk = self.read_input(key, self.key_encoder)
+
+        def decrypt(data: bytes) -> bytes:
+            return secret.decrypt(key=sk, data=data)
+
+        self.decryption_flow(message, decrypt)
+
+    def decrypt_password(
+        self, password: Reader, message: Reader, kdf_profile: str
+    ) -> None:
+        key = KeyService.derive_key(password, kdf_profile)
+
+        def decrypt(data: bytes) -> bytes:
+            return secret.decrypt(key, data)
+
+        self.decryption_flow(message, decrypt)
