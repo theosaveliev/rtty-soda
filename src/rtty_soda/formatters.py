@@ -20,7 +20,7 @@ class FixedFormatter(Formatter):
         self.pad_count = pad_count
 
     def format(self, text: str) -> FormattedText:
-        groups = 1
+        groups = 0
 
         if 0 < self.group_len < self.line_len:
             text, groups = self.split_groups(text)

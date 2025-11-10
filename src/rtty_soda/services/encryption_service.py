@@ -4,7 +4,7 @@ from nacl.public import PrivateKey, PublicKey
 
 from rtty_soda.archivers import ARCHIVERS, UNARCHIVERS
 from rtty_soda.cryptography import public, secret
-from rtty_soda.encoders import ENCODERS
+from rtty_soda.encoders import ENCODERS, encode_str, scsu_decode, scsu_encode
 
 from .key_service import KeyService
 from .service import Service
@@ -24,6 +24,7 @@ type Pipe = Callable[[bytes], bytes]
 class EncryptionService(Service):
     def __init__(
         self,
+        text_mode: bool,
         key_encoding: str,
         data_encoding: str,
         compression: str,
@@ -32,6 +33,7 @@ class EncryptionService(Service):
         verbose: bool,
     ) -> None:
         super().__init__(formatter, writer, verbose)
+        self.text_mode = text_mode
         self.key_encoder = ENCODERS.get(key_encoding)
         self.data_encoder = ENCODERS.get(data_encoding)
         self.archiver = ARCHIVERS.get(compression)
@@ -45,21 +47,26 @@ class EncryptionService(Service):
         return priv, pub
 
     def encryption_flow(self, message: Reader, encrypt: Pipe) -> None:
-        data = message.read_bytes()
-        plaintext_len = len(data)
+        if self.text_mode:
+            text = message.read_str().strip()
+            plaintext_len = len(text)
+            data = scsu_encode(text)
+        else:
+            data = message.read_bytes()
+            plaintext_len = len(data)
+
         if self.archiver is not None:
             data = self.archiver(data)
 
         data = encrypt(data)
-        data, groups = self.format_data(data, self.data_encoder)
+        buff = self.format_data(data, self.data_encoder)
         writer = self.writer
-        writer.write_bytes(data)
+        writer.write_bytes(buff.data)
         if self.verbose:
-            ciphertext_len = len(data)
-            overhead = ciphertext_len / plaintext_len
-            writer.write_diag(f"Groups: {groups}")
+            overhead = buff.chars / plaintext_len
+            writer.write_diag(f"Groups: {buff.groups}")
             writer.write_diag(f"Plaintext: {plaintext_len}")
-            writer.write_diag(f"Ciphertext: {ciphertext_len}")
+            writer.write_diag(f"Ciphertext: {buff.chars}")
             writer.write_diag(f"Overhead: {overhead:.3f}")
 
     def encrypt_public(
@@ -95,6 +102,9 @@ class EncryptionService(Service):
         data = decrypt(data)
         if self.unarchiver is not None:
             data = self.unarchiver(data)
+
+        if self.text_mode:
+            data = encode_str(scsu_decode(data))
 
         self.writer.write_bytes(data)
 

@@ -81,6 +81,16 @@ class CliOptions:
         )(function)
 
     @staticmethod
+    def text(function: FC) -> FC:
+        return click.option(
+            "--text",
+            "-t",
+            is_flag=True,
+            envvar="TEXT",
+            help="Treat message as text (binary if not specified).",
+        )(function)
+
+    @staticmethod
     def group_len(function: FC) -> FC:
         return click.option(
             "--group-len", default=0, show_default=True, envvar="GROUP_LEN"

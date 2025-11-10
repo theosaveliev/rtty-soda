@@ -116,6 +116,7 @@ def kdf_cmd(
 @click.argument("private_key_file", type=in_path)
 @click.argument("public_key_file", type=in_path)
 @click.argument("message_file", type=in_path)
+@CliOptions.text
 @CliOptions.key_encoding
 @CliOptions.data_encoding
 @CliOptions.compression
@@ -128,6 +129,7 @@ def encrypt_public_cmd(
     private_key_file: Path,
     public_key_file: Path,
     message_file: Path,
+    text: bool,
     key_encoding: str,
     data_encoding: str,
     compression: str,
@@ -146,6 +148,7 @@ def encrypt_public_cmd(
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = EncryptionService(
+        text_mode=text,
         key_encoding=key_encoding,
         data_encoding=data_encoding,
         compression=compression,
@@ -162,6 +165,7 @@ def encrypt_public_cmd(
 @cli.command(aliases=["es"])  # pyright: ignore[reportAny]
 @click.argument("key_file", type=in_path)
 @click.argument("message_file", type=in_path)
+@CliOptions.text
 @CliOptions.key_encoding
 @CliOptions.data_encoding
 @CliOptions.compression
@@ -173,6 +177,7 @@ def encrypt_public_cmd(
 def encrypt_secret_cmd(
     key_file: Path,
     message_file: Path,
+    text: bool,
     key_encoding: str,
     data_encoding: str,
     compression: str,
@@ -191,6 +196,7 @@ def encrypt_secret_cmd(
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = EncryptionService(
+        text_mode=text,
         key_encoding=key_encoding,
         data_encoding=data_encoding,
         compression=compression,
@@ -206,6 +212,7 @@ def encrypt_secret_cmd(
 @cli.command(aliases=["ep"])  # pyright: ignore[reportAny]
 @click.argument("password_file", type=in_path)
 @click.argument("message_file", type=in_path)
+@CliOptions.text
 @CliOptions.kdf_profile
 @CliOptions.data_encoding
 @CliOptions.compression
@@ -217,6 +224,7 @@ def encrypt_secret_cmd(
 def encrypt_password_cmd(
     password_file: Path,
     message_file: Path,
+    text: bool,
     kdf_profile: str,
     data_encoding: str,
     compression: str,
@@ -237,6 +245,7 @@ def encrypt_password_cmd(
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = EncryptionService(
+        text_mode=text,
         key_encoding="binary",
         data_encoding=data_encoding,
         compression=compression,
@@ -253,6 +262,7 @@ def encrypt_password_cmd(
 @click.argument("private_key_file", type=in_path)
 @click.argument("public_key_file", type=in_path)
 @click.argument("message_file", type=in_path)
+@CliOptions.text
 @CliOptions.key_encoding
 @CliOptions.data_encoding
 @CliOptions.compression
@@ -261,6 +271,7 @@ def decrypt_public_cmd(
     private_key_file: Path,
     public_key_file: Path,
     message_file: Path,
+    text: bool,
     key_encoding: str,
     data_encoding: str,
     compression: str,
@@ -274,6 +285,7 @@ def decrypt_public_cmd(
     """
     writer = CliWriter(output_file)
     service = EncryptionService(
+        text_mode=text,
         key_encoding=key_encoding,
         data_encoding=data_encoding,
         compression=compression,
@@ -290,6 +302,7 @@ def decrypt_public_cmd(
 @cli.command(aliases=["ds"])  # pyright: ignore[reportAny]
 @click.argument("key_file", type=in_path)
 @click.argument("message_file", type=in_path)
+@CliOptions.text
 @CliOptions.key_encoding
 @CliOptions.data_encoding
 @CliOptions.compression
@@ -297,6 +310,7 @@ def decrypt_public_cmd(
 def decrypt_secret_cmd(
     key_file: Path,
     message_file: Path,
+    text: bool,
     key_encoding: str,
     data_encoding: str,
     compression: str,
@@ -310,6 +324,7 @@ def decrypt_secret_cmd(
     """
     writer = CliWriter(output_file)
     service = EncryptionService(
+        text_mode=text,
         key_encoding=key_encoding,
         data_encoding=data_encoding,
         compression=compression,
@@ -325,6 +340,7 @@ def decrypt_secret_cmd(
 @cli.command(aliases=["dp"])  # pyright: ignore[reportAny]
 @click.argument("password_file", type=in_path)
 @click.argument("message_file", type=in_path)
+@CliOptions.text
 @CliOptions.kdf_profile
 @CliOptions.data_encoding
 @CliOptions.compression
@@ -332,6 +348,7 @@ def decrypt_secret_cmd(
 def decrypt_password_cmd(
     password_file: Path,
     message_file: Path,
+    text: bool,
     kdf_profile: str,
     data_encoding: str,
     compression: str,
@@ -347,6 +364,7 @@ def decrypt_password_cmd(
     """
     writer = CliWriter(output_file)
     service = EncryptionService(
+        text_mode=text,
         key_encoding="binary",
         data_encoding=data_encoding,
         compression=compression,

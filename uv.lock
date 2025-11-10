@@ -342,10 +342,11 @@ wheels = [
 
 [[package]]
 name = "rtty-soda"
-version = "0.3.0"
+version = "0.3.1"
 source = { editable = "." }
 dependencies = [
     { name = "pynacl" },
+    { name = "scsu" },
 ]
 
 [package.optional-dependencies]
@@ -369,6 +370,7 @@ requires-dist = [
     { name = "click", marker = "extra == 'cli'", specifier = ">=8.3.0,<9.0.0" },
     { name = "click-aliases", marker = "extra == 'cli'", specifier = ">=1.0.5,<2.0.0" },
     { name = "pynacl", specifier = ">=1.6.0,<2.0.0" },
+    { name = "scsu", specifier = ">=1.1.1,<2.0.0" },
 ]
 provides-extras = ["cli"]
 
@@ -406,6 +408,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/54/1a/a49f071f04c42345c793d22f6cf5e0920095e286119ee53a64a3a3004825/ruff-0.14.4-py3-none-win32.whl", hash = "sha256:643b69cb63cd996f1fc7229da726d07ac307eae442dd8974dbc7cf22c1e18fff", size = 12493429, upload-time = "2025-11-06T22:07:38.43Z" },
     { url = "https://files.pythonhosted.org/packages/bc/22/e58c43e641145a2b670328fb98bc384e20679b5774258b1e540207580266/ruff-0.14.4-py3-none-win_amd64.whl", hash = "sha256:26673da283b96fe35fa0c939bf8411abec47111644aa9f7cfbd3c573fb125d2c", size = 13635380, upload-time = "2025-11-06T22:07:40.496Z" },
     { url = "https://files.pythonhosted.org/packages/30/bd/4168a751ddbbf43e86544b4de8b5c3b7be8d7167a2a5cb977d274e04f0a1/ruff-0.14.4-py3-none-win_arm64.whl", hash = "sha256:dd09c292479596b0e6fec8cd95c65c3a6dc68e9ad17b8f2382130f87ff6a75bb", size = 12663065, upload-time = "2025-11-06T22:07:42.603Z" },
+]
+
+[[package]]
+name = "scsu"
+version = "1.1.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/95/02/bf973184098372e6f5d93607ef1096221981e51c870cddf8e43318daa03d/scsu-1.1.1.tar.gz", hash = "sha256:4a9011b56d8ca49b414c2872af489ab5af3060e9f79340fd20b9a00ee99da528", size = 12916, upload-time = "2025-08-03T14:05:41.545Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1a/c6/89dbcc99230b8c275e2aa675347aed2649e0c75436f9f328836b8a2c185e/scsu-1.1.1-py3-none-any.whl", hash = "sha256:66708da33f7868358d9ec879f217b3a53befd0c558cc7ce46a35909ce9cf59b3", size = 16116, upload-time = "2025-08-03T14:05:40.369Z" },
 ]
 
 [[package]]

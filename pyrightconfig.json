@@ -10,7 +10,7 @@
   ],
   "reportMissingImports": "error",
   "reportMissingModuleSource": "warning",
-  "reportMissingTypeStubs": "error",
+  "reportMissingTypeStubs": "warning",
   "reportUnusedImport": "error",
   "reportUnusedVariable": "error",
   "reportPrivateUsage": "error",

@@ -34,8 +34,8 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.0
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.0-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.1
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.1-tools
 ```
 
 
@@ -123,6 +123,7 @@ Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
   Compression: zstd | zlib | bz2 | lzma | raw
 
 Options:
+  -t, --text                Treat message as text (binary if not specified).
   --key-encoding TEXT       [default: base64]
   -e, --data-encoding TEXT  [default: base64]
   -c, --compression TEXT    [default: zstd]
@@ -202,31 +203,36 @@ That works as follows:
 
 ```
 % soda es shared message -c zstd -v > /dev/null
-Groups: 1
+Groups: 0
 Plaintext: 239
 Ciphertext: 276
 Overhead: 1.155
 % soda es shared message -c zlib -v > /dev/null
-Groups: 1
+Groups: 0
 Plaintext: 239
 Ciphertext: 280
 Overhead: 1.172
 % soda es shared message -c bz2 -v > /dev/null
-Groups: 1
+Groups: 0
 Plaintext: 239
 Ciphertext: 340
 Overhead: 1.423
 % soda es shared message -c lzma -v > /dev/null
-Groups: 1
+Groups: 0
 Plaintext: 239
 Ciphertext: 324
 Overhead: 1.356
 % soda es shared message -c raw -v > /dev/null
-Groups: 1
+Groups: 0
 Plaintext: 239
 Ciphertext: 372
 Overhead: 1.556
 ```
+
+When working with Unicode messages, enabling SCSU encoding can save
+up to 15-50% of space. To achieve this, pass the `--text` flag to both
+encryption and decryption commands. This instructs rtty-soda to 
+read the message as text, applying SCSU automatically.
 
 
 ## Encoding
@@ -234,16 +240,12 @@ Overhead: 1.556
 The rtty-soda supports various encodings:
 
 ```
-% soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 -v
+% soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5
 9URCN ARRN8 MSE7G G9980 37D8S 568QP 16AZW TOHAI KYP5W VAK7R VZ6YO GZ38A QOIP7
 60P2E GWWOG DSHDD EG2TZ 7PSZM 7FKBX 50TAD RHS2E VM063 N297Y 753BP TLUX0 9K8BD
 DZF8O 7TPUG MJV4R T2C92 HU1G8 KGJCN URU1F 9COP9 EFLZO BSL2V 171DS 2HKPE JY2GY
 V86IT T0HBR 9B08H M9R2V IEM7A R91IF UWQYM ZV4JN 7YU3K ILPJY E8OMA NWQC5 Q6BG7
 PXM4I 9UU9E J9IRU HSZ41 RPZQG XTDC6 E5NMS B4HBQ 7QRI2 RRUYH HSHGQ 7USN
-Groups: 64
-Plaintext: 239
-Ciphertext: 382
-Overhead: 1.598
 ```
 
 
@@ -252,18 +254,53 @@ Overhead: 1.598
 Common options can be set in the environment variables:
 
 ```
-% cat .env 
-KEY_ENCODING=base26
-DATA_ENCODING=base26
-COMPRESSION=bz2
-KDF_PROFILE=moderate
-VERBOSE=1
+% cat ~/.soda/ru.env
+TEXT=1
+KEY_ENCODING=base31
+DATA_ENCODING=base31
+COMPRESSION=zlib
+KDF_PROFILE=sensitive
 GROUP_LEN=5
-LINE_LEN=80
-PADDING=1
+LINE_LEN=69
+PADDING=0
+VERBOSE=0
+```
 
+
+## Tutorial for the Underground Moscow Museum
+
+```
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.1-tools
 % set -a
-% source .env
+% source ~/.soda/ru.env
+
+% soda genkey | tee 173-закрытый | soda pubkey - | tee 173-публичный
+ЖАЯГЭ ШЦДФР ТЮУОЮ ШМЕВР НЬИЛР ИЫФЧД БФГЫП КЮДЫЛ ОРЫКВ СБХЕЫ СУ
+% soda genkey | tee 305-закрытый | soda pubkey - | tee 305-публичный
+ЙОАРЫ РОЮЩЯ ШВМПФ ЛТЬТЕ ЫПКУС ДЧББЮ ЦХКХА РЖЯМС ХНТИУ ФЙСКВ ЙЛ
+
+% cat телеграмма
+Телетайп — стартстопный приёмно-передающий телеграфный аппарат с клавиатурой
+как у пищущей машинки, применявшийся также в качестве терминала устройств
+вычислительной техники.
+Наиболее совершенные телетайпы являются полностью электронными устройствами
+и используют дисплей вместо принтера.
+(c) Wikipedia
+
+% soda e 173-закрытый 305-публичный телеграмма -v
+КЭСМЗ ЛЖЧЧЮ ЧЛФРД ЩЦЛЮМ ГКЗФР ИРФНЗ ЧКАЗЛ РОМЩЮ БХМПФ ЧРТПМ ЙРЧМВ
+ЦТСМГ ХЛЯЯП УНИИХ УДЗГН ЙЧЭЙЕ ЛМХСШ ВЭЯКШ ЫРЯЯХ ШЖЫОЯ ХГТПЖ ШКСЛЛ
+ЖДЗЮИ ВФЭВЧ ЖГКЩШ ТЧТАД ЖАЭГР ДТЙЬЬ ЧАПБТ ЮРЬТА ЫШЦКБ ЗЛГГС ЙЮСЧБ
+АЙАЯФ ЦХРЯМ ЧТЮУТ ЭЕЙРШ УТКЛЯ УЫЧКЬ ЖСФЬЯ ЗХПЙС СЯМЗВ АЗСФЭ РФЦНХ
+ЖИТЗЕ ХЦГЛЗ ЗЭМЗК ОЯЦГЦ ВМОНР ЬЫДРВ ХПЭЭТ ИАШЯК ХРЮБС ЬЭВТМ ЛПФЦВ
+ЙЙИЖГ ЦЯАЩЦ ОЙФЯК ЕОЭЯЗ ЧЕПЖЗ КЕВЩИ ХОПЛХ ЖХЖЛМ ШАТЬФ ТШФЖУ ЩРСЛТ
+НРПСК ЯЮХЬЭ МВХХЭ ИИЗЙВ ВЯФДЬ УЗЫФИ ЛГХЩЬ СЯЛХА ХЭТАГ ВАЩЛГ ЖЦФБЕ
+ЖОБЮЗ ЛФЩЙЛ ОЩЦПЧ ЗЖИЙЭ ЫРШЭТ ОЯВРФ ХНКВС ЩЬХЭМ ЙЛЧТС ММЭДО ШЬНКР
+ВФСТ
+Groups: 89
+Plaintext: 302
+Ciphertext: 444
+Overhead: 1.470
 ```
 
 

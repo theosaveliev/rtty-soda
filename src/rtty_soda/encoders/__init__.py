@@ -5,6 +5,7 @@ from .base64_encoder import Base64Encoder
 from .base94_encoder import Base94Encoder
 from .encoder import Encoder
 from .functions import decode_bytes, encode_str
+from .scsu import scsu_decode, scsu_encode
 
 __all__ = [
     "ENCODERS",
@@ -16,6 +17,8 @@ __all__ = [
     "Encoder",
     "decode_bytes",
     "encode_str",
+    "scsu_decode",
+    "scsu_encode",
 ]
 
 ENCODERS: dict[str, Encoder] = {
