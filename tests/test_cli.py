@@ -1,12 +1,7 @@
-from typing import TYPE_CHECKING, cast
-
 import pytest
 from click.testing import CliRunner
 
 from rtty_soda.cli import cli
-
-if TYPE_CHECKING:
-    from click import Command
 
 
 @pytest.fixture
@@ -67,7 +62,7 @@ def test_genkey() -> None:
     ]
     for enc in encoders:
         args[-1] = enc
-        result = runner.invoke(cast("Command", cli), args=args)
+        result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert len(result.stdout) > 25
 
@@ -90,7 +85,7 @@ def test_pubkey(private_key: str, public_key: str) -> None:
             "--padding",
             "0",
         ]
-        result = runner.invoke(cast("Command", cli), args=args)
+        result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == public_key
 
@@ -115,7 +110,7 @@ def test_kdf(password: str, private_key: str) -> None:
             "--padding",
             "0",
         ]
-        result = runner.invoke(cast("Command", cli), args=args)
+        result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == private_key
 
@@ -146,7 +141,7 @@ def test_decrypt_public(
             "--compression",
             "raw",
         ]
-        result = runner.invoke(cast("Command", cli), args=args)
+        result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
 
@@ -171,7 +166,7 @@ def test_decrypt_secret(private_key: str, encrypted_secret: str, password: str) 
             "--compression",
             "raw",
         ]
-        result = runner.invoke(cast("Command", cli), args=args)
+        result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
 
@@ -196,7 +191,7 @@ def test_decrypt_password(password: str, encrypted_pw: str) -> None:
             "--compression",
             "raw",
         ]
-        result = runner.invoke(cast("Command", cli), args=args)
+        result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
 
@@ -233,7 +228,7 @@ def test_encrypt_public(private_key: str, public_key: str, password: str) -> Non
             "--padding",
             "0",
         ]
-        result = runner.invoke(cast("Command", cli), args=args)
+        result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
 
         args = [
@@ -248,7 +243,7 @@ def test_encrypt_public(private_key: str, public_key: str, password: str) -> Non
             "--compression",
             "raw",
         ]
-        result = runner.invoke(cast("Command", cli), args=args)
+        result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
 
@@ -281,7 +276,7 @@ def test_encrypt_secret(private_key: str, password: str) -> None:
             "--padding",
             "0",
         ]
-        result = runner.invoke(cast("Command", cli), args=args)
+        result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
 
         args = [
@@ -295,7 +290,7 @@ def test_encrypt_secret(private_key: str, password: str) -> None:
             "--compression",
             "raw",
         ]
-        result = runner.invoke(cast("Command", cli), args=args)
+        result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
 
@@ -325,7 +320,7 @@ def test_encrypt_password(password: str) -> None:
             "--padding",
             "0",
         ]
-        result = runner.invoke(cast("Command", cli), args=args)
+        result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
 
         args = [
@@ -339,7 +334,7 @@ def test_encrypt_password(password: str) -> None:
             "--compression",
             "raw",
         ]
-        result = runner.invoke(cast("Command", cli), args=args)
+        result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
 
@@ -358,6 +353,6 @@ def test_encode_cmd(private_key: str, private_key_b36: str) -> None:
         "0",
         "-",
     ]
-    result = runner.invoke(cast("Command", cli), args=args, input=private_key)
+    result = runner.invoke(cli, args=args, input=private_key)
     assert result.exit_code == 0
     assert result.stdout.strip() == private_key_b36

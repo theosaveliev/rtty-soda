@@ -9,7 +9,7 @@
     "**/__pycache__",
   ],
   "reportMissingImports": "error",
-  "reportMissingModuleSource": "warning",
+  "reportMissingModuleSource": false,
   "reportMissingTypeStubs": "warning",
   "reportUnusedImport": "error",
   "reportUnusedVariable": "error",

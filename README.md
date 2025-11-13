@@ -34,8 +34,8 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.1
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.1-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.2
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.2-tools
 ```
 
 
@@ -270,7 +270,7 @@ VERBOSE=0
 ## Tutorial for the Underground Moscow Museum
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.1-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.2-tools
 % set -a
 % source ~/.soda/ru.env
 
