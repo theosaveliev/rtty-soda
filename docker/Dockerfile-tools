@@ -15,6 +15,7 @@ ENV LANG="en_US.UTF-8"
 ENV HOME="/home/ubuntu"
 
 ADD --chown=ubuntu:ubuntu vimrc $HOME/.vim/vimrc
+ADD --chown=ubuntu:ubuntu bin.env $HOME/.soda/bin.env
 ADD --chown=ubuntu:ubuntu ru.env $HOME/.soda/ru.env
 
 ADD --chown=ubuntu:ubuntu https://astral.sh/uv/install.sh uv-installer.sh
@@ -23,3 +24,5 @@ ENV PATH="/home/ubuntu/.local/bin/:$PATH"
 
 RUN uv tool install --no-cache "rtty-soda[cli]"
 RUN uv tool install --no-cache "steganon[cli]"
+
+RUN echo "set -a" >> $HOME/.bashrc

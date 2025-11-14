@@ -271,9 +271,8 @@ VERBOSE=0
 
 ```
 % docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.2-tools
-% set -a
-% source ~/.soda/ru.env
 
+% source ~/.soda/ru.env
 % soda genkey | tee 173-закрытый | soda pubkey - | tee 173-публичный
 ЖАЯГЭ ШЦДФР ТЮУОЮ ШМЕВР НЬИЛР ИЫФЧД БФГЫП КЮДЫЛ ОРЫКВ СБХЕЫ СУ
 % soda genkey | tee 305-закрытый | soda pubkey - | tee 305-публичный
@@ -322,6 +321,12 @@ Overhead: 1.470
   % cat privkey | wg pubkey 
   ruIUMqbUtyqRVSIBLSGI7AOruE2DLWgTe9o+h7Yktkw=
   ```
+
+- Data store
+  
+  The `-tools` image features `steganon-cli` to support the following flow:
+  
+  ![Flow diagram](/diagram/soda.png)
 
 
 ## Compatibility
