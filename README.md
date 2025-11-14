@@ -328,6 +328,18 @@ Overhead: 1.470
   
   ![Flow diagram](/diagram/soda.png)
 
+  ```
+  % docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.2-tools
+  % source ~/.soda/bin.env
+  % echo decoy > decoy
+  % echo secret > secret
+  % echo password | soda ep - secret -o encrypted
+  % steganon-cli hide -i cover.png -d "decoy | encrypted" -s "seed1 | seed2" -o stego.png
+  % exiftool -TagsFromFile cover.png -all:all -overwrite_original stego.png
+  % steganon-cli extract -i stego.png -s "seed1 | seed2" -o "decoy | encrypted"
+  % echo password | soda dp - encrypted -o secret
+  ```
+
 
 ## Compatibility
 
