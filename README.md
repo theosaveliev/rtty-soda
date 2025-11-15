@@ -34,8 +34,8 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.2
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.2-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.3
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.3-tools
 ```
 
 
@@ -270,7 +270,7 @@ VERBOSE=0
 ## Tutorial for the Underground Moscow Museum
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.2-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.3-tools
 
 % source ~/.soda/ru.env
 % soda genkey | tee 173-закрытый | soda pubkey - | tee 173-публичный
@@ -326,10 +326,10 @@ Overhead: 1.470
   
   The `-tools` image features `steganon-cli` to support the following flow:
   
-  ![Flow diagram](/diagram/soda.png)
+  ![Flow diagram](https://github.com/theosaveliev/rtty-soda/raw/main/diagram/soda.png)
 
   ```
-  % docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.2-tools
+  % docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.3-tools
   % source ~/.soda/bin.env
   % echo decoy > decoy
   % echo secret > secret

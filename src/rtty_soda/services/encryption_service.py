@@ -40,10 +40,10 @@ class EncryptionService(Service):
         self.unarchiver = UNARCHIVERS.get(compression)
 
     def read_keypair(self, private_key: Reader, public_key: Reader) -> Keypair:
-        priv_seed = self.read_input(private_key, self.key_encoder)
-        priv = PrivateKey(private_key=priv_seed)
-        pub_seed = self.read_input(public_key, self.key_encoder)
-        pub = PublicKey(public_key=pub_seed)
+        priv_bytes = self.read_input(private_key, self.key_encoder)
+        priv = PrivateKey(private_key=priv_bytes)
+        pub_bytes = self.read_input(public_key, self.key_encoder)
+        pub = PublicKey(public_key=pub_bytes)
         return priv, pub
 
     def encryption_flow(self, message: Reader, encrypt: Pipe) -> None:
@@ -80,10 +80,10 @@ class EncryptionService(Service):
         self.encryption_flow(message, encrypt)
 
     def encrypt_secret(self, key: Reader, message: Reader) -> None:
-        sk = self.read_input(key, self.key_encoder)
+        key_bytes = self.read_input(key, self.key_encoder)
 
         def encrypt(data: bytes) -> bytes:
-            return secret.encrypt(key=sk, data=data)
+            return secret.encrypt(key=key_bytes, data=data)
 
         self.encryption_flow(message, encrypt)
 
@@ -119,10 +119,10 @@ class EncryptionService(Service):
         self.decryption_flow(message, decrypt)
 
     def decrypt_secret(self, key: Reader, message: Reader) -> None:
-        sk = self.read_input(key, self.key_encoder)
+        key_bytes = self.read_input(key, self.key_encoder)
 
         def decrypt(data: bytes) -> bytes:
-            return secret.decrypt(key=sk, data=data)
+            return secret.decrypt(key=key_bytes, data=data)
 
         self.decryption_flow(message, decrypt)
 

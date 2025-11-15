@@ -26,8 +26,8 @@ class KeyService(Service):
         self.write_output(key, self.encoder)
 
     def pubkey(self, priv_key: Reader) -> None:
-        priv_seed = self.read_input(priv_key, self.encoder)
-        priv = PrivateKey(private_key=priv_seed)
+        priv_bytes = self.read_input(priv_key, self.encoder)
+        priv = PrivateKey(private_key=priv_bytes)
         pub = bytes(priv.public_key)
         self.write_output(pub, self.encoder)
 
@@ -35,8 +35,8 @@ class KeyService(Service):
     def derive_key(password: Reader, kdf_profile: str) -> bytes:
         prof = kdf.KDF_PROFILES[kdf_profile]
         pw_str = password.read_str().strip()
-        pw = encode_str(pw_str)
-        return kdf.kdf(password=pw, profile=prof)
+        pw_bytes = encode_str(pw_str)
+        return kdf.kdf(password=pw_bytes, profile=prof)
 
     def kdf(self, password: Reader, kdf_profile: str) -> None:
         key = self.derive_key(password, kdf_profile)
