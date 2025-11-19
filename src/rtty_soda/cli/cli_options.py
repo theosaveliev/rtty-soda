@@ -19,7 +19,7 @@ class CliOptions:
         return click.option(
             "--compression",
             "-c",
-            default="zstd",
+            default="brotli",
             show_default=True,
             envvar="COMPRESSION",
         )(function)

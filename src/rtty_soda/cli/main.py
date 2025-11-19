@@ -143,7 +143,7 @@ def encrypt_public_cmd(
 
     Encoding: base26 | base31 | base36 | base64 | base94 | binary
 
-    Compression: zstd | zlib | bz2 | lzma | raw
+    Compression: brotli | zstd | zlib | bz2 | lzma | raw
     """
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
@@ -191,7 +191,7 @@ def encrypt_secret_cmd(
 
     Encoding: base26 | base31 | base36 | base64 | base94 | binary
 
-    Compression: zstd | zlib | bz2 | lzma | raw
+    Compression: brotli | zstd | zlib | bz2 | lzma | raw
     """
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
@@ -240,7 +240,7 @@ def encrypt_password_cmd(
 
     Encoding: base26 | base31 | base36 | base64 | base94 | binary
 
-    Compression: zstd | zlib | bz2 | lzma | raw
+    Compression: brotli | zstd | zlib | bz2 | lzma | raw
     """
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
@@ -281,7 +281,7 @@ def decrypt_public_cmd(
 
     Encoding: base26 | base31 | base36 | base64 | base94 | binary
 
-    Compression: zstd | zlib | bz2 | lzma | raw
+    Compression: brotli | zstd | zlib | bz2 | lzma | raw
     """
     writer = CliWriter(output_file)
     service = EncryptionService(
@@ -320,7 +320,7 @@ def decrypt_secret_cmd(
 
     Encoding: base26 | base31 | base36 | base64 | base94 | binary
 
-    Compression: zstd | zlib | bz2 | lzma | raw
+    Compression: brotli | zstd | zlib | bz2 | lzma | raw
     """
     writer = CliWriter(output_file)
     service = EncryptionService(
@@ -360,7 +360,7 @@ def decrypt_password_cmd(
 
     Encoding: base26 | base31 | base36 | base64 | base94 | binary
 
-    Compression: zstd | zlib | bz2 | lzma | raw
+    Compression: brotli | zstd | zlib | bz2 | lzma | raw
     """
     writer = CliWriter(output_file)
     service = EncryptionService(

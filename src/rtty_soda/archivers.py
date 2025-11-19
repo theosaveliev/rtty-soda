@@ -1,10 +1,16 @@
 from collections.abc import Callable
 from compression import bz2, lzma, zlib, zstd
 
+import brotli
+
 __all__ = ["ARCHIVERS", "UNARCHIVERS", "Archiver"]
 
 
 type Archiver = Callable[[bytes], bytes]
+
+
+def compress_brotli(data: bytes) -> bytes:
+    return brotli.compress(data, quality=11)
 
 
 def compress_zstd(data: bytes) -> bytes:
@@ -36,6 +42,10 @@ def compress_lzma(data: bytes) -> bytes:
     )
 
 
+def decompress_brotli(data: bytes) -> bytes:
+    return brotli.decompress(data)
+
+
 def decompress_zstd(data: bytes) -> bytes:
     return zstd.decompress(data)
 
@@ -53,6 +63,7 @@ def decompress_lzma(data: bytes) -> bytes:
 
 
 ARCHIVERS: dict[str, Archiver] = {
+    "brotli": compress_brotli,
     "zstd": compress_zstd,
     "zlib": compress_zlib,
     "bz2": compress_bz2,
@@ -60,6 +71,7 @@ ARCHIVERS: dict[str, Archiver] = {
 }
 
 UNARCHIVERS: dict[str, Archiver] = {
+    "brotli": decompress_brotli,
     "zstd": decompress_zstd,
     "zlib": decompress_zlib,
     "bz2": decompress_bz2,

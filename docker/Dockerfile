@@ -12,6 +12,7 @@ USER ubuntu:ubuntu
 WORKDIR /app
 ENV LANG="en_US.UTF-8"
 ENV HOME="/home/ubuntu"
+ENV PYTHON_GIL=1
 
 ADD --chown=ubuntu:ubuntu vimrc $HOME/.vim/vimrc
 ADD --chown=ubuntu:ubuntu ru.env $HOME/.soda/ru.env

@@ -1,10 +1,5 @@
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .scsu_stubs import SCSUIncrementalDecoder, SCSUIncrementalEncoder
-else:
-    from scsu.codecs.decoder import SCSUIncrementalDecoder
-    from scsu.codecs.encoder import SCSUIncrementalEncoder
+from scsu.codecs.decoder import SCSUIncrementalDecoder
+from scsu.codecs.encoder import SCSUIncrementalEncoder
 
 __all__ = ["scsu_decode", "scsu_encode"]
 

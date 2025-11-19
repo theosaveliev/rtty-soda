@@ -1,6 +1,6 @@
 [project]
 name = "rtty-soda"
-version = "0.3.4"
+version = "0.3.5"
 description = "A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl"
 readme = "README.md"
 license = { text = "MIT" }
@@ -24,6 +24,7 @@ keywords = ["cli", "encryption", "libsodium", "nacl", "rtty"]
 requires-python = ">=3.14,<4.0"
 
 dependencies = [
+    "brotli>=1.2.0,<2.0.0",
     "pynacl>=1.6.0,<2.0.0",
     "scsu>=1.1.1,<2.0.0",
 ]
