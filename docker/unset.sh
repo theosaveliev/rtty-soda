@@ -1,0 +1,9 @@
+unset TEXT
+unset KEY_ENCODING
+unset DATA_ENCODING
+unset COMPRESSION
+unset KDF_PROFILE
+unset GROUP_LEN
+unset LINE_LEN
+unset PADDING
+unset VERBOSE

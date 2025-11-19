@@ -8,7 +8,15 @@ type Archiver = Callable[[bytes], bytes]
 
 
 def compress_zstd(data: bytes) -> bytes:
-    return zstd.compress(data, level=20)
+    param = zstd.CompressionParameter
+    _, upper = param.compression_level.bounds()
+    options = {
+        param.compression_level: upper,
+        param.checksum_flag: 0,
+        param.content_size_flag: 0,
+        param.dict_id_flag: 0,
+    }
+    return zstd.compress(data, options=options)  # type: ignore[arg-type]
 
 
 def compress_zlib(data: bytes) -> bytes:

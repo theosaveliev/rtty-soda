@@ -106,11 +106,8 @@ transmit text messages in Morse code in a telegraphy system.
 The first telegraph key was invented by Alfred Vail, an associate of Samuel Morse.
 (c) Wikipedia
 
-% soda encrypt-public alice bob_pub message --group-len 79 | tee encrypted
-q+zCgyCfHdlSHrcuyM/Yfw1+ZvqNRXgY0O7gGrauPyQlsI0MdPXoVlkfyKZUtg6Jcqn47d4BGLMBITo
-y3Wp9+9FvI1rolCd7JmyIxRIHHYWqxux+czh88aDdGjbDQ2pRNX68TU33PylBDw/H+VfYSZ6fyw1xdJ
-005pJeEXCzpOXljvXMgAElBIFJ/vsluunrRI9Sw6WcnrCsPYFxTFRZVOvsq6U8PJwnhnaDyLW0Z28Op
-dS71gNH/7xA7P1LbFwxSD0jAjDqPZdLYkPzd94=
+% soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
+iphDoXC+WTIqPf5I8KjZ1nGUPV/QgHR3akOStG+m1vPArrpHY5j7Q/NmFcsGq8uRxscz3IFlmSwi32PR
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
@@ -138,7 +135,7 @@ Options:
 #### Decryption
 
 ```
-% soda decrypt-public bob alice_pub encrypted 
+% soda decrypt-public bob alice_pub encrypted
 A telegraph key is a specialized electrical switch used by a trained operator to
 transmit text messages in Morse code in a telegraphy system.
 The first telegraph key was invented by Alfred Vail, an associate of Samuel Morse.
@@ -159,8 +156,8 @@ Alice and Bob share a key for symmetric encryption:
 Another day, they share a password:
 
 ```
-% echo qwerty | soda encrypt-password - message -p interactive -o encrypted
-% echo qwerty | soda decrypt-password - encrypted -p interactive -o message
+% echo qwerty | soda encrypt-password - message -o encrypted
+% echo qwerty | soda decrypt-password - encrypted -o message
 ```
 
 
@@ -170,8 +167,8 @@ The KDF function derives the key from the password.
 It accepts different profiles: interactive, moderate, and sensitive.
 
 ```
-% echo qwerty | soda kdf --profile interactive -
-HqbvUXflAG+no3YS9njezZ3leyr8IwERAyeNoG2l41U=
+% echo qwerty | soda kdf -
+jNLXU8/Ne5ZC8KuhDYqPUBg7xrxwv8J6yDJgCcFib9g=
 
 % soda kdf -h
 Usage: soda kdf [OPTIONS] PASSWORD_FILE
@@ -231,7 +228,7 @@ Overhead: 1.556
 
 When working with Unicode messages, enabling SCSU encoding can save
 up to 15-50% of space. To achieve this, pass the `--text` flag to both
-encryption and decryption commands. This instructs rtty-soda to 
+encryption and decryption commands. This instructs rtty-soda to
 read the message as text, applying SCSU automatically.
 
 
@@ -307,18 +304,18 @@ Overhead: 1.470
 
 - Password source
   ```
-  % echo 'A line from a book or a poem' | soda kdf - -e base94           
+  % echo 'A line from a book or a poem' | soda kdf - -e base94
   wN/K.@3Q#]Czn4kk3(negX=R|*xvvPQmk'XW$-s
   ```
 
 - WireGuard keyer
   ```
   % echo 'A line from a book or a poem' | soda kdf - -o privkey
-  % cat privkey 
+  % cat privkey
   thyA4dlQgg93+rQj/evBbBymw82GTwQCh3RJ0I6GOsY=
-  % soda pubkey privkey 
+  % soda pubkey privkey
   ruIUMqbUtyqRVSIBLSGI7AOruE2DLWgTe9o+h7Yktkw=
-  % cat privkey | wg pubkey 
+  % cat privkey | wg pubkey
   ruIUMqbUtyqRVSIBLSGI7AOruE2DLWgTe9o+h7Yktkw=
   ```
 
@@ -332,12 +329,11 @@ Overhead: 1.470
   % docker run -it --rm -h rtty-soda -v .:/app/host nett/{{ project.name }}:{{ project.version }}-tools
   % source ~/.soda/bin.env
   % echo decoy > decoy
-  % echo secret > secret
-  % echo password | soda ep - secret -o encrypted
+  % echo password | soda ep - message -o encrypted
   % steganon-cli hide -i cover.png -d "decoy | encrypted" -s "seed1 | seed2" -o stego.png
   % exiftool -TagsFromFile cover.png -all:all -overwrite_original stego.png
   % steganon-cli extract -i stego.png -s "seed1 | seed2" -o "decoy | encrypted"
-  % echo password | soda dp - encrypted -o secret
+  % echo password | soda dp - encrypted -o message
   ```
 
 
@@ -347,8 +343,8 @@ During the initial development (versions prior to 1.0.0),
 I can break backwards compatibility.
 
 
-## Releases 
+## Releases
 
-This project follows a rolling release cycle. 
-Each version bump represents where I completed a full test cycle. 
+This project follows a rolling release cycle.
+Each version bump represents where I completed a full test cycle.
 When testing passes successfully, I commit and release - so every release is a verified stable point.
