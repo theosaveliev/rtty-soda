@@ -1,7 +1,6 @@
-import re
 from typing import NamedTuple, Protocol
 
-__all__ = ["FixedFormatter", "FormattedText", "Formatter", "remove_whitespace"]
+__all__ = ["FixedFormatter", "FormattedText", "Formatter"]
 
 
 class FormattedText(NamedTuple):
@@ -20,7 +19,7 @@ class FixedFormatter(Formatter):
         self.pad_count = pad_count
 
     def format(self, text: str) -> FormattedText:
-        groups = 0
+        groups = 1
 
         if 0 < self.group_len < self.line_len:
             text, groups = self.split_groups(text)
@@ -40,7 +39,3 @@ class FixedFormatter(Formatter):
     def pad_newlines(self, text: str) -> str:
         padding = "\n" * self.pad_count
         return padding + text.strip() + "\n" + padding
-
-
-def remove_whitespace(data: str) -> str:
-    return re.sub(r"\s", "", data)

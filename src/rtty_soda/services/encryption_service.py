@@ -39,13 +39,6 @@ class EncryptionService(Service):
         self.archiver = ARCHIVERS.get(compression)
         self.unarchiver = UNARCHIVERS.get(compression)
 
-    def read_keypair(self, private_key: Reader, public_key: Reader) -> Keypair:
-        priv_bytes = self.read_input(private_key, self.key_encoder)
-        priv = PrivateKey(private_key=priv_bytes)
-        pub_bytes = self.read_input(public_key, self.key_encoder)
-        pub = PublicKey(public_key=pub_bytes)
-        return priv, pub
-
     def encryption_flow(self, message: Reader, encrypt: Pipe) -> None:
         if self.text_mode:
             text = message.read_str().strip()
@@ -63,11 +56,18 @@ class EncryptionService(Service):
         writer = self.writer
         writer.write_bytes(buff.data)
         if self.verbose:
-            overhead = buff.chars / plaintext_len
-            writer.write_diag(f"Groups: {buff.groups}")
+            overhead = buff.length / plaintext_len
             writer.write_diag(f"Plaintext: {plaintext_len}")
-            writer.write_diag(f"Ciphertext: {buff.chars}")
+            writer.write_diag(f"Ciphertext: {buff.length}")
             writer.write_diag(f"Overhead: {overhead:.3f}")
+            writer.write_diag(f"Groups: {buff.groups}")
+
+    def read_keypair(self, private_key: Reader, public_key: Reader) -> Keypair:
+        priv_bytes = self.read_input(private_key, self.key_encoder)
+        priv = PrivateKey(priv_bytes)
+        pub_bytes = self.read_input(public_key, self.key_encoder)
+        pub = PublicKey(pub_bytes)
+        return priv, pub
 
     def encrypt_public(
         self, private_key: Reader, public_key: Reader, message: Reader

@@ -1,6 +1,6 @@
 [project]
 name = "rtty-soda"
-version = "0.3.5"
+version = "0.3.6"
 description = "A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl"
 readme = "README.md"
 license = { text = "MIT" }
@@ -36,6 +36,7 @@ cli = ["click>=8.3.0,<9.0.0", "click-aliases>=1.0.5,<2.0.0"]
 dev = [
     "basedpyright>=1.31.7,<2.0.0",
     "jinja2-cli[toml]>=0.8.2,<0.9.0",
+    "jinja2-shell-extension>=2.1.1,<3.0.0",
     "mypy>=1.18.2,<2.0.0",
     "poethepoet>=0.37.0,<0.38.0",
     "pytest>=8.4.2,<9.0.0",
@@ -88,7 +89,7 @@ lint = "ruff check --fix ."
 mypy = "mypy ."
 pyright = "basedpyright ."
 test = "pytest"
-readme = "jinja2 README.j2 pyproject.toml --outfile README.md"
+readme = "jinja2 --extension=jinja2_shell_extension.ShellExtension docs/README.j2 pyproject.toml --outfile README.md"
 dev = ["format", "lint", "mypy", "pyright"]
 pre-build = ["dev", "test", "readme"]
 docker = ["docker-build", "docker-push"]

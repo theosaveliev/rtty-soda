@@ -1,19 +1,19 @@
+import re
 from typing import TYPE_CHECKING, NamedTuple
 
 from rtty_soda.encoders import Encoder, encode_str
-from rtty_soda.formatters import remove_whitespace
 
 if TYPE_CHECKING:
     from rtty_soda.formatters import Formatter
     from rtty_soda.interfaces import Reader, Writer
 
-__all__ = ["FormattedOutput", "Service"]
+__all__ = ["FormattedData", "Service"]
 
 
-class FormattedOutput(NamedTuple):
+class FormattedData(NamedTuple):
     data: bytes
-    chars: int
-    groups: int
+    length: int  # data len in chars or in bytes
+    groups: int  # number of groups
 
 
 class Service:
@@ -25,28 +25,32 @@ class Service:
         self.verbose = verbose
 
     @staticmethod
-    def read_input(source: Reader, encoder: Encoder | None) -> bytes:
+    def remove_whitespace(data: str) -> str:
+        return re.sub(r"\s", "", data)
+
+    def read_input(self, source: Reader, encoder: Encoder | None) -> bytes:
+        """Read key or ciphertext."""
         if encoder is None:
             return source.read_bytes()
 
         data = source.read_str()
-        data = remove_whitespace(data)
+        data = self.remove_whitespace(data)
         return encoder.decode(data)
 
-    def format_data(self, data: bytes, encoder: Encoder | None) -> FormattedOutput:
-        chars = 0
-        groups = 0
-        if encoder is not None and self.formatter is not None:
-            data_str = encoder.encode(data)
-            chars = len(data_str)
-            data_str, groups = self.formatter.format(data_str)
-            data = encode_str(data_str)
+    def format_data(self, data: bytes, encoder: Encoder | None) -> FormattedData:
+        """Format key or ciphertext."""
+        if encoder is None or self.formatter is None:
+            return FormattedData(data, len(data), 1)
 
-        return FormattedOutput(data, chars, groups)
+        data_str = encoder.encode(data)
+        formatted = self.formatter.format(data_str)
+        data_bytes = encode_str(formatted.text)
+        return FormattedData(data_bytes, len(data_str), formatted.groups)
 
     def write_output(self, data: bytes, encoder: Encoder | None) -> None:
+        """Write key or ciphertext."""
         buff = self.format_data(data, encoder)
         self.writer.write_bytes(buff.data)
         if self.verbose:
-            self.writer.write_diag(f"Length: {buff.chars}")
+            self.writer.write_diag(f"Length: {buff.length}")
             self.writer.write_diag(f"Groups: {buff.groups}")

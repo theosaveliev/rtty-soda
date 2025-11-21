@@ -27,7 +27,7 @@ class KeyService(Service):
 
     def pubkey(self, priv_key: Reader) -> None:
         priv_bytes = self.read_input(priv_key, self.encoder)
-        priv = PrivateKey(private_key=priv_bytes)
+        priv = PrivateKey(priv_bytes)
         pub = bytes(priv.public_key)
         self.write_output(pub, self.encoder)
 

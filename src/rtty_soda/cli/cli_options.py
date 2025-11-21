@@ -21,7 +21,7 @@ class CliOptions:
             "-c",
             default="brotli",
             show_default=True,
-            envvar="COMPRESSION",
+            envvar="SODA_COMPRESSION",
         )(function)
 
     @staticmethod
@@ -31,13 +31,16 @@ class CliOptions:
             "-e",
             default="base64",
             show_default=True,
-            envvar="DATA_ENCODING",
+            envvar="SODA_DATA_ENCODING",
         )(function)
 
     @staticmethod
     def key_encoding(function: FC) -> FC:
         return click.option(
-            "--key-encoding", default="base64", show_default=True, envvar="KEY_ENCODING"
+            "--key-encoding",
+            default="base64",
+            show_default=True,
+            envvar="SODA_KEY_ENCODING",
         )(function)
 
     @staticmethod
@@ -47,7 +50,7 @@ class CliOptions:
             "-e",
             default="base64",
             show_default=True,
-            envvar="KEY_ENCODING",
+            envvar="SODA_KEY_ENCODING",
         )(function)
 
     @staticmethod
@@ -57,7 +60,7 @@ class CliOptions:
             "-p",
             default="sensitive",
             show_default=True,
-            envvar="KDF_PROFILE",
+            envvar="SODA_KDF_PROFILE",
         )(function)
 
     @staticmethod
@@ -67,7 +70,7 @@ class CliOptions:
             "-p",
             default="sensitive",
             show_default=True,
-            envvar="KDF_PROFILE",
+            envvar="SODA_KDF_PROFILE",
         )(function)
 
     @staticmethod
@@ -76,7 +79,7 @@ class CliOptions:
             "--verbose",
             "-v",
             is_flag=True,
-            envvar="VERBOSE",
+            envvar="SODA_VERBOSE",
             help="Show verbose output.",
         )(function)
 
@@ -86,20 +89,20 @@ class CliOptions:
             "--text",
             "-t",
             is_flag=True,
-            envvar="TEXT",
+            envvar="SODA_TEXT",
             help="Treat message as text (binary if not specified).",
         )(function)
 
     @staticmethod
     def group_len(function: FC) -> FC:
         return click.option(
-            "--group-len", default=0, show_default=True, envvar="GROUP_LEN"
+            "--group-len", default=0, show_default=True, envvar="SODA_GROUP_LEN"
         )(function)
 
     @staticmethod
     def line_len(function: FC) -> FC:
         return click.option(
-            "--line-len", default=80, show_default=True, envvar="LINE_LEN"
+            "--line-len", default=80, show_default=True, envvar="SODA_LINE_LEN"
         )(function)
 
     @staticmethod
@@ -111,5 +114,5 @@ class CliOptions:
     @staticmethod
     def padding(function: FC) -> FC:
         return click.option(
-            "--padding", default=0, show_default=True, envvar="PADDING"
+            "--padding", default=0, show_default=True, envvar="SODA_PADDING"
         )(function)

@@ -1,0 +1,246 @@
+# rtty-soda
+
+A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
+
+
+#### Features
+
+- Public Key encryption (Curve25519-XSalsa20-Poly1305)
+- Secret Key encryption (XSalsa20-Poly1305)
+- Key derivation (Argon2id-Blake2b)
+- Text compression (brotli, zstd, zlib, bz2, lzma)
+- Custom encodings:
+  - Base26 (Latin)
+  - Base31 (Cyrillic)
+  - Base36 (Latin with numbers)
+  - Base64 (RFC 4648)
+  - Base94 (ASCII printable)
+  - Binary
+
+
+## Installation
+#### Package manager
+
+1. [Install uv](https://docs.astral.sh/uv/getting-started/installation/)
+2. Install rtty-soda:
+   ```
+   % uv tool install "rtty-soda[cli]"
+   ```
+3. Remove rtty-soda:
+   ```
+   % uv tool uninstall rtty-soda
+   ```
+
+#### Docker
+
+```
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/{{ project.name }}:{{ project.version }}
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/{{ project.name }}:{{ project.version }}-tools
+```
+
+
+## Getting help
+
+All commands have `[-h | --help]` option.
+
+```
+% soda
+{{ "soda" | shell | trim }}
+```
+
+Some commands have aliases, so `% soda encrypt-password ...` and `% soda ep ...`
+are equivalent.
+
+
+## Public Key encryption
+#### Key generation
+
+```
+% soda genkey | tee alice | soda pubkey - | tee alice_pub
+{{ "soda genkey | tee alice | soda pubkey - | tee alice_pub" | shell | trim }}
+
+% soda genkey | tee bob | soda pubkey - | tee bob_pub
+{{ "soda genkey | tee bob | soda pubkey - | tee bob_pub" | shell | trim }}
+
+% soda genkey -h
+{{ "soda genkey -h" | shell | trim }}
+```
+
+#### Encryption
+
+Alice sends the message to Bob:
+
+```
+% cat message
+{{ "cat docs/message" | shell | trim }}
+
+% soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
+{{ "soda encrypt-public alice bob_pub docs/message | tee encrypted-public | cut -c 1-80" | shell | trim }}
+
+% soda encrypt-public -h
+{{ "soda encrypt-public -h" | shell | trim }}
+```
+
+#### Decryption
+
+```
+% soda decrypt-public bob alice_pub encrypted
+{{ "soda decrypt-public bob alice_pub encrypted-public" | shell | trim }}
+```
+
+
+## Secret Key encryption
+
+Alice and Bob share a key for symmetric encryption:
+
+```
+% soda genkey > shared
+{{ "soda genkey > shared" | shell | trim -}}
+% soda encrypt-secret shared message -o encrypted
+{% set _ = "yes | soda encrypt-secret shared docs/message -o encrypted-secret" | shell -%}
+% soda decrypt-secret shared encrypted -o message
+{% set _ = "yes | soda decrypt-secret shared encrypted-secret -o docs/message" | shell -%}
+```
+
+Another day, they share a password:
+
+```
+% echo qwerty | soda encrypt-password - message -p interactive -o encrypted
+{% set _ = "rm encrypted-password" | shell -%}
+{% set _ = "echo qwerty | soda encrypt-password - docs/message -p interactive -o encrypted-password" | shell -%}
+% echo qwerty | soda decrypt-password - encrypted -p interactive -o message
+{% set _ = "rm docs/message" | shell -%}
+{% set _ = "echo qwerty | soda decrypt-password - encrypted-password -p interactive -o docs/message" | shell -%}
+```
+
+
+## Key derivation
+
+The KDF function derives the key from the password.
+It accepts different profiles: interactive, moderate, and sensitive.
+
+```
+% echo qwerty | soda kdf - -p interactive
+{{ "echo qwerty | soda kdf - -p interactive" | shell | trim }}
+
+% soda kdf -h
+{{ "soda kdf -h" | shell | trim }}
+```
+
+
+## Text compression
+
+That works as follows:
+1. The plaintext is prepared:
+   - In binary mode (default), the message is read as bytes
+   - In text mode (`-t, --text`), the message is read as a string, stripped, and encoded with SCSU, reducing its size by 15–50%
+2. The plaintext is compressed with the compression lib
+3. The 16-byte MAC and 24-byte nonce are added
+4. The result is encoded with Base64, which adds ~33% overhead
+
+```
+% soda es shared message -t -v -c brotli > /dev/null
+{{ "soda es shared docs/message -t -v -c brotli > /dev/null" | shell | trim }}
+% soda es shared message -t -v -c zstd > /dev/null
+{{ "soda es shared docs/message -t -v -c zstd > /dev/null" | shell | trim }}
+% soda es shared message -t -v -c zlib > /dev/null
+{{ "soda es shared docs/message -t -v -c zlib > /dev/null" | shell | trim }}
+% soda es shared message -t -v -c bz2 > /dev/null
+{{ "soda es shared docs/message -t -v -c bz2 > /dev/null" | shell | trim }}
+% soda es shared message -t -v -c lzma > /dev/null
+{{ "soda es shared docs/message -t -v -c lzma > /dev/null" | shell | trim }}
+% soda es shared message -t -v -c raw > /dev/null
+{{ "soda es shared docs/message -t -v -c raw > /dev/null" | shell | trim }}
+```
+
+
+## Encoding
+
+The rtty-soda supports various encodings:
+
+```
+% soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
+{{ "soda encrypt-public alice bob_pub docs/message --data-encoding base36 --group-len 5 --text" | shell | trim }}
+```
+
+
+## Environment variables
+
+Common options can be set in the environment variables:
+
+```
+% cat ~/.soda/ru.env
+{{ "cat docker/ru.env" | shell | trim }}
+```
+
+
+## Tutorial for the Underground Moscow Museum
+
+```
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/{{ project.name }}:{{ project.version }}-tools
+
+% source ~/.soda/ru.env
+% soda genkey | tee 173-закрытый | soda pubkey - | tee 173-публичный
+{{ "set -a; source docker/ru.env; soda genkey | tee 173-закрытый | soda pubkey - | tee 173-публичный" | shell | trim }}
+% soda genkey | tee 305-закрытый | soda pubkey - | tee 305-публичный
+{{ "set -a; source docker/ru.env; soda genkey | tee 305-закрытый | soda pubkey - | tee 305-публичный" | shell | trim }}
+
+% cat телеграмма
+{{ "cat docs/телеграмма" | shell | trim }}
+
+% soda e 173-закрытый 305-публичный телеграмма -v
+{{ "set -a; source docker/ru.env; soda e 173-закрытый 305-публичный docs/телеграмма -v" | shell | trim }}
+```
+
+
+## Alternative usage
+
+- Password source
+  ```
+  % echo "A line from a book or a poem" | soda kdf - -e base94 -p interactive
+  {{ 'echo "A line from a book or a poem" | soda kdf - -e base94 -p interactive' | shell | trim }}
+  ```
+
+- WireGuard keyer
+  ```
+  % echo "A line from a book or a poem" | soda kdf - -p interactive -o privkey
+  {% set _ = 'echo "A line from a book or a poem" | soda kdf - -p interactive -o privkey' | shell | trim -%}
+  % cat privkey
+  {{ "cat privkey" | shell | trim }}
+  % soda pubkey privkey
+  {{ "soda pubkey privkey" | shell | trim }}
+  % cat privkey | wg pubkey
+  {{ "cat privkey | wg pubkey" | shell | trim }}
+  ```
+
+- Data store
+  
+  The `-tools` image features `steganon-cli` to support the following flow:
+  
+  ![Flow diagram](https://github.com/theosaveliev/rtty-soda/raw/main/diagram/soda.png)
+
+  ```
+  % docker run -it --rm -h rtty-soda -v .:/app/host nett/{{ project.name }}:{{ project.version }}-tools
+  % source ~/.soda/bin.env
+  % echo decoy > decoy
+  % echo password | soda ep - message -o encrypted
+  % steganon-cli hide -i cover.png -d "decoy | encrypted" -s "seed1 | seed2" -o stego.png
+  % exiftool -TagsFromFile cover.png -all:all -overwrite_original stego.png
+  % steganon-cli extract -i stego.png -s "seed1 | seed2" -o "decoy | encrypted"
+  % echo password | soda dp - encrypted -o message
+  ```
+
+
+## Compatibility
+
+During the initial development (versions prior to 1.0.0),
+I can break backwards compatibility.
+
+
+## Releases
+
+This project follows a rolling release cycle.
+Each version bump represents where I completed a full test cycle.
+When testing passes successfully, I commit and release - so every release is a verified stable point.
+
+{%- set _ = "rm alice alice_pub bob bob_pub privkey shared 173-закрытый 173-публичный 305-закрытый 305-публичный encrypted-public encrypted-secret encrypted-password" | shell -%}
