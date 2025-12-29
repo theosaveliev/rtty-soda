@@ -133,7 +133,7 @@ It accepts different profiles: interactive, moderate, and sensitive.
 That works as follows:
 1. The plaintext is prepared:
    - In binary mode (default), the message is read as bytes
-   - In text mode (`-t, --text`), the message is read as a string, stripped, and encoded with SCSU, reducing its size by 15–50%
+   - In text mode (`-t, --text`), the message is read as a string, stripped, and encoded with SCSU, reducing the size of Unicode messages by 15–50%
 2. The plaintext is compressed with the compression lib
 3. The 16-byte MAC and 24-byte nonce are added
 4. The result is encoded with Base64, which adds ~33% overhead
@@ -169,27 +169,8 @@ The rtty-soda supports various encodings:
 Common options can be set in the environment variables:
 
 ```
-% cat ~/.soda/ru.env
-{{ "cat docker/ru.env" | shell | trim }}
-```
-
-
-## Tutorial for the Underground Moscow Museum
-
-```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/{{ project.name }}:{{ project.version }}-tools
-
-% source ~/.soda/ru.env
-% soda genkey | tee 173-закрытый | soda pubkey - | tee 173-публичный
-{{ "set -a; source docker/ru.env; soda genkey | tee 173-закрытый | soda pubkey - | tee 173-публичный" | shell | trim }}
-% soda genkey | tee 305-закрытый | soda pubkey - | tee 305-публичный
-{{ "set -a; source docker/ru.env; soda genkey | tee 305-закрытый | soda pubkey - | tee 305-публичный" | shell | trim }}
-
-% cat телеграмма
-{{ "cat docs/телеграмма" | shell | trim }}
-
-% soda e 173-закрытый 305-публичный телеграмма -v
-{{ "set -a; source docker/ru.env; soda e 173-закрытый 305-публичный docs/телеграмма -v" | shell | trim }}
+% cat ~/.soda/bin.env
+{{ "cat docker/bin.env" | shell | trim }}
 ```
 
 
@@ -213,23 +194,6 @@ Common options can be set in the environment variables:
   {{ "cat privkey | wg pubkey" | shell | trim }}
   ```
 
-- Data store
-  
-  The `-tools` image features `steganon-cli` to support the following flow:
-  
-  ![Flow diagram](https://github.com/theosaveliev/rtty-soda/raw/main/diagram/soda.png)
-
-  ```
-  % docker run -it --rm -h rtty-soda -v .:/app/host nett/{{ project.name }}:{{ project.version }}-tools
-  % source ~/.soda/bin.env
-  % echo decoy > decoy
-  % echo password | soda ep - message -o encrypted
-  % steganon-cli hide -i cover.png -d "decoy | encrypted" -s "seed1 | seed2" -o stego.png
-  % exiftool -TagsFromFile cover.png -all:all -overwrite_original stego.png
-  % steganon-cli extract -i stego.png -s "seed1 | seed2" -o "decoy | encrypted"
-  % echo password | soda dp - encrypted -o message
-  ```
-
 
 ## Compatibility
 
@@ -243,4 +207,4 @@ This project follows a rolling release cycle.
 Each version bump represents where I completed a full test cycle.
 When testing passes successfully, I commit and release - so every release is a verified stable point.
 
-{%- set _ = "rm alice alice_pub bob bob_pub privkey shared 173-закрытый 173-публичный 305-закрытый 305-публичный encrypted-public encrypted-secret encrypted-password" | shell -%}
+{%- set _ = "rm alice alice_pub bob bob_pub privkey shared encrypted-public encrypted-secret encrypted-password" | shell -%}

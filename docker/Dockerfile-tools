@@ -4,10 +4,9 @@ FROM ubuntu:noble
 RUN yes | unminimize
 RUN apt-get update -y \
     && apt-get upgrade -y \
-    && apt-get install -y --no-install-recommends ca-certificates locales curl vim nano less keepassxc ssss xxd mc man manpages libimage-exiftool-perl \
+    && apt-get install -y --no-install-recommends ca-certificates locales curl vim nano less keepassxc \
     && rm -Rf /var/lib/apt/lists/* \
-    && locale-gen "en_US.UTF-8" \
-    && update-alternatives --set editor /usr/bin/mcedit
+    && locale-gen "en_US.UTF-8"
 
 USER ubuntu:ubuntu
 WORKDIR /app
@@ -17,7 +16,6 @@ ENV PYTHON_GIL=1
 
 ADD --chown=ubuntu:ubuntu vimrc $HOME/.vim/vimrc
 ADD --chown=ubuntu:ubuntu bin.env $HOME/.soda/bin.env
-ADD --chown=ubuntu:ubuntu ru.env $HOME/.soda/ru.env
 ADD --chown=ubuntu:ubuntu unset.sh $HOME/.soda/unset.sh
 
 ADD --chown=ubuntu:ubuntu https://astral.sh/uv/install.sh uv-installer.sh
@@ -25,6 +23,4 @@ RUN sh uv-installer.sh && rm uv-installer.sh
 ENV PATH="/home/ubuntu/.local/bin/:$PATH"
 
 RUN uv tool install --no-cache "rtty-soda[cli]"
-RUN uv tool install --no-cache "steganon[cli]"
-
 RUN echo "set -a" >> $HOME/.bashrc

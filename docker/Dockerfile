@@ -15,10 +15,12 @@ ENV HOME="/home/ubuntu"
 ENV PYTHON_GIL=1
 
 ADD --chown=ubuntu:ubuntu vimrc $HOME/.vim/vimrc
-ADD --chown=ubuntu:ubuntu ru.env $HOME/.soda/ru.env
+ADD --chown=ubuntu:ubuntu bin.env $HOME/.soda/bin.env
+ADD --chown=ubuntu:ubuntu unset.sh $HOME/.soda/unset.sh
 
 ADD --chown=ubuntu:ubuntu https://astral.sh/uv/install.sh uv-installer.sh
 RUN sh uv-installer.sh && rm uv-installer.sh
 ENV PATH="/home/ubuntu/.local/bin/:$PATH"
 
 RUN uv tool install --no-cache "rtty-soda[cli]"
+RUN echo "set -a" >> $HOME/.bashrc
