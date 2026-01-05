@@ -1,4 +1,4 @@
-import re
+import string
 from typing import TYPE_CHECKING, NamedTuple
 
 from rtty_soda.encoders import Encoder, encode_str
@@ -26,7 +26,8 @@ class Service:
 
     @staticmethod
     def remove_whitespace(data: str) -> str:
-        return re.sub(r"\s", "", data)
+        trans = str.maketrans("", "", string.whitespace)
+        return data.translate(trans)
 
     def read_input(self, source: Reader, encoder: Encoder | None) -> bytes:
         """Read key or ciphertext."""

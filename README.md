@@ -34,8 +34,8 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.7
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.7-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.8
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.8-tools
 ```
 
 
@@ -73,10 +73,10 @@ are equivalent.
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-drR5oK7yttUUF/lnZgBVKRWLqX8DDABMkfG0XJXybmE=
+vIvNpFgG54XCI9wBhx+ttgF9W4PXDpJC0IeUY0oiilo=
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-eUzHLKTVUu6UF8ROBSbf3gCMrtEzusTR3UWj6FrzpUQ=
+3Zqm1I1c9Oi7Vc8zcfC2cnF0ViRwhGwAfDK8SrB4f28=
 
 % soda genkey -h
 Usage: soda genkey [OPTIONS]
@@ -107,7 +107,7 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 (c) Wikipedia
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-AiZ5BcEy3KmODMocRa/xaOnxrAc6RYC8dF8StTIhVtGX/drtHSHnAxtiYFxwIexystWaHFSm5MXSLacX
+XCo7tFf0fjnKALbnYTi1FZGNlwM60Jgvwmv2fLjKZEOn6U5asMB46VNXDlKbh5jtJFUxudq2mb3MfgYV
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
@@ -241,10 +241,10 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-4PB9N N733L LD81G OGM8W 1OHZQ TZAOT 1K5C4 PYCT1 SJJJG 4X50Z 81ZEP QR0XT UI5ZM
-4HQMK A0JT6 764FH 9ZQYZ HPSA2 O8RWO 0S8YN 7U2ZD 8JDPT 15SUV 60MQ3 TNCWB PZT26
-16P6B ZADJH JNKKH C2R5E IMFZ1 0EMDY 4WGZH VCSWO 0QS9A XQGXK 1M61K UV4TS Q3URP
-IJTM5 CV743 FAB9V XYWQO HSHA0 ROULB FLCWM 34LH3 EENJ4 BB2KO AX8
+1CF5T OXYFQ 2VGTE 3CCWO S36TX SZXV8 MSXDB JEBMS FZ0AC WZBD5 ZJ4AX FAON4 NYKOM
+U9MYD 0ZRJP SWHJH P7H4B CBSC1 M9Z2K VYSD3 JJW5R 9TVLF OANVZ 0O7AQ G2KS7 6W3HB
+GBU85 AKR5E XLS8K 7GMXT E6NH1 UQM53 BFEZ0 RB86O P6W0M CSVYO NXRMA JM5I2 O14TZ
+CPIU1 LHZSL X8B0U ZUDNJ 6EDF9 74OYS 591KN AHWOK 31MY3 6UK8V EGO
 ```
 
 

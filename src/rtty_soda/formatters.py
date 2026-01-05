@@ -1,3 +1,5 @@
+import itertools
+import math
 from typing import NamedTuple, Protocol
 
 __all__ = ["FixedFormatter", "FormattedText", "Formatter"]
@@ -32,9 +34,10 @@ class FixedFormatter(Formatter):
     def split_groups(self, data: str) -> FormattedText:
         step = self.group_len
         gpl = self.line_len // (step + 1)
-        groups = [data[i : i + step] for i in range(0, len(data), step)]
-        lines = [" ".join(groups[i : i + gpl]) for i in range(0, len(groups), gpl)]
-        return FormattedText("\n".join(lines), len(groups))
+        groups = (data[i : i + step] for i in range(0, len(data), step))
+        groups_len = math.ceil(len(data) / step)
+        lines = (" ".join(ln) for ln in itertools.batched(groups, gpl, strict=False))
+        return FormattedText("\n".join(lines), groups_len)
 
     def pad_newlines(self, text: str) -> str:
         padding = "\n" * self.pad_count
