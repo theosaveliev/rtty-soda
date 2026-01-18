@@ -48,7 +48,7 @@ def encrypted_pw() -> str:
 
 def test_genkey() -> None:
     runner = CliRunner()
-    encoders = ["base26", "base31", "base36", "base64", "base94", "binary"]
+    encoders = ["base10", "base26", "base31", "base36", "base64", "base94", "binary"]
     args = [
         "genkey",
         "--group-len",

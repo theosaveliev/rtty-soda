@@ -44,7 +44,7 @@ def genkey_cmd(
 ) -> None:
     """Generate Private Key.
 
-    Encoding: base26 | base31 | base36 | base64 | base94 | binary
+    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
     """
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
@@ -71,7 +71,7 @@ def pubkey_cmd(
 ) -> None:
     """Get Public Key.
 
-    Encoding: base26 | base31 | base36 | base64 | base94 | binary
+    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
     """
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
@@ -101,7 +101,7 @@ def kdf_cmd(
 ) -> None:
     """Key Derivation Function.
 
-    Encoding: base26 | base31 | base36 | base64 | base94 | binary
+    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
 
     Profile: interactive | moderate | sensitive
     """
@@ -141,7 +141,7 @@ def encrypt_public_cmd(
 ) -> None:
     """Encrypt Message (Public).
 
-    Encoding: base26 | base31 | base36 | base64 | base94 | binary
+    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
 
     Compression: brotli | zstd | zlib | bz2 | lzma | raw
     """
@@ -189,7 +189,7 @@ def encrypt_secret_cmd(
 ) -> None:
     """Encrypt Message (Secret).
 
-    Encoding: base26 | base31 | base36 | base64 | base94 | binary
+    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
 
     Compression: brotli | zstd | zlib | bz2 | lzma | raw
     """
@@ -238,7 +238,7 @@ def encrypt_password_cmd(
 
     KDF profile: interactive | moderate | sensitive
 
-    Encoding: base26 | base31 | base36 | base64 | base94 | binary
+    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
 
     Compression: brotli | zstd | zlib | bz2 | lzma | raw
     """
@@ -279,7 +279,7 @@ def decrypt_public_cmd(
 ) -> None:
     """Decrypt Message (Public).
 
-    Encoding: base26 | base31 | base36 | base64 | base94 | binary
+    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
 
     Compression: brotli | zstd | zlib | bz2 | lzma | raw
     """
@@ -318,7 +318,7 @@ def decrypt_secret_cmd(
 ) -> None:
     """Decrypt Message (Secret).
 
-    Encoding: base26 | base31 | base36 | base64 | base94 | binary
+    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
 
     Compression: brotli | zstd | zlib | bz2 | lzma | raw
     """
@@ -358,7 +358,7 @@ def decrypt_password_cmd(
 
     KDF profile: interactive | moderate | sensitive
 
-    Encoding: base26 | base31 | base36 | base64 | base94 | binary
+    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
 
     Compression: brotli | zstd | zlib | bz2 | lzma | raw
     """
@@ -398,7 +398,7 @@ def encode_cmd(
 ) -> None:
     """Encode File.
 
-    Encoding: base26 | base31 | base36 | base64 | base94 | binary
+    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
     """
     writer = CliWriter(output_file)
     formatter = FixedFormatter(group_len, line_len, padding)

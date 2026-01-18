@@ -10,6 +10,7 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
 - Key derivation (Argon2id-Blake2b)
 - Text compression (brotli, zstd, zlib, bz2, lzma)
 - Custom encodings:
+  - Base10 (Decimal)
   - Base26 (Latin)
   - Base31 (Cyrillic)
   - Base36 (Latin with numbers)
@@ -34,8 +35,8 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.9
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.9-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.10
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.10-tools
 ```
 
 
@@ -73,26 +74,26 @@ are equivalent.
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-jZ19VesPd5iRcaYakiYhtuqQRwOe0Tx06MqiDzPcxjE=
+Fg/toJIvAHKpOle6LRyA0Hl8mD3kvtKLrjipRIn8SX0=
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-yoN1/OOykINiiuy4tW1JuBscxcJWy6m6SkD6DYcqPTc=
+w8GOftOwJqh2y3aKzsoudfoB0I9y3YJ3H3t7iUVDrhU=
 
 % soda genkey -h
 Usage: soda genkey [OPTIONS]
 
   Generate Private Key.
 
-  Encoding: base26 | base31 | base36 | base64 | base94 | binary
+  Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
 
 Options:
-  -e, --encoding TEXT     [default: base64]
-  -o, --output-file FILE  Write output to file.
-  --group-len INTEGER     [default: 0]
-  --line-len INTEGER      [default: 80]
-  --padding INTEGER       [default: 0]
-  -v, --verbose           Show verbose output.
-  -h, --help              Show this message and exit.
+  -e, --encoding TEXT      [default: base64]
+  -o, --output-file FILE   Write output to file.
+  -g, --group-len INTEGER  [default: 0]
+  --line-len INTEGER       [default: 80]
+  --padding INTEGER        [default: 0]
+  -v, --verbose            Show verbose output.
+  -h, --help               Show this message and exit.
 ```
 
 #### Encryption
@@ -107,7 +108,7 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 (c) Wikipedia
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-Ht7mcqJYGlvcPy75/K4bC4PbF6EmLCUNV/t04uA78Z57Zeo9uE7Kpt9JdLbK2FgvhqnPuYCwQQjFOhZV
+CtDqK0xeC1LuRLISlir4a8Ue4CQW9oSd0HQqOIRZgIB33BBxTkpCbX98IlC3xQqkNYJTogwzS7sImZq9
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
@@ -115,7 +116,7 @@ Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
 
   Encrypt Message (Public).
 
-  Encoding: base26 | base31 | base36 | base64 | base94 | binary
+  Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
 
   Compression: brotli | zstd | zlib | bz2 | lzma | raw
 
@@ -125,7 +126,7 @@ Options:
   -e, --data-encoding TEXT  [default: base64]
   -c, --compression TEXT    [default: brotli]
   -o, --output-file FILE    Write output to file.
-  --group-len INTEGER       [default: 0]
+  -g, --group-len INTEGER   [default: 0]
   --line-len INTEGER        [default: 80]
   --padding INTEGER         [default: 0]
   -v, --verbose             Show verbose output.
@@ -175,19 +176,19 @@ Usage: soda kdf [OPTIONS] PASSWORD_FILE
 
   Key Derivation Function.
 
-  Encoding: base26 | base31 | base36 | base64 | base94 | binary
+  Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
 
   Profile: interactive | moderate | sensitive
 
 Options:
-  -e, --encoding TEXT     [default: base64]
-  -p, --profile TEXT      [default: sensitive]
-  -o, --output-file FILE  Write output to file.
-  --group-len INTEGER     [default: 0]
-  --line-len INTEGER      [default: 80]
-  --padding INTEGER       [default: 0]
-  -v, --verbose           Show verbose output.
-  -h, --help              Show this message and exit.
+  -e, --encoding TEXT      [default: base64]
+  -p, --profile TEXT       [default: sensitive]
+  -o, --output-file FILE   Write output to file.
+  -g, --group-len INTEGER  [default: 0]
+  --line-len INTEGER       [default: 80]
+  --padding INTEGER        [default: 0]
+  -v, --verbose            Show verbose output.
+  -h, --help               Show this message and exit.
 ```
 
 
@@ -241,10 +242,10 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-3PHWM 6W5YL WOB93 CXKFI XH7GY XR2LP 3ASX2 S4XZE BWWES YA0ZH Y8YIA SB66P PKR41
-OAPPC CL1AE 7HPE6 4K0CW MYKH8 V0BPZ 5052N RFJ2T KCRDM TLZL8 3PO4M WWSTE 64K35
-ZCDO3 WKBRD 71YDY ONIEG W6PCT YZCDS 6Q2JU X24XD AK0U3 I3Q8N QSJ0T 3HMGI Z2FHE
-9ORBG BWO1L DK7FE K0FZW 01VXG F7PLW 58EIP VSNY9 1XZ50 Z1IWG K4S
+16YU3 50RHG ZPSAH KGZ8W 5RJAF OC818 P1Z2N 4VUMC DQND6 5YGVU 2JQRJ K8Z51 5OG3X
+0FHCN C2H0A M7PHT CHJ2X ACRT2 GIVA3 FNM4F KSA8D E6M43 XWW52 GPTJM FU0KU VCTQK
+25S2Q 9DGYZ GLOFL R8HJE 3HDFB Q7Q1C 37FL3 5PWZ2 Y8F4N TX0IT KUOGP 9DTT8 A9601
+69BVS J5H7N QVXC8 M8I4L 7RN3C 9L3O5 NCYZF MGGR6 4U6NE LTQP7 M2F
 ```
 
 

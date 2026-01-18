@@ -96,7 +96,7 @@ class CliOptions:
     @staticmethod
     def group_len(function: FC) -> FC:
         return click.option(
-            "--group-len", default=0, show_default=True, envvar="SODA_GROUP_LEN"
+            "--group-len", "-g", default=0, show_default=True, envvar="SODA_GROUP_LEN"
         )(function)
 
     @staticmethod

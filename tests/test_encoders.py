@@ -1,4 +1,5 @@
 from rtty_soda.encoders import (
+    Base10Encoder,
     Base26Encoder,
     Base31Encoder,
     Base36Encoder,
@@ -8,6 +9,9 @@ from rtty_soda.encoders import (
 
 
 def test_encoders() -> None:
+    assert Base10Encoder.encode(b"\x64") == "100"
+    assert Base10Encoder.decode("100") == b"\x64"
+
     assert Base26Encoder.encode(b"\x64") == "DW"
     assert Base26Encoder.decode("DW") == b"\x64"
 

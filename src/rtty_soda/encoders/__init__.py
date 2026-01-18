@@ -1,3 +1,4 @@
+from .base10_encoder import Base10Encoder
 from .base26_encoder import Base26Encoder
 from .base31_encoder import Base31Encoder
 from .base36_encoder import Base36Encoder
@@ -9,6 +10,7 @@ from .scsu import scsu_decode, scsu_encode
 
 __all__ = [
     "ENCODERS",
+    "Base10Encoder",
     "Base26Encoder",
     "Base31Encoder",
     "Base36Encoder",
@@ -22,6 +24,7 @@ __all__ = [
 ]
 
 ENCODERS: dict[str, Encoder] = {
+    "base10": Base10Encoder(),
     "base26": Base26Encoder(),
     "base31": Base31Encoder(),
     "base36": Base36Encoder(),
