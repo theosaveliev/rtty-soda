@@ -1,6 +1,6 @@
 [project]
 name = "rtty-soda"
-version = "0.3.11"
+version = "0.3.12"
 description = "A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl"
 readme = "README.md"
 license = { text = "MIT" }
@@ -82,6 +82,9 @@ wheel-exclude = [
 
 [tool.poe]
 executor.type = "uv"
+
+[tool.poe.env]
+PYTHON_GIL = "1"
 
 [tool.poe.tasks]
 format = "ruff format"
