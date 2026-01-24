@@ -35,8 +35,8 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.10
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.10-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.11
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.11-tools
 ```
 
 
@@ -46,6 +46,7 @@ All commands have `[-h | --help]` option.
 
 ```
 % soda
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
 Usage: soda [OPTIONS] COMMAND [ARGS]...
 
 Options:
@@ -74,12 +75,17 @@ are equivalent.
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-Fg/toJIvAHKpOle6LRyA0Hl8mD3kvtKLrjipRIn8SX0=
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
+HT6UNhua+slsp+GBWyIiLjw55iWGOSvgdHtOaidbQSc=
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-w8GOftOwJqh2y3aKzsoudfoB0I9y3YJ3H3t7iUVDrhU=
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
+8+tcGctkBSSCsWv6oGduS5/DcCdKx4A6GOiEfBiyBWE=
 
 % soda genkey -h
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
 Usage: soda genkey [OPTIONS]
 
   Generate Private Key.
@@ -108,9 +114,11 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 (c) Wikipedia
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-CtDqK0xeC1LuRLISlir4a8Ue4CQW9oSd0HQqOIRZgIB33BBxTkpCbX98IlC3xQqkNYJTogwzS7sImZq9
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
+lbu7UO4XgNUJcYKfX0IonastYWzwhL1h8OnW4Ks2nyTCwAsJK78NSa/iUqjmjGN9PlwXiDakvJHFigZD
 
 % soda encrypt-public -h
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
                            MESSAGE_FILE
 
@@ -137,6 +145,7 @@ Options:
 
 ```
 % soda decrypt-public bob alice_pub encrypted
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
 A telegraph key is a specialized electrical switch used by a trained operator to
 transmit text messages in Morse code in a telegraphy system.
 The first telegraph key was invented by Alfred Vail, an associate of Samuel Morse.
@@ -150,7 +159,7 @@ Alice and Bob share a key for symmetric encryption:
 
 ```
 % soda genkey > shared
-% soda encrypt-secret shared message -o encrypted
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.% soda encrypt-secret shared message -o encrypted
 % soda decrypt-secret shared encrypted -o message
 ```
 
@@ -169,9 +178,11 @@ It accepts different profiles: interactive, moderate, and sensitive.
 
 ```
 % echo qwerty | soda kdf - -p interactive
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
 HqbvUXflAG+no3YS9njezZ3leyr8IwERAyeNoG2l41U=
 
 % soda kdf -h
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
 Usage: soda kdf [OPTIONS] PASSWORD_FILE
 
   Key Derivation Function.
@@ -191,6 +202,8 @@ Options:
   -h, --help               Show this message and exit.
 ```
 
+![KDF diagram](https://github.com/theosaveliev/rtty-soda/raw/main/diagram/kdf.png)
+
 
 ## Text compression
 
@@ -204,31 +217,37 @@ That works as follows:
 
 ```
 % soda es shared message -t -v -c brotli > /dev/null
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
 Plaintext: 238
 Ciphertext: 216
 Overhead: 0.908
 Groups: 1
 % soda es shared message -t -v -c zstd > /dev/null
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
 Plaintext: 238
 Ciphertext: 276
 Overhead: 1.160
 Groups: 1
 % soda es shared message -t -v -c zlib > /dev/null
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
 Plaintext: 238
 Ciphertext: 280
 Overhead: 1.176
 Groups: 1
 % soda es shared message -t -v -c bz2 > /dev/null
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
 Plaintext: 238
 Ciphertext: 336
 Overhead: 1.412
 Groups: 1
 % soda es shared message -t -v -c lzma > /dev/null
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
 Plaintext: 238
 Ciphertext: 320
 Overhead: 1.345
 Groups: 1
 % soda es shared message -t -v -c raw > /dev/null
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
 Plaintext: 238
 Ciphertext: 372
 Overhead: 1.563
@@ -242,10 +261,11 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-16YU3 50RHG ZPSAH KGZ8W 5RJAF OC818 P1Z2N 4VUMC DQND6 5YGVU 2JQRJ K8Z51 5OG3X
-0FHCN C2H0A M7PHT CHJ2X ACRT2 GIVA3 FNM4F KSA8D E6M43 XWW52 GPTJM FU0KU VCTQK
-25S2Q 9DGYZ GLOFL R8HJE 3HDFB Q7Q1C 37FL3 5PWZ2 Y8F4N TX0IT KUOGP 9DTT8 A9601
-69BVS J5H7N QVXC8 M8I4L 7RN3C 9L3O5 NCYZF MGGR6 4U6NE LTQP7 M2F
+<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
+513S7 9BLUG AVKLP S8PV8 GGOAJ I4ZG2 W0CLI O2H8J P270K Z36S0 17ZSN 4VJVR 0L2GL
+QD3S3 K9LYV K1NTU 0QYYD IL032 60P67 U0NNO UY7S2 WO55O 6CNHV OMUEM IDFQ5 PIAIU
+OHX15 1OM4H 4T1IR SAH2U V87ZS SC2TB IFE8X 3YB0H YUL2C LXQLW 37PJZ IJ50M JJH0X
+VX8IM MQ4ON 9DRX2 RGX2J WXW1P RYHP9 G3AJ9 6PJOC DPREK 6ND5Q RHV
 ```
 
 
@@ -272,7 +292,8 @@ SODA_VERBOSE=0
 - Password source
   ```
   % echo "A line from a book or a poem" | soda kdf - -e base94 -p interactive
-  x\R9"~8Ujh^_uh:Ty<!t(ZNzK=5w^ukew~#-x!n
+  <frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
+x\R9"~8Ujh^_uh:Ty<!t(ZNzK=5w^ukew~#-x!n
   ```
 
 - WireGuard keyer
@@ -281,7 +302,8 @@ SODA_VERBOSE=0
   % cat privkey
   uIoBJdgaz8ZP3/n/9KzdUNvFi7DxbUQdQ9t8ujwGnMk=
   % soda pubkey privkey
-  F2B674kXVcTznnRPWCVasx1miCT+yUtXQ3P5Ecee4zI=
+  <frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module '_brotli', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.
+F2B674kXVcTznnRPWCVasx1miCT+yUtXQ3P5Ecee4zI=
   % cat privkey | wg pubkey
   F2B674kXVcTznnRPWCVasx1miCT+yUtXQ3P5Ecee4zI=
   ```
