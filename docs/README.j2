@@ -58,10 +58,10 @@ are equivalent.
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-{{ "soda genkey | tee alice | soda pubkey - | tee alice_pub" | shell | trim }}
+{{ "soda genkey | tee docs/alice | soda pubkey - | tee docs/alice_pub" | shell | trim }}
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-{{ "soda genkey | tee bob | soda pubkey - | tee bob_pub" | shell | trim }}
+{{ "soda genkey | tee docs/bob | soda pubkey - | tee docs/bob_pub" | shell | trim }}
 
 % soda genkey -h
 {{ "soda genkey -h" | shell | trim }}
@@ -76,7 +76,7 @@ Alice sends the message to Bob:
 {{ "cat docs/message" | shell | trim }}
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-{{ "soda encrypt-public alice bob_pub docs/message | tee encrypted-public | cut -c 1-80" | shell | trim }}
+{{ "soda encrypt-public docs/alice docs/bob_pub docs/message | tee docs/encrypted_public | cut -c 1-80" | shell | trim }}
 
 % soda encrypt-public -h
 {{ "soda encrypt-public -h" | shell | trim }}
@@ -86,7 +86,8 @@ Alice sends the message to Bob:
 
 ```
 % soda decrypt-public bob alice_pub encrypted
-{{ "soda decrypt-public bob alice_pub encrypted-public" | shell | trim }}
+{{ "soda decrypt-public docs/bob docs/alice_pub docs/encrypted_public" | shell | trim }}
+{% set _ = "rm docs/encrypted_public" | shell -%}
 ```
 
 
@@ -96,22 +97,24 @@ Alice and Bob share a key for symmetric encryption:
 
 ```
 % soda genkey > shared
-{{ "soda genkey > shared" | shell | trim -}}
+{{ "soda genkey > docs/shared" | shell | trim -}}
 % soda encrypt-secret shared message -o encrypted
-{% set _ = "yes | soda encrypt-secret shared docs/message -o encrypted-secret" | shell -%}
+{% set _ = "yes | soda encrypt-secret docs/shared docs/message -o docs/encrypted_secret" | shell -%}
 % soda decrypt-secret shared encrypted -o message
-{% set _ = "yes | soda decrypt-secret shared encrypted-secret -o docs/message" | shell -%}
+{% set _ = "yes | soda decrypt-secret docs/shared docs/encrypted_secret -o docs/message" | shell -%}
+{% set _ = "rm docs/encrypted_secret" | shell -%}
 ```
 
 Another day, they share a password:
 
 ```
 % echo qwerty | soda encrypt-password - message -p interactive -o encrypted
-{% set _ = "rm encrypted-password" | shell -%}
-{% set _ = "echo qwerty | soda encrypt-password - docs/message -p interactive -o encrypted-password" | shell -%}
+{% set _ = "rm docs/encrypted_password" | shell -%}
+{% set _ = "echo qwerty | soda encrypt-password - docs/message -p interactive -o docs/encrypted_password" | shell -%}
 % echo qwerty | soda decrypt-password - encrypted -p interactive -o message
 {% set _ = "rm docs/message" | shell -%}
-{% set _ = "echo qwerty | soda decrypt-password - encrypted-password -p interactive -o docs/message" | shell -%}
+{% set _ = "echo qwerty | soda decrypt-password - docs/encrypted_password -p interactive -o docs/message" | shell -%}
+{% set _ = "rm docs/encrypted_password" | shell -%}
 ```
 
 
@@ -143,17 +146,18 @@ That works as follows:
 
 ```
 % soda es shared message -t -v -c brotli > /dev/null
-{{ "soda es shared docs/message -t -v -c brotli > /dev/null" | shell | trim }}
+{{ "soda es docs/shared docs/message -t -v -c brotli > /dev/null" | shell | trim }}
 % soda es shared message -t -v -c zstd > /dev/null
-{{ "soda es shared docs/message -t -v -c zstd > /dev/null" | shell | trim }}
+{{ "soda es docs/shared docs/message -t -v -c zstd > /dev/null" | shell | trim }}
 % soda es shared message -t -v -c zlib > /dev/null
-{{ "soda es shared docs/message -t -v -c zlib > /dev/null" | shell | trim }}
+{{ "soda es docs/shared docs/message -t -v -c zlib > /dev/null" | shell | trim }}
 % soda es shared message -t -v -c bz2 > /dev/null
-{{ "soda es shared docs/message -t -v -c bz2 > /dev/null" | shell | trim }}
+{{ "soda es docs/shared docs/message -t -v -c bz2 > /dev/null" | shell | trim }}
 % soda es shared message -t -v -c lzma > /dev/null
-{{ "soda es shared docs/message -t -v -c lzma > /dev/null" | shell | trim }}
+{{ "soda es docs/shared docs/message -t -v -c lzma > /dev/null" | shell | trim }}
 % soda es shared message -t -v -c raw > /dev/null
-{{ "soda es shared docs/message -t -v -c raw > /dev/null" | shell | trim }}
+{{ "soda es docs/shared docs/message -t -v -c raw > /dev/null" | shell | trim }}
+{% set _ = "rm docs/shared" | shell -%}
 ```
 
 
@@ -163,7 +167,8 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-{{ "soda encrypt-public alice bob_pub docs/message --data-encoding base36 --group-len 5 --text" | shell | trim }}
+{{ "soda encrypt-public docs/alice docs/bob_pub docs/message --data-encoding base36 --group-len 5 --text" | shell | trim }}
+{% set _ = "rm docs/alice docs/alice_pub docs/bob docs/bob_pub" | shell -%}
 ```
 
 
@@ -188,14 +193,36 @@ Common options can be set in the environment variables:
 - WireGuard keyer
   ```
   % echo "A line from a book or a poem" | soda kdf - -p interactive -o privkey
-  {% set _ = 'echo "A line from a book or a poem" | soda kdf - -p interactive -o privkey' | shell | trim -%}
+  {% set _ = 'echo "A line from a book or a poem" | soda kdf - -p interactive -o docs/privkey' | shell | trim -%}
   % cat privkey
-  {{ "cat privkey" | shell | trim }}
+  {{ "cat docs/privkey" | shell | trim }}
   % soda pubkey privkey
-  {{ "soda pubkey privkey" | shell | trim }}
+  {{ "soda pubkey docs/privkey" | shell | trim }}
   % cat privkey | wg pubkey
-  {{ "cat privkey | wg pubkey" | shell | trim }}
+  F2B674kXVcTznnRPWCVasx1miCT+yUtXQ3P5Ecee4zI=
+  {% set _ = "rm docs/privkey" | shell -%}
   ```
+
+- Secure storage
+  ```
+  % echo "A remarkable example of misplaced confidence" > sensitive_data
+  {% set _ = 'echo "A remarkable example of misplaced confidence" > docs/sensitive_data' | shell | trim -%}
+  % echo "Blessed with opinions, cursed with thought" > data_password
+  {% set _ = 'echo "Blessed with opinions, cursed with thought" > docs/data_password' | shell | trim -%}
+  % soda ep data_password sensitive_data -e binary -p interactive -o encrypted_data
+  {% set _ = 'yes | soda ep docs/data_password docs/sensitive_data -e binary -p interactive -o docs/encrypted_data' | shell | trim -%}
+  % echo "Too serious to be wise" > offset_password
+  {% set _ = 'echo "Too serious to be wise" > docs/offset_password' | shell | trim -%}
+  % soda kdf offset_password -e base10 -p interactive -g 10 | head -1
+  {{ "soda kdf docs/offset_password -e base10 -p interactive -g 10 | head -1" | shell | trim }}
+  % sudo dd if=./encrypted_data of=/dev/sdb1 bs=1 seek=6174465709
+  85+0 records in
+  85+0 records out
+  85 bytes transferred in 0.005787 secs (14688 bytes/sec)
+  {% set _ = "rm docs/sensitive_data docs/data_password docs/offset_password docs/encrypted_data" | shell -%}
+  ```
+
+  ![dd diagram](https://github.com/theosaveliev/rtty-soda/raw/main/diagram/dd.png)
 
 
 ## Compatibility
@@ -209,5 +236,3 @@ I can break backwards compatibility.
 This project follows a rolling release cycle.
 Each version bump represents where I completed a full test cycle.
 When testing passes successfully, I commit and release - so every release is a verified stable point.
-
-{%- set _ = "rm alice alice_pub bob bob_pub privkey shared encrypted-public encrypted-secret encrypted-password" | shell -%}

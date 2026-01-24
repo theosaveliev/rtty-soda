@@ -35,8 +35,8 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.12
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.12-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.13
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.13-tools
 ```
 
 
@@ -74,10 +74,10 @@ are equivalent.
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-3aSbVuPEUc8f25KhZG1s/GSJpV6bvb+4BpoAgQyX0wc=
+yne1z/r40qE3wXjeWIUInJ/lcO4+1jXH6F9nWW3u+mc=
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-8DwFjG6V9L8So3Lm2lKPmENHYsdJW5SI0HGmvZZ8JTI=
+p+SR1SY1b0FSLHtn8IP0tySLM2rPmTVPmBpIdleOWCc=
 
 % soda genkey -h
 Usage: soda genkey [OPTIONS]
@@ -108,7 +108,7 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 (c) Wikipedia
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-fOl2lvdKpV90jh0t3lKZQIkPIisq/NiL/McSLffIi/Vg4GkvulN3vXSf6teu7mFUiOuuXhKj1nHaaQOH
+fhHAyQJ/z4cdhB23jQ8lBmfadvwmJBa+OuZ13dzCsj02SMfXLhYmW9FcI3Uf9vOx0icAsPmLvGI+S1Wj
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
@@ -244,10 +244,10 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-NKYDJ 7IFN4 2HQVS GPLNO WDV32 A0AV5 3VJE9 KLURR 2PL3R 8J95U SVESG D3A4U E37TS
-ZZ07W ZW0KH WJ8GS WE7EB 1UJZ2 E4RT1 XJAQB BUGOM 0L97R H5YKT YLDLY WCMV3 ASV30
-5J1E8 3STEP 28ADL B8Q1O 3LP3Y CDTTK UD68O IUVPX 7B4KK 6P0OT OB9ES GRSL3 0KPPB
-94TGW QTFW4 YW2MD RCLZZ 9K2H4 T8PPZ 44C8M 1K1S1 7NYHG 2BOHL E0
+44F8K AUMW0 QDKPJ OKUEF ZJQTG DAI2Q 224BZ CXLCU E3CXN Q46KU 610Z5 0QZYG 9ZZXB
+3SOPU MG4GU 9D9B4 V738Q PWVFY O0818 U6OBJ NCSQK O86JF LOTYN IPPRK LP7UY B3Z4L
+IIOTG VM33S G1912 46TLA RVDF0 U4JGI GC3V6 MO1YO ZIVOW 6P1WV NCVDV KZHDC L8CZD
+YFLV5 L7VTI NPE1Y S3B91 1ILIG ATHPN PFEKK 7SBRA GL1AK KRMM7 MY3
 ```
 
 
@@ -287,6 +287,22 @@ SODA_VERBOSE=0
   % cat privkey | wg pubkey
   F2B674kXVcTznnRPWCVasx1miCT+yUtXQ3P5Ecee4zI=
   ```
+
+- Secure storage
+  ```
+  % echo "A remarkable example of misplaced confidence" > sensitive_data
+  % echo "Blessed with opinions, cursed with thought" > data_password
+  % soda ep data_password sensitive_data -e binary -p interactive -o encrypted_data
+  % echo "Too serious to be wise" > offset_password
+  % soda kdf offset_password -e base10 -p interactive -g 10 | head -1
+  6174465709 4962164854 2541023297 3274271197 5950333784 2118297875 9632383288
+  % sudo dd if=./encrypted_data of=/dev/sdb1 bs=1 seek=6174465709
+  85+0 records in
+  85+0 records out
+  85 bytes transferred in 0.005787 secs (14688 bytes/sec)
+  ```
+
+  ![dd diagram](https://github.com/theosaveliev/rtty-soda/raw/main/diagram/dd.png)
 
 
 ## Compatibility

@@ -1,0 +1,137 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.0 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.3.0">
+  <diagram name="Page-1" id="9LrcOROsT4RKHJr99NO_">
+    <mxGraphModel dx="800" dy="654" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="JuS0GxSI14gA9wl1DkN4-1" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;aspect=fixed;" value="Start" vertex="1">
+          <mxGeometry height="40" width="66.67" x="551" y="124" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-1" edge="1" parent="1" source="JuS0GxSI14gA9wl1DkN4-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="JuS0GxSI14gA9wl1DkN4-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="165" y="294" />
+              <mxPoint x="349" y="294" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JuS0GxSI14gA9wl1DkN4-2" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="Password 1&lt;div&gt;(input, for data encryption)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="72" width="120" x="105.00000000000003" y="194" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-3" edge="1" parent="1" source="JuS0GxSI14gA9wl1DkN4-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="JuS0GxSI14gA9wl1DkN4-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="405" y="294" />
+              <mxPoint x="349" y="294" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JuS0GxSI14gA9wl1DkN4-3" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=default;" value="KDF&lt;div&gt;Parameters&lt;/div&gt;&lt;div&gt;(input)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="72" width="120" x="344.99999999999994" y="194" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-5" edge="1" parent="1" source="JuS0GxSI14gA9wl1DkN4-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="JuS0GxSI14gA9wl1DkN4-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="285" y="294" />
+              <mxPoint x="349" y="294" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JuS0GxSI14gA9wl1DkN4-4" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="Sensitive&lt;div&gt;Data&lt;/div&gt;&lt;div&gt;(input)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="72" width="120" x="225.00000000000003" y="194" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-7" edge="1" parent="1" source="JuS0GxSI14gA9wl1DkN4-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="efFpni80wfrED1PENhFh-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="JuS0GxSI14gA9wl1DkN4-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;align=left;" value="&amp;nbsp; Encrypt-Password(&lt;div&gt;&amp;nbsp; &amp;nbsp; Password 1,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; Sensitive Data,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; KDF Parameters,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; Data Encoding&lt;/div&gt;&lt;div&gt;&amp;nbsp; )&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="150" x="274.01" y="324" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-2" edge="1" parent="1" source="JuS0GxSI14gA9wl1DkN4-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="JuS0GxSI14gA9wl1DkN4-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="525" y="294" />
+              <mxPoint x="349" y="294" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JuS0GxSI14gA9wl1DkN4-6" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;aspect=fixed;" value="&lt;div&gt;Data&lt;/div&gt;&lt;div&gt;Encoding&lt;/div&gt;&lt;div&gt;(input,&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;must be &quot;binary&quot;)&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="72" width="120" x="465" y="194" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-32" edge="1" parent="1" source="efFpni80wfrED1PENhFh-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="efFpni80wfrED1PENhFh-30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-6" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="Encrypted&lt;div&gt;Data&lt;/div&gt;&lt;div&gt;(file)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="72" width="120" x="289" y="454" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-23" edge="1" parent="1" source="efFpni80wfrED1PENhFh-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="efFpni80wfrED1PENhFh-11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="645" y="294" />
+              <mxPoint x="825" y="294" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-8" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="Password 2&lt;div&gt;(input, for offset derivation)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="72" width="120" x="585" y="194" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-25" edge="1" parent="1" source="efFpni80wfrED1PENhFh-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="efFpni80wfrED1PENhFh-11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="765" y="294" />
+              <mxPoint x="825" y="294" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-9" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=default;" value="KDF&lt;div&gt;Parameters&lt;/div&gt;&lt;div&gt;(input)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="72" width="120" x="705" y="194" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-26" edge="1" parent="1" source="efFpni80wfrED1PENhFh-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="efFpni80wfrED1PENhFh-11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="885" y="294" />
+              <mxPoint x="825" y="294" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-10" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;aspect=fixed;" value="&lt;div&gt;Key&lt;/div&gt;&lt;div&gt;Encoding&lt;/div&gt;&lt;div&gt;(input,&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;must be &quot;base10&quot;)&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="72" width="120" x="825" y="194" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-27" edge="1" parent="1" source="efFpni80wfrED1PENhFh-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="efFpni80wfrED1PENhFh-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;align=left;" value="&amp;nbsp; KDF(&lt;div&gt;&amp;nbsp; &amp;nbsp; Password 2,&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp; &amp;nbsp; KDF Parameters,&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; Key Encoding,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; Group Length&lt;/div&gt;&lt;div&gt;&amp;nbsp; )&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="150" x="750" y="324" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-33" edge="1" parent="1" source="efFpni80wfrED1PENhFh-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="efFpni80wfrED1PENhFh-30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-16" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="Offset&lt;br&gt;&lt;div&gt;(printed)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="72" width="120" x="765" y="454" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-24" edge="1" parent="1" source="efFpni80wfrED1PENhFh-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="efFpni80wfrED1PENhFh-11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1005" y="294" />
+              <mxPoint x="825" y="294" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-17" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;aspect=fixed;" value="&lt;div&gt;Group&lt;/div&gt;&lt;div&gt;Length&lt;/div&gt;&lt;div&gt;(input,&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;must&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;be&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;gt;= 10)&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="72" width="120" x="945" y="194" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-28" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.database;whiteSpace=wrap;aspect=fixed;" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;Disk&lt;div&gt;Drive&lt;/div&gt;" vertex="1">
+          <mxGeometry height="72" width="72" x="549" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-29" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;aspect=fixed;" value="End" vertex="1">
+          <mxGeometry height="40" width="66.67" x="551.66" y="664" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-30" parent="1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;align=left;" value="&amp;nbsp; dd \&lt;br&gt;&amp;nbsp; &amp;nbsp; if=&quot;Encrypted Data&quot; \&lt;br&gt;&amp;nbsp; &amp;nbsp; of=&quot;Disk Drive&quot; \&lt;br&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; seek=Offset \&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; bs=1&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="150" x="510" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="efFpni80wfrED1PENhFh-34" edge="1" parent="1" source="efFpni80wfrED1PENhFh-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="efFpni80wfrED1PENhFh-28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

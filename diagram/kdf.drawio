@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.0 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.3.0">
   <diagram name="Page-1" id="9LrcOROsT4RKHJr99NO_">
-    <mxGraphModel dx="1810" dy="1473" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="1029" dy="841" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -11,52 +11,46 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="WTVgKhvTbmmw_xORnjrW-13" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="Password&lt;div&gt;(input)&lt;/div&gt;" vertex="1">
-          <mxGeometry height="60" width="100" x="454" y="273" as="geometry" />
+          <mxGeometry height="60" width="100" x="455" y="273" as="geometry" />
         </mxCell>
         <mxCell id="WTVgKhvTbmmw_xORnjrW-68" edge="1" parent="1" source="WTVgKhvTbmmw_xORnjrW-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="WTVgKhvTbmmw_xORnjrW-29">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="WTVgKhvTbmmw_xORnjrW-17" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="Salt&amp;nbsp;&lt;div&gt;Modifier&lt;/div&gt;&lt;div&gt;(constant)&lt;/div&gt;" vertex="1">
-          <mxGeometry height="60" width="100" x="774" y="273" as="geometry" />
+          <mxGeometry height="60" width="100" x="775" y="273" as="geometry" />
         </mxCell>
         <mxCell id="WTVgKhvTbmmw_xORnjrW-71" edge="1" parent="1" source="WTVgKhvTbmmw_xORnjrW-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="WTVgKhvTbmmw_xORnjrW-32">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="WTVgKhvTbmmw_xORnjrW-29" parent="1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;align=left;" value="&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp; Blake2b&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(&lt;/span&gt;&lt;/div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp; &amp;nbsp; Password || Salt Modifier&lt;br&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp; )&lt;/span&gt;&lt;/div&gt;&lt;/span&gt;" vertex="1">
-          <mxGeometry height="60" width="160.16" x="584.0000000000001" y="273" as="geometry" />
+          <mxGeometry height="60" width="160.16" x="585.0000000000001" y="273" as="geometry" />
         </mxCell>
         <mxCell id="WTVgKhvTbmmw_xORnjrW-65" edge="1" parent="1" source="WTVgKhvTbmmw_xORnjrW-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="WTVgKhvTbmmw_xORnjrW-37">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="WTVgKhvTbmmw_xORnjrW-31" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="KDF&lt;div&gt;Parameters&lt;/div&gt;&lt;div&gt;(input)&lt;/div&gt;" vertex="1">
-          <mxGeometry height="60" width="100" x="294" y="386" as="geometry" />
+          <mxGeometry height="60" width="100" x="295" y="386" as="geometry" />
         </mxCell>
         <mxCell id="WTVgKhvTbmmw_xORnjrW-66" edge="1" parent="1" source="WTVgKhvTbmmw_xORnjrW-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="WTVgKhvTbmmw_xORnjrW-37">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="WTVgKhvTbmmw_xORnjrW-32" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="Salt&lt;div&gt;(derived)&lt;/div&gt;" vertex="1">
-          <mxGeometry height="60" width="100" x="614.08" y="386" as="geometry" />
+          <mxGeometry height="60" width="100" x="615.08" y="386" as="geometry" />
         </mxCell>
         <mxCell id="WTVgKhvTbmmw_xORnjrW-51" edge="1" parent="1" source="WTVgKhvTbmmw_xORnjrW-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="WTVgKhvTbmmw_xORnjrW-40">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="WTVgKhvTbmmw_xORnjrW-37" parent="1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;align=left;" value="&amp;nbsp; Argon2id(&lt;br&gt;&amp;nbsp; &amp;nbsp; PrivateKey.SIZE, &lt;br&gt;&amp;nbsp; &amp;nbsp; Password, &lt;br&gt;&amp;nbsp; &amp;nbsp; Salt, &lt;br&gt;&amp;nbsp; &amp;nbsp; KDF Parameters&lt;br&gt;&amp;nbsp; )" vertex="1">
-          <mxGeometry height="106" width="124.06" x="441.96999999999997" y="363" as="geometry" />
+          <mxGeometry height="106" width="124.06" x="442.96999999999997" y="363" as="geometry" />
         </mxCell>
         <mxCell id="WTVgKhvTbmmw_xORnjrW-40" parent="1" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" value="Key&lt;div&gt;(derived)&lt;/div&gt;" vertex="1">
-          <mxGeometry height="60" width="100" x="453.99" y="499" as="geometry" />
-        </mxCell>
-        <mxCell id="WTVgKhvTbmmw_xORnjrW-69" edge="1" parent="1" source="WTVgKhvTbmmw_xORnjrW-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="WTVgKhvTbmmw_xORnjrW-13">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry height="60" width="100" x="454.99" y="499" as="geometry" />
         </mxCell>
         <mxCell id="WTVgKhvTbmmw_xORnjrW-53" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;aspect=fixed;" value="Start" vertex="1">
-          <mxGeometry height="40" width="66.67" x="470.65999999999997" y="199" as="geometry" />
+          <mxGeometry height="40" width="66.67" x="551" y="199" as="geometry" />
         </mxCell>
         <mxCell id="WTVgKhvTbmmw_xORnjrW-54" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;aspect=fixed;" value="End" vertex="1">
-          <mxGeometry height="40" width="66.67" x="470.65" y="589" as="geometry" />
-        </mxCell>
-        <mxCell id="WTVgKhvTbmmw_xORnjrW-55" edge="1" parent="1" source="WTVgKhvTbmmw_xORnjrW-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="WTVgKhvTbmmw_xORnjrW-54">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry height="40" width="66.67" x="551" y="589" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
