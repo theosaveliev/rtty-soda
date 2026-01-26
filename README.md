@@ -1,6 +1,6 @@
 # rtty-soda
 
-A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
+A PyNaCl frontend with custom encodings, compression, and key derivation.
 
 
 #### Features
@@ -35,8 +35,8 @@ A CLI tool for Unix-like environments to encrypt a RTTY session using NaCl.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.13
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.13-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.14
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.14-tools
 ```
 
 
@@ -74,10 +74,10 @@ are equivalent.
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-yne1z/r40qE3wXjeWIUInJ/lcO4+1jXH6F9nWW3u+mc=
+NoxttJ6HbuZ81d1x95qcf/+s8RMe2fC4lfgT3WM9+wk=
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-p+SR1SY1b0FSLHtn8IP0tySLM2rPmTVPmBpIdleOWCc=
+KtuBhw7Tls65gh0infr04SPnx8y3cFO54Wfbrdunblo=
 
 % soda genkey -h
 Usage: soda genkey [OPTIONS]
@@ -108,7 +108,7 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 (c) Wikipedia
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-fhHAyQJ/z4cdhB23jQ8lBmfadvwmJBa+OuZ13dzCsj02SMfXLhYmW9FcI3Uf9vOx0icAsPmLvGI+S1Wj
+CzMGWASdrfnhTvPwLIlU75VEss3aQdi9MniwMXt5YJ6PNbMs1XVu9PL1jQt/4zUzhg+OI0A/H4gxo1XD
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
@@ -244,10 +244,10 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-44F8K AUMW0 QDKPJ OKUEF ZJQTG DAI2Q 224BZ CXLCU E3CXN Q46KU 610Z5 0QZYG 9ZZXB
-3SOPU MG4GU 9D9B4 V738Q PWVFY O0818 U6OBJ NCSQK O86JF LOTYN IPPRK LP7UY B3Z4L
-IIOTG VM33S G1912 46TLA RVDF0 U4JGI GC3V6 MO1YO ZIVOW 6P1WV NCVDV KZHDC L8CZD
-YFLV5 L7VTI NPE1Y S3B91 1ILIG ATHPN PFEKK 7SBRA GL1AK KRMM7 MY3
+38PMT TPFOS E4LIF SVAEX JQ8TU B6Y32 GBDYS D92K9 HN747 P3Z1R XZU1F J0LMA 7HHB6
+51G8M I2LZ7 X346W OQB76 ITU6V 65YXT 0IIVD OBE40 T0I7T MN9AK FTQ8Q EMLNP ISUJC
+1MSX1 MGGRO IKO2B 3EYOO 2ZFW1 LAZPW 2NV9M STLW3 01W47 GKF60 KZ95S H4TR2 25CL5
+V3DQZ D3IOD LEP7L ECMZF ONTW5 Y0LXE PUL7M 7YYVT PWPCH I16FD Z9H
 ```
 
 
