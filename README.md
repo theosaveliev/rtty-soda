@@ -13,6 +13,7 @@ A PyNaCl frontend with custom encodings, compression, and key derivation.
   - Base10 (Decimal)
   - Base26 (Latin)
   - Base31 (Cyrillic)
+  - Base32 (RFC 4648)
   - Base36 (Latin with numbers)
   - Base64 (RFC 4648)
   - Base94 (ASCII printable)
@@ -35,8 +36,8 @@ A PyNaCl frontend with custom encodings, compression, and key derivation.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.14
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.3.14-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.4.0
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.4.0-tools
 ```
 
 
@@ -53,15 +54,19 @@ Options:
   -h, --help  Show this message and exit.
 
 Commands:
+  compression            List supported compression libs.
   decrypt-password (dp)  Decrypt Message (Password).
   decrypt-public (d)     Decrypt Message (Public).
   decrypt-secret (ds)    Decrypt Message (Secret).
   encode                 Encode File.
+  encodings              List supported encodings.
   encrypt-password (ep)  Encrypt Message (Password).
   encrypt-public (e)     Encrypt Message (Public).
   encrypt-secret (es)    Encrypt Message (Secret).
   genkey                 Generate Private Key.
+  google-auth (ga)       Google Authenticator TOTP.
   kdf                    Key Derivation Function.
+  kdf-profiles           List supported KDF profiles.
   pubkey                 Get Public Key.
 ```
 
@@ -74,20 +79,18 @@ are equivalent.
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-NoxttJ6HbuZ81d1x95qcf/+s8RMe2fC4lfgT3WM9+wk=
+mOt04MbA6qxppzrUSKAC4EuidNnZKTPPJBZop3b8zks=
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-KtuBhw7Tls65gh0infr04SPnx8y3cFO54Wfbrdunblo=
+E6rKTHGtjvZJh9HniEGtmyGBjjua3zFiYZIXRSjy/Xw=
 
 % soda genkey -h
 Usage: soda genkey [OPTIONS]
 
   Generate Private Key.
 
-  Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
-
 Options:
-  -e, --encoding TEXT      [default: base64]
+  -e, --encoding ENCODING  See `soda encodings`.  [default: base64]
   -o, --output-file FILE   Write output to file.
   -g, --group-len INTEGER  [default: 0]
   --line-len INTEGER       [default: 80]
@@ -108,7 +111,7 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 (c) Wikipedia
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-CzMGWASdrfnhTvPwLIlU75VEss3aQdi9MniwMXt5YJ6PNbMs1XVu9PL1jQt/4zUzhg+OI0A/H4gxo1XD
+b+HK0EA3U6LNhfV9QzHoLBHSIBLm8INx2AwVEAKCyOw8iY391D+aWr/HNd4kte0clQ0lG372r709wS6g
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
@@ -116,21 +119,18 @@ Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
 
   Encrypt Message (Public).
 
-  Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
-
-  Compression: brotli | zstd | zlib | bz2 | lzma | raw
-
 Options:
-  -t, --text                Treat message as text (binary if not specified).
-  --key-encoding TEXT       [default: base64]
-  -e, --data-encoding TEXT  [default: base64]
-  -c, --compression TEXT    [default: brotli]
-  -o, --output-file FILE    Write output to file.
-  -g, --group-len INTEGER   [default: 0]
-  --line-len INTEGER        [default: 80]
-  --padding INTEGER         [default: 0]
-  -v, --verbose             Show verbose output.
-  -h, --help                Show this message and exit.
+  -t, --text                     Treat message as text (binary if not
+                                 specified).
+  --key-encoding ENCODING        See `soda encodings`.  [default: base64]
+  -e, --data-encoding ENCODING   See `soda encodings`.  [default: base64]
+  -c, --compression COMPRESSION  See `soda compression`.  [default: brotli]
+  -o, --output-file FILE         Write output to file.
+  -g, --group-len INTEGER        [default: 0]
+  --line-len INTEGER             [default: 80]
+  --padding INTEGER              [default: 0]
+  -v, --verbose                  Show verbose output.
+  -h, --help                     Show this message and exit.
 ```
 
 #### Decryption
@@ -176,13 +176,9 @@ Usage: soda kdf [OPTIONS] PASSWORD_FILE
 
   Key Derivation Function.
 
-  Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
-
-  Profile: interactive | moderate | sensitive
-
 Options:
-  -e, --encoding TEXT      [default: base64]
-  -p, --profile TEXT       [default: sensitive]
+  -e, --encoding ENCODING  See `soda encodings`.  [default: base64]
+  -p, --profile PROFILE    See `soda kdf-profiles`.  [default: sensitive]
   -o, --output-file FILE   Write output to file.
   -g, --group-len INTEGER  [default: 0]
   --line-len INTEGER       [default: 80]
@@ -244,10 +240,10 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-38PMT TPFOS E4LIF SVAEX JQ8TU B6Y32 GBDYS D92K9 HN747 P3Z1R XZU1F J0LMA 7HHB6
-51G8M I2LZ7 X346W OQB76 ITU6V 65YXT 0IIVD OBE40 T0I7T MN9AK FTQ8Q EMLNP ISUJC
-1MSX1 MGGRO IKO2B 3EYOO 2ZFW1 LAZPW 2NV9M STLW3 01W47 GKF60 KZ95S H4TR2 25CL5
-V3DQZ D3IOD LEP7L ECMZF ONTW5 Y0LXE PUL7M 7YYVT PWPCH I16FD Z9H
+73H0X A388D I3PUG C9ZP4 FJSRR Y8R2F KGB0Y KHO0Q 56J5L NW1S3 697NH 9OVRN SNQDD
+VIB7O GNX0W J7UOS K9EVC 2H8Y7 FTUCB MDA18 NKEJ6 ZWAFH PMKE7 DA55U 11JEY 9LQPR
+Y03ON BNZOJ YH6B4 8DLX6 6LTC9 3MXSF PY616 79QNS EJDKN 8JV1N FDZQJ V6EON 7BG3J
+2PWP4 D315Z 69UGO MOPA5 VLS4V W3BHK XLBWI UGDBB FRRKF WSA64 0U6
 ```
 
 
@@ -297,12 +293,20 @@ SODA_VERBOSE=0
   % soda kdf offset_password -e base10 -p interactive -g 10 | head -1
   6174465709 4962164854 2541023297 3274271197 5950333784 2118297875 9632383288
   % sudo dd if=./encrypted_data of=/dev/sdb1 bs=1 seek=6174465709
-  85+0 records in
-  85+0 records out
-  85 bytes transferred in 0.005787 secs (14688 bytes/sec)
+  75+0 records in
+  75+0 records out
+  75 bytes transferred in 0.000769 secs (97529 bytes/sec)
   ```
 
   ![dd diagram](https://github.com/theosaveliev/rtty-soda/raw/main/diagram/dd.png)
+
+- Google Authenticator keyer
+  ```
+  % soda genkey -e base32 | tee totp_key
+  JNNQXAXSZSRTOIRAHG6WG4N2XNJXNOKXA33TSPBSA5RJG7KDNKBA====
+  % soda ga totp_key
+  824 430 (expires in 10s)
+  ```
 
 
 ## Compatibility

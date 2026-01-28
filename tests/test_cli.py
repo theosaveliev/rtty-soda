@@ -17,6 +17,12 @@ def private_key() -> str:
 
 
 @pytest.fixture
+def private_key_b32() -> str:
+    """Return the Private key in base32."""
+    return "D2TO6ULX4UAG7J5DOYJPM6G6ZWO6K6ZK7QRQCEIDE6G2A3NF4NKQ===="
+
+
+@pytest.fixture
 def private_key_b36() -> str:
     """Return the Private key in base36."""
     return "RI3SPTQ4MKW711QVZJYE9WIIG8HNBAE3ZFNQVM2QBN6S250ET"
@@ -48,7 +54,16 @@ def encrypted_pw() -> str:
 
 def test_genkey() -> None:
     runner = CliRunner()
-    encoders = ["base10", "base26", "base31", "base36", "base64", "base94", "binary"]
+    encoders = [
+        "base10",
+        "base26",
+        "base31",
+        "base32",
+        "base36",
+        "base64",
+        "base94",
+        "binary",
+    ]
     args = [
         "genkey",
         "--group-len",
@@ -356,3 +371,30 @@ def test_encode_cmd(private_key: str, private_key_b36: str) -> None:
     result = runner.invoke(cli, args=args, input=private_key)
     assert result.exit_code == 0
     assert result.stdout.strip() == private_key_b36
+
+
+def test_google_auth(private_key_b32: str) -> None:
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        with open("key", "w", encoding="utf-8") as fd:
+            fd.write(private_key_b32)
+
+        args = ["google-auth", "key"]
+        result = runner.invoke(cli, args=args)
+        assert result.exit_code == 0
+        assert len(result.stdout) > 22
+
+
+def test_help_screens() -> None:
+    runner = CliRunner()
+    result = runner.invoke(cli, args="encodings")
+    assert result.exit_code == 0
+    assert len(result.stdout) > 180
+
+    result = runner.invoke(cli, args="compression")
+    assert result.exit_code == 0
+    assert len(result.stdout) > 50
+
+    result = runner.invoke(cli, args="kdf-profiles")
+    assert result.exit_code == 0
+    assert len(result.stdout) > 60

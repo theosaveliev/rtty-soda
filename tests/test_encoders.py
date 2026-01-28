@@ -2,6 +2,7 @@ from rtty_soda.encoders import (
     Base10Encoder,
     Base26Encoder,
     Base31Encoder,
+    Base32Encoder,
     Base36Encoder,
     Base64Encoder,
     Base94Encoder,
@@ -17,6 +18,9 @@ def test_encoders() -> None:
 
     assert Base31Encoder.encode(b"\x64") == "ГЗ"
     assert Base31Encoder.decode("ГЗ") == b"\x64"
+
+    assert Base32Encoder.encode(b"\x64") == "MQ======"
+    assert Base32Encoder.decode("MQ======") == b"\x64"
 
     assert Base36Encoder.encode(b"\x64") == "2S"
     assert Base36Encoder.decode("2S") == b"\x64"

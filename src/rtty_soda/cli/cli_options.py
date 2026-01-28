@@ -1,16 +1,13 @@
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import click
 
+from .cli_types import CliTypes
+
 if TYPE_CHECKING:
     from click.decorators import FC
 
-__all__ = ["CliOptions", "out_path"]
-
-out_path = click.Path(
-    file_okay=True, dir_okay=False, writable=True, allow_dash=True, path_type=Path
-)
+__all__ = ["CliOptions"]
 
 
 class CliOptions:
@@ -19,9 +16,12 @@ class CliOptions:
         return click.option(
             "--compression",
             "-c",
+            type=CliTypes.COMPRESSION,
             default="brotli",
             show_default=True,
+            metavar="COMPRESSION",
             envvar="SODA_COMPRESSION",
+            help="See `soda compression`.",
         )(function)
 
     @staticmethod
@@ -29,18 +29,24 @@ class CliOptions:
         return click.option(
             "--data-encoding",
             "-e",
+            type=CliTypes.ENCODING,
             default="base64",
             show_default=True,
+            metavar="ENCODING",
             envvar="SODA_DATA_ENCODING",
+            help="See `soda encodings`.",
         )(function)
 
     @staticmethod
     def key_encoding(function: FC) -> FC:
         return click.option(
             "--key-encoding",
+            type=CliTypes.ENCODING,
             default="base64",
             show_default=True,
+            metavar="ENCODING",
             envvar="SODA_KEY_ENCODING",
+            help="See `soda encodings`.",
         )(function)
 
     @staticmethod
@@ -48,9 +54,12 @@ class CliOptions:
         return click.option(
             "--encoding",
             "-e",
+            type=CliTypes.ENCODING,
             default="base64",
             show_default=True,
+            metavar="ENCODING",
             envvar="SODA_KEY_ENCODING",
+            help="See `soda encodings`.",
         )(function)
 
     @staticmethod
@@ -58,9 +67,12 @@ class CliOptions:
         return click.option(
             "--kdf-profile",
             "-p",
+            type=CliTypes.KDF_PROFILE,
             default="sensitive",
             show_default=True,
+            metavar="PROFILE",
             envvar="SODA_KDF_PROFILE",
+            help="See `soda kdf-profiles`.",
         )(function)
 
     @staticmethod
@@ -68,9 +80,12 @@ class CliOptions:
         return click.option(
             "--profile",
             "-p",
+            type=CliTypes.KDF_PROFILE,
             default="sensitive",
             show_default=True,
+            metavar="PROFILE",
             envvar="SODA_KDF_PROFILE",
+            help="See `soda kdf-profiles`.",
         )(function)
 
     @staticmethod
@@ -108,7 +123,7 @@ class CliOptions:
     @staticmethod
     def output_file(function: FC) -> FC:
         return click.option(
-            "--output-file", "-o", type=out_path, help="Write output to file."
+            "--output-file", "-o", type=CliTypes.OUT_PATH, help="Write output to file."
         )(function)
 
     @staticmethod

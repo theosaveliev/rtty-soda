@@ -62,18 +62,20 @@ def decompress_lzma(data: bytes) -> bytes:
     return lzma.decompress(data, format=lzma.FORMAT_ALONE)
 
 
-ARCHIVERS: dict[str, Archiver] = {
+ARCHIVERS: dict[str, Archiver | None] = {
     "brotli": compress_brotli,
     "zstd": compress_zstd,
     "zlib": compress_zlib,
     "bz2": compress_bz2,
     "lzma": compress_lzma,
+    "raw": None,
 }
 
-UNARCHIVERS: dict[str, Archiver] = {
+UNARCHIVERS: dict[str, Archiver | None] = {
     "brotli": decompress_brotli,
     "zstd": decompress_zstd,
     "zlib": decompress_zlib,
     "bz2": decompress_bz2,
     "lzma": decompress_lzma,
+    "raw": None,
 }

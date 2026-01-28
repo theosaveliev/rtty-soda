@@ -13,6 +13,7 @@ A PyNaCl frontend with custom encodings, compression, and key derivation.
   - Base10 (Decimal)
   - Base26 (Latin)
   - Base31 (Cyrillic)
+  - Base32 (RFC 4648)
   - Base36 (Latin with numbers)
   - Base64 (RFC 4648)
   - Base94 (ASCII printable)
@@ -216,13 +217,22 @@ Common options can be set in the environment variables:
   % soda kdf offset_password -e base10 -p interactive -g 10 | head -1
   {{ "soda kdf docs/offset_password -e base10 -p interactive -g 10 | head -1" | shell | trim }}
   % sudo dd if=./encrypted_data of=/dev/sdb1 bs=1 seek=6174465709
-  85+0 records in
-  85+0 records out
-  85 bytes transferred in 0.005787 secs (14688 bytes/sec)
+  75+0 records in
+  75+0 records out
+  75 bytes transferred in 0.000769 secs (97529 bytes/sec)
   {% set _ = "rm docs/sensitive_data docs/data_password docs/offset_password docs/encrypted_data" | shell -%}
   ```
 
   ![dd diagram](https://github.com/theosaveliev/rtty-soda/raw/main/diagram/dd.png)
+
+- Google Authenticator keyer
+  ```
+  % soda genkey -e base32 | tee totp_key
+  {{ "soda genkey -e base32 | tee docs/totp_key" | shell | trim }}
+  % soda ga totp_key
+  {{ "soda ga docs/totp_key" | shell | trim }}
+  {% set _ = "rm docs/totp_key" | shell -%}
+  ```
 
 
 ## Compatibility

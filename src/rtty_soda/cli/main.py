@@ -1,22 +1,18 @@
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import click
 from click_aliases import ClickAliasedGroup
 
-from rtty_soda.cli import CliOptions, CliReader, CliWriter
+from rtty_soda.cli import CliOptions, CliReader, CliTypes, CliWriter
 from rtty_soda.formatters import FixedFormatter
 from rtty_soda.services import EncodingService, EncryptionService, KeyService
+from rtty_soda.totp import GoogleAuthenticator
 
-__all__ = ["cli", "in_path"]
+if TYPE_CHECKING:
+    from pathlib import Path
 
-in_path = click.Path(
-    exists=True,
-    file_okay=True,
-    dir_okay=False,
-    readable=True,
-    allow_dash=True,
-    path_type=Path,
-)
+__all__ = ["cli"]
+
 
 CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}
 
@@ -42,10 +38,7 @@ def genkey_cmd(
     padding: int,
     verbose: bool,
 ) -> None:
-    """Generate Private Key.
-
-    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
-    """
+    """Generate Private Key."""
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = KeyService(encoding, formatter, writer, verbose)
@@ -53,7 +46,7 @@ def genkey_cmd(
 
 
 @cli.command()  # pyright: ignore[reportAny]
-@click.argument("private_key_file", type=in_path)
+@click.argument("private_key_file", type=CliTypes.IN_PATH)
 @CliOptions.short_key_encoding
 @CliOptions.output_file
 @CliOptions.group_len
@@ -69,10 +62,7 @@ def pubkey_cmd(
     padding: int,
     verbose: bool,
 ) -> None:
-    """Get Public Key.
-
-    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
-    """
+    """Get Public Key."""
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = KeyService(encoding, formatter, writer, verbose)
@@ -81,7 +71,7 @@ def pubkey_cmd(
 
 
 @cli.command()  # pyright: ignore[reportAny]
-@click.argument("password_file", type=in_path)
+@click.argument("password_file", type=CliTypes.IN_PATH)
 @CliOptions.short_key_encoding
 @CliOptions.short_kdf_profile
 @CliOptions.output_file
@@ -99,12 +89,7 @@ def kdf_cmd(
     padding: int,
     verbose: bool,
 ) -> None:
-    """Key Derivation Function.
-
-    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
-
-    Profile: interactive | moderate | sensitive
-    """
+    """Key Derivation Function."""
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = KeyService(encoding, formatter, writer, verbose)
@@ -113,9 +98,9 @@ def kdf_cmd(
 
 
 @cli.command(aliases=["e"])  # pyright: ignore[reportAny]
-@click.argument("private_key_file", type=in_path)
-@click.argument("public_key_file", type=in_path)
-@click.argument("message_file", type=in_path)
+@click.argument("private_key_file", type=CliTypes.IN_PATH)
+@click.argument("public_key_file", type=CliTypes.IN_PATH)
+@click.argument("message_file", type=CliTypes.IN_PATH)
 @CliOptions.text
 @CliOptions.key_encoding
 @CliOptions.data_encoding
@@ -139,12 +124,7 @@ def encrypt_public_cmd(
     padding: int,
     verbose: bool,
 ) -> None:
-    """Encrypt Message (Public).
-
-    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
-
-    Compression: brotli | zstd | zlib | bz2 | lzma | raw
-    """
+    """Encrypt Message (Public)."""
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = EncryptionService(
@@ -163,8 +143,8 @@ def encrypt_public_cmd(
 
 
 @cli.command(aliases=["es"])  # pyright: ignore[reportAny]
-@click.argument("key_file", type=in_path)
-@click.argument("message_file", type=in_path)
+@click.argument("key_file", type=CliTypes.IN_PATH)
+@click.argument("message_file", type=CliTypes.IN_PATH)
 @CliOptions.text
 @CliOptions.key_encoding
 @CliOptions.data_encoding
@@ -187,12 +167,7 @@ def encrypt_secret_cmd(
     padding: int,
     verbose: bool,
 ) -> None:
-    """Encrypt Message (Secret).
-
-    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
-
-    Compression: brotli | zstd | zlib | bz2 | lzma | raw
-    """
+    """Encrypt Message (Secret)."""
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = EncryptionService(
@@ -210,8 +185,8 @@ def encrypt_secret_cmd(
 
 
 @cli.command(aliases=["ep"])  # pyright: ignore[reportAny]
-@click.argument("password_file", type=in_path)
-@click.argument("message_file", type=in_path)
+@click.argument("password_file", type=CliTypes.IN_PATH)
+@click.argument("message_file", type=CliTypes.IN_PATH)
 @CliOptions.text
 @CliOptions.kdf_profile
 @CliOptions.data_encoding
@@ -234,14 +209,7 @@ def encrypt_password_cmd(
     padding: int,
     verbose: bool,
 ) -> None:
-    """Encrypt Message (Password).
-
-    KDF profile: interactive | moderate | sensitive
-
-    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
-
-    Compression: brotli | zstd | zlib | bz2 | lzma | raw
-    """
+    """Encrypt Message (Password)."""
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = EncryptionService(
@@ -259,9 +227,9 @@ def encrypt_password_cmd(
 
 
 @cli.command(aliases=["d"])  # pyright: ignore[reportAny]
-@click.argument("private_key_file", type=in_path)
-@click.argument("public_key_file", type=in_path)
-@click.argument("message_file", type=in_path)
+@click.argument("private_key_file", type=CliTypes.IN_PATH)
+@click.argument("public_key_file", type=CliTypes.IN_PATH)
+@click.argument("message_file", type=CliTypes.IN_PATH)
 @CliOptions.text
 @CliOptions.key_encoding
 @CliOptions.data_encoding
@@ -277,12 +245,7 @@ def decrypt_public_cmd(
     compression: str,
     output_file: Path | None,
 ) -> None:
-    """Decrypt Message (Public).
-
-    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
-
-    Compression: brotli | zstd | zlib | bz2 | lzma | raw
-    """
+    """Decrypt Message (Public)."""
     writer = CliWriter(output_file)
     service = EncryptionService(
         text_mode=text,
@@ -300,8 +263,8 @@ def decrypt_public_cmd(
 
 
 @cli.command(aliases=["ds"])  # pyright: ignore[reportAny]
-@click.argument("key_file", type=in_path)
-@click.argument("message_file", type=in_path)
+@click.argument("key_file", type=CliTypes.IN_PATH)
+@click.argument("message_file", type=CliTypes.IN_PATH)
 @CliOptions.text
 @CliOptions.key_encoding
 @CliOptions.data_encoding
@@ -316,12 +279,7 @@ def decrypt_secret_cmd(
     compression: str,
     output_file: Path | None,
 ) -> None:
-    """Decrypt Message (Secret).
-
-    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
-
-    Compression: brotli | zstd | zlib | bz2 | lzma | raw
-    """
+    """Decrypt Message (Secret)."""
     writer = CliWriter(output_file)
     service = EncryptionService(
         text_mode=text,
@@ -338,8 +296,8 @@ def decrypt_secret_cmd(
 
 
 @cli.command(aliases=["dp"])  # pyright: ignore[reportAny]
-@click.argument("password_file", type=in_path)
-@click.argument("message_file", type=in_path)
+@click.argument("password_file", type=CliTypes.IN_PATH)
+@click.argument("message_file", type=CliTypes.IN_PATH)
 @CliOptions.text
 @CliOptions.kdf_profile
 @CliOptions.data_encoding
@@ -354,14 +312,7 @@ def decrypt_password_cmd(
     compression: str,
     output_file: Path | None,
 ) -> None:
-    """Decrypt Message (Password).
-
-    KDF profile: interactive | moderate | sensitive
-
-    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
-
-    Compression: brotli | zstd | zlib | bz2 | lzma | raw
-    """
+    """Decrypt Message (Password)."""
     writer = CliWriter(output_file)
     service = EncryptionService(
         text_mode=text,
@@ -378,9 +329,9 @@ def decrypt_password_cmd(
 
 
 @cli.command()  # pyright: ignore[reportAny]
-@click.argument("in_encoding")
-@click.argument("out_encoding")
-@click.argument("file", type=in_path)
+@click.argument("in_encoding", type=CliTypes.ENCODING, metavar="IN_ENCODING")
+@click.argument("out_encoding", type=CliTypes.ENCODING, metavar="OUT_ENCODING")
+@click.argument("file", type=CliTypes.IN_PATH)
 @CliOptions.output_file
 @CliOptions.group_len
 @CliOptions.line_len
@@ -398,7 +349,7 @@ def encode_cmd(
 ) -> None:
     """Encode File.
 
-    Encoding: base10 | base26 | base31 | base36 | base64 | base94 | binary
+    See `soda encodings` for available encodings.
     """
     writer = CliWriter(output_file)
     formatter = FixedFormatter(group_len, line_len, padding)
@@ -411,6 +362,59 @@ def encode_cmd(
     )
     data = CliReader(file)
     service.encode(data)
+
+
+@cli.command(aliases=["ga"])  # pyright: ignore[reportAny]
+@click.argument("key_file", type=CliTypes.IN_PATH)
+def google_auth_cmd(key_file: Path) -> None:
+    """Google Authenticator TOTP.
+
+    Key must be Base32-encoded.
+    """
+    key = CliReader(key_file)
+    totp = GoogleAuthenticator(key)
+    click.echo(f"{totp.get_code()} (expires in {totp.get_remaining_seconds()}s)")
+
+
+@cli.command()  # pyright: ignore[reportAny]
+def encodings_cmd() -> None:
+    """List supported encodings."""
+    help_text = """
+    base10 (Decimal)
+    base26 (Latin)
+    base31 (Cyrillic)
+    base32 (RFC 4648)
+    base36 (Latin with numbers)
+    base64 (RFC 4648)
+    base94 (ASCII printable)
+    binary
+    """
+    click.echo(help_text)
+
+
+@cli.command()  # pyright: ignore[reportAny]
+def compression_cmd() -> None:
+    """List supported compression libs."""
+    help_text = """
+    brotli
+    zstd
+    zlib
+    bz2
+    lzma
+    raw
+    """
+    click.echo(help_text)
+
+
+@cli.command()  # pyright: ignore[reportAny]
+def kdf_profiles_cmd() -> None:
+    """List supported KDF profiles."""
+    help_text = """
+    interactive (Fastest)
+    moderate
+    sensitive (Slowest)
+    """
+    click.echo(help_text)
 
 
 if __name__ == "__main__":
