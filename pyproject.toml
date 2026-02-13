@@ -1,6 +1,6 @@
 [project]
 name = "rtty-soda"
-version = "0.4.0"
+version = "0.5.0"
 description = "A PyNaCl frontend with custom encodings, compression, and key derivation"
 readme = "README.md"
 license = { text = "MIT" }
@@ -25,27 +25,27 @@ requires-python = ">=3.14,<4.0"
 
 dependencies = [
     "brotli>=1.2.0,<2.0.0",
-    "pynacl>=1.6.0,<2.0.0",
+    "pynacl>=1.6.2,<2.0.0",
     "pyotp>=2.9.0,<3.0.0",
     "scsu>=1.1.1,<2.0.0",
 ]
 
 [project.optional-dependencies]
-cli = ["click>=8.3.0,<9.0.0", "click-aliases>=1.0.5,<2.0.0"]
+cli = ["click>=8.3.1,<9.0.0", "click-aliases>=1.0.5,<2.0.0"]
 
 [dependency-groups]
 dev = [
-    "basedpyright>=1.31.7,<2.0.0",
-    "jinja2-cli[toml]>=0.8.2,<0.9.0",
+    "basedpyright>=1.38.0,<2.0.0",
+    "jinja2-cli[toml]>=1.0.0,<2.0.0",
     "jinja2-shell-extension>=2.1.1,<3.0.0",
-    "mypy>=1.18.2,<2.0.0",
-    "poethepoet>=0.37.0,<0.38.0",
-    "pytest>=8.4.2,<9.0.0",
-    "ruff>=0.14.1,<0.15.0",
+    "mypy>=1.19.1,<2.0.0",
+    "poethepoet>=0.41.0,<0.42.0",
+    "pytest>=9.0.2,<10.0.0",
+    "ruff>=0.15.0,<0.16.0",
 ]
 
 [build-system]
-requires = ["uv_build>=0.9.3,<0.10.0"]
+requires = ["uv_build>=0.10.2,<0.11.0"]
 build-backend = "uv_build"
 
 [project.scripts]
@@ -81,8 +81,8 @@ wheel-exclude = [
     ".vscode",
 ]
 
-[tool.poe]
-executor.type = "uv"
+[tool.poe.executor]
+type = "uv"
 
 [tool.poe.env]
 PYTHON_GIL = "1"
@@ -92,10 +92,11 @@ format = "ruff format"
 lint = "ruff check --fix ."
 mypy = "mypy ."
 pyright = "basedpyright ."
-test = "pytest"
+test = "pytest -m 'not slow'"
+full-test = "pytest"
 readme = "jinja2 --extension=jinja2_shell_extension.ShellExtension docs/README.j2 pyproject.toml --outfile README.md"
 dev = ["format", "lint", "mypy", "pyright"]
-pre-build = ["dev", "test", "readme"]
+pre-build = ["dev", "full-test", "readme"]
 docker = ["docker-build", "docker-push"]
 
 [tool.poe.tasks.docker-build]

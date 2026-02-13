@@ -15,9 +15,8 @@ if TYPE_CHECKING:
     from rtty_soda.formatters import Formatter
     from rtty_soda.interfaces import Reader, Writer
 
-__all__ = ["EncryptionService", "Keypair", "Pipe"]
+__all__ = ["EncryptionService", "Pipe"]
 
-type Keypair = tuple[PrivateKey, PublicKey]
 type Pipe = Callable[[bytes], bytes]
 
 
@@ -62,25 +61,31 @@ class EncryptionService(Service):
             writer.write_diag(f"Overhead: {overhead:.3f}")
             writer.write_diag(f"Groups: {buff.groups}")
 
-    def read_keypair(self, private_key: Reader, public_key: Reader) -> Keypair:
-        priv_bytes = self.read_input(private_key, self.key_encoder)
-        priv = PrivateKey(priv_bytes)
-        pub_bytes = self.read_input(public_key, self.key_encoder)
-        pub = PublicKey(pub_bytes)
-        return priv, pub
+    def read_private_key(self, key: Reader, passphrase: str | None) -> bytes:
+        key_bytes = self.read_input(key, self.key_encoder)
+        return KeyService.unprotect(private_key=key_bytes, passphrase=passphrase)
 
     def encrypt_public(
-        self, private_key: Reader, public_key: Reader, message: Reader
+        self,
+        private_key: Reader,
+        passphrase: str | None,
+        public_key: Reader,
+        message: Reader,
     ) -> None:
-        priv, pub = self.read_keypair(private_key, public_key)
+        priv_bytes = self.read_private_key(key=private_key, passphrase=passphrase)
+        priv_key = PrivateKey(priv_bytes)
+        pub_bytes = self.read_input(public_key, self.key_encoder)
+        pub_key = PublicKey(pub_bytes)
 
         def encrypt(data: bytes) -> bytes:
-            return public.encrypt(private=priv, public=pub, data=data)
+            return public.encrypt(private=priv_key, public=pub_key, data=data)
 
         self.encryption_flow(message, encrypt)
 
-    def encrypt_secret(self, key: Reader, message: Reader) -> None:
-        key_bytes = self.read_input(key, self.key_encoder)
+    def encrypt_secret(
+        self, key: Reader, passphrase: str | None, message: Reader
+    ) -> None:
+        key_bytes = self.read_private_key(key=key, passphrase=passphrase)
 
         def encrypt(data: bytes) -> bytes:
             return secret.encrypt(key=key_bytes, data=data)
@@ -90,10 +95,10 @@ class EncryptionService(Service):
     def encrypt_password(
         self, password: Reader, message: Reader, kdf_profile: str
     ) -> None:
-        key = KeyService.derive_key(password, kdf_profile)
+        key_bytes = KeyService.derive_key(password, kdf_profile)
 
         def encrypt(data: bytes) -> bytes:
-            return secret.encrypt(key, data)
+            return secret.encrypt(key_bytes, data)
 
         self.encryption_flow(message, encrypt)
 
@@ -109,17 +114,26 @@ class EncryptionService(Service):
         self.writer.write_bytes(data)
 
     def decrypt_public(
-        self, private_key: Reader, public_key: Reader, message: Reader
+        self,
+        private_key: Reader,
+        passphrase: str | None,
+        public_key: Reader,
+        message: Reader,
     ) -> None:
-        priv, pub = self.read_keypair(private_key, public_key)
+        priv_bytes = self.read_private_key(key=private_key, passphrase=passphrase)
+        priv_key = PrivateKey(priv_bytes)
+        pub_bytes = self.read_input(public_key, self.key_encoder)
+        pub_key = PublicKey(pub_bytes)
 
         def decrypt(data: bytes) -> bytes:
-            return public.decrypt(private=priv, public=pub, data=data)
+            return public.decrypt(private=priv_key, public=pub_key, data=data)
 
         self.decryption_flow(message, decrypt)
 
-    def decrypt_secret(self, key: Reader, message: Reader) -> None:
-        key_bytes = self.read_input(key, self.key_encoder)
+    def decrypt_secret(
+        self, key: Reader, passphrase: str | None, message: Reader
+    ) -> None:
+        key_bytes = self.read_private_key(key=key, passphrase=passphrase)
 
         def decrypt(data: bytes) -> bytes:
             return secret.decrypt(key=key_bytes, data=data)
@@ -129,9 +143,9 @@ class EncryptionService(Service):
     def decrypt_password(
         self, password: Reader, message: Reader, kdf_profile: str
     ) -> None:
-        key = KeyService.derive_key(password, kdf_profile)
+        key_bytes = KeyService.derive_key(password, kdf_profile)
 
         def decrypt(data: bytes) -> bytes:
-            return secret.decrypt(key, data)
+            return secret.decrypt(key_bytes, data)
 
         self.decryption_flow(message, decrypt)

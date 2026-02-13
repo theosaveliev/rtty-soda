@@ -29,6 +29,21 @@ def private_key_b36() -> str:
 
 
 @pytest.fixture
+def private_key_protected() -> str:
+    """Return the Private key protected with passphrase."""
+    return (
+        "bD+krNPhHdeZ4X6g6nNS07CRRdQzDTxv5XGv3okabpYraq2/BqGJ/mp3zVtFDfg4K3OGmrvd"
+        "aH5sBqiGI1wN0l+VY5N6hIUe"
+    )
+
+
+@pytest.fixture
+def passphrase() -> str:
+    """Return the passphrase."""
+    return "test passphrase"
+
+
+@pytest.fixture
 def public_key() -> str:
     """Return the Public key for the Private key."""
     return "oRwsrjBbIWddLRrpZ+HlX6eErIEzn9PiAj8TL6B4uh4="
@@ -46,12 +61,6 @@ def encrypted_secret() -> str:
     return "lRNA/8yQDMZv1MT45Pbt57/e7NHFupsbdjNkwqCY7GNIr+s9+fl6jSZapDcYug=="
 
 
-@pytest.fixture
-def encrypted_pw() -> str:
-    """Return the password encrypted with the Password option."""
-    return "ltZ0JPwwAVAlGOrrlGR/niKiMOQYmwryuBpPx+0EwCr7smb5sHTnte6S7EjPiw=="
-
-
 def test_genkey() -> None:
     runner = CliRunner()
     encoders = [
@@ -64,6 +73,7 @@ def test_genkey() -> None:
         "base94",
         "binary",
     ]
+
     args = [
         "genkey",
         "--group-len",
@@ -75,11 +85,35 @@ def test_genkey() -> None:
         "--encoding",
         "base64",
     ]
+
     for enc in encoders:
         args[-1] = enc
         result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert len(result.stdout) > 25
+
+
+@pytest.mark.slow
+def test_genkey_passphrase(passphrase: str) -> None:
+    runner = CliRunner()
+
+    args = [
+        "genkey",
+        "--key-passphrase",
+        passphrase,
+        "--group-len",
+        "0",
+        "--line-len",
+        "0",
+        "--padding",
+        "0",
+        "--encoding",
+        "base64",
+    ]
+
+    result = runner.invoke(cli, args=args)
+    assert result.exit_code == 0
+    assert len(result.stdout) > 90
 
 
 def test_pubkey(private_key: str, public_key: str) -> None:
@@ -100,24 +134,28 @@ def test_pubkey(private_key: str, public_key: str) -> None:
             "--padding",
             "0",
         ]
+
         result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == public_key
 
 
-def test_kdf(password: str, private_key: str) -> None:
+@pytest.mark.slow
+def test_pubkey_passphrase(
+    private_key_protected: str, passphrase: str, public_key: str
+) -> None:
     runner = CliRunner()
     with runner.isolated_filesystem():
-        with open("password", "w", encoding="utf-8") as fd:
-            fd.write(password)
+        with open("private_key_protected", "w", encoding="utf-8") as fd:
+            fd.write(private_key_protected)
 
         args = [
-            "kdf",
-            "password",
+            "pubkey",
+            "private_key_protected",
+            "--key-passphrase",
+            passphrase,
             "--encoding",
             "base64",
-            "--profile",
-            "interactive",
             "--group-len",
             "0",
             "--line-len",
@@ -125,9 +163,10 @@ def test_kdf(password: str, private_key: str) -> None:
             "--padding",
             "0",
         ]
+
         result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
-        assert result.stdout.strip() == private_key
+        assert result.stdout.strip() == public_key
 
 
 def test_decrypt_public(
@@ -141,14 +180,14 @@ def test_decrypt_public(
         with open("public_key", "w", encoding="utf-8") as fd:
             fd.write(public_key)
 
-        with open("message", "w", encoding="utf-8") as fd:
+        with open("encrypted_public", "w", encoding="utf-8") as fd:
             fd.write(encrypted_public)
 
         args = [
             "decrypt-public",
             "private_key",
             "public_key",
-            "message",
+            "encrypted_public",
             "--key-encoding",
             "base64",
             "--data-encoding",
@@ -156,6 +195,46 @@ def test_decrypt_public(
             "--compression",
             "raw",
         ]
+
+        result = runner.invoke(cli, args=args)
+        assert result.exit_code == 0
+        assert result.stdout.strip() == password
+
+
+@pytest.mark.slow
+def test_decrypt_public_passphrase(
+    private_key_protected: str,
+    passphrase: str,
+    public_key: str,
+    encrypted_public: str,
+    password: str,
+) -> None:
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        with open("private_key_protected", "w", encoding="utf-8") as fd:
+            fd.write(private_key_protected)
+
+        with open("public_key", "w", encoding="utf-8") as fd:
+            fd.write(public_key)
+
+        with open("encrypted_public", "w", encoding="utf-8") as fd:
+            fd.write(encrypted_public)
+
+        args = [
+            "decrypt-public",
+            "private_key_protected",
+            "public_key",
+            "encrypted_public",
+            "--key-passphrase",
+            passphrase,
+            "--key-encoding",
+            "base64",
+            "--data-encoding",
+            "base64",
+            "--compression",
+            "raw",
+        ]
+
         result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
@@ -164,16 +243,16 @@ def test_decrypt_public(
 def test_decrypt_secret(private_key: str, encrypted_secret: str, password: str) -> None:
     runner = CliRunner()
     with runner.isolated_filesystem():
-        with open("secret_key", "w", encoding="utf-8") as fd:
+        with open("private_key", "w", encoding="utf-8") as fd:
             fd.write(private_key)
 
-        with open("message", "w", encoding="utf-8") as fd:
+        with open("encrypted_secret", "w", encoding="utf-8") as fd:
             fd.write(encrypted_secret)
 
         args = [
             "decrypt-secret",
-            "secret_key",
-            "message",
+            "private_key",
+            "encrypted_secret",
             "--key-encoding",
             "base64",
             "--data-encoding",
@@ -181,24 +260,56 @@ def test_decrypt_secret(private_key: str, encrypted_secret: str, password: str) 
             "--compression",
             "raw",
         ]
+
         result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
 
 
-def test_decrypt_password(password: str, encrypted_pw: str) -> None:
+@pytest.mark.slow
+def test_decrypt_secret_passphrase(
+    private_key_protected: str, passphrase: str, encrypted_secret: str, password: str
+) -> None:
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        with open("private_key_protected", "w", encoding="utf-8") as fd:
+            fd.write(private_key_protected)
+
+        with open("encrypted_secret", "w", encoding="utf-8") as fd:
+            fd.write(encrypted_secret)
+
+        args = [
+            "decrypt-secret",
+            "private_key_protected",
+            "encrypted_secret",
+            "--key-passphrase",
+            passphrase,
+            "--key-encoding",
+            "base64",
+            "--data-encoding",
+            "base64",
+            "--compression",
+            "raw",
+        ]
+
+        result = runner.invoke(cli, args=args)
+        assert result.exit_code == 0
+        assert result.stdout.strip() == password
+
+
+def test_decrypt_password(password: str, encrypted_secret: str) -> None:
     runner = CliRunner()
     with runner.isolated_filesystem():
         with open("password", "w", encoding="utf-8") as fd:
             fd.write(password)
 
-        with open("message", "w", encoding="utf-8") as fd:
-            fd.write(encrypted_pw)
+        with open("encrypted_secret", "w", encoding="utf-8") as fd:
+            fd.write(encrypted_secret)
 
         args = [
             "decrypt-password",
             "password",
-            "message",
+            "encrypted_secret",
             "--kdf-profile",
             "interactive",
             "--data-encoding",
@@ -206,6 +317,7 @@ def test_decrypt_password(password: str, encrypted_pw: str) -> None:
             "--compression",
             "raw",
         ]
+
         result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
@@ -220,14 +332,14 @@ def test_encrypt_public(private_key: str, public_key: str, password: str) -> Non
         with open("public_key", "w", encoding="utf-8") as fd:
             fd.write(public_key)
 
-        with open("message", "w", encoding="utf-8") as fd:
+        with open("password", "w", encoding="utf-8") as fd:
             fd.write(password)
 
         args = [
             "encrypt-public",
             "private_key",
             "public_key",
-            "message",
+            "password",
             "--key-encoding",
             "base64",
             "--data-encoding",
@@ -235,7 +347,7 @@ def test_encrypt_public(private_key: str, public_key: str, password: str) -> Non
             "--compression",
             "raw",
             "--output-file",
-            "encrypted",
+            "encrypted_password",
             "--group-len",
             "0",
             "--line-len",
@@ -243,6 +355,7 @@ def test_encrypt_public(private_key: str, public_key: str, password: str) -> Non
             "--padding",
             "0",
         ]
+
         result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
 
@@ -250,7 +363,7 @@ def test_encrypt_public(private_key: str, public_key: str, password: str) -> Non
             "decrypt-public",
             "private_key",
             "public_key",
-            "encrypted",
+            "encrypted_password",
             "--key-encoding",
             "base64",
             "--data-encoding",
@@ -258,6 +371,68 @@ def test_encrypt_public(private_key: str, public_key: str, password: str) -> Non
             "--compression",
             "raw",
         ]
+
+        result = runner.invoke(cli, args=args)
+        assert result.exit_code == 0
+        assert result.stdout.strip() == password
+
+
+@pytest.mark.slow
+def test_encrypt_public_passphrase(
+    private_key_protected: str, passphrase: str, public_key: str, password: str
+) -> None:
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        with open("private_key_protected", "w", encoding="utf-8") as fd:
+            fd.write(private_key_protected)
+
+        with open("public_key", "w", encoding="utf-8") as fd:
+            fd.write(public_key)
+
+        with open("password", "w", encoding="utf-8") as fd:
+            fd.write(password)
+
+        args = [
+            "encrypt-public",
+            "private_key_protected",
+            "public_key",
+            "password",
+            "--key-passphrase",
+            passphrase,
+            "--key-encoding",
+            "base64",
+            "--data-encoding",
+            "base64",
+            "--compression",
+            "raw",
+            "--output-file",
+            "encrypted_password",
+            "--group-len",
+            "0",
+            "--line-len",
+            "0",
+            "--padding",
+            "0",
+        ]
+
+        result = runner.invoke(cli, args=args)
+        assert result.exit_code == 0
+
+        args = [
+            "decrypt-public",
+            "private_key_protected",
+            "public_key",
+            "encrypted_password",
+            "--key-passphrase",
+            passphrase,
+            "--key-encoding",
+            "base64",
+            "--data-encoding",
+            "base64",
+            "--compression",
+            "raw",
+        ]
+
         result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
@@ -266,16 +441,16 @@ def test_encrypt_public(private_key: str, public_key: str, password: str) -> Non
 def test_encrypt_secret(private_key: str, password: str) -> None:
     runner = CliRunner()
     with runner.isolated_filesystem():
-        with open("secret_key", "w", encoding="utf-8") as fd:
+        with open("private_key", "w", encoding="utf-8") as fd:
             fd.write(private_key)
 
-        with open("message", "w", encoding="utf-8") as fd:
+        with open("password", "w", encoding="utf-8") as fd:
             fd.write(password)
 
         args = [
             "encrypt-secret",
-            "secret_key",
-            "message",
+            "private_key",
+            "password",
             "--key-encoding",
             "base64",
             "--data-encoding",
@@ -283,7 +458,7 @@ def test_encrypt_secret(private_key: str, password: str) -> None:
             "--compression",
             "raw",
             "--output-file",
-            "encrypted",
+            "encrypted_password",
             "--group-len",
             "0",
             "--line-len",
@@ -291,13 +466,14 @@ def test_encrypt_secret(private_key: str, password: str) -> None:
             "--padding",
             "0",
         ]
+
         result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
 
         args = [
             "decrypt-secret",
-            "secret_key",
-            "encrypted",
+            "private_key",
+            "encrypted_password",
             "--key-encoding",
             "base64",
             "--data-encoding",
@@ -305,6 +481,63 @@ def test_encrypt_secret(private_key: str, password: str) -> None:
             "--compression",
             "raw",
         ]
+
+        result = runner.invoke(cli, args=args)
+        assert result.exit_code == 0
+        assert result.stdout.strip() == password
+
+
+@pytest.mark.slow
+def test_encrypt_secret_passphrase(
+    private_key_protected: str, passphrase: str, password: str
+) -> None:
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        with open("private_key_protected", "w", encoding="utf-8") as fd:
+            fd.write(private_key_protected)
+
+        with open("password", "w", encoding="utf-8") as fd:
+            fd.write(password)
+
+        args = [
+            "encrypt-secret",
+            "private_key_protected",
+            "password",
+            "--key-passphrase",
+            passphrase,
+            "--key-encoding",
+            "base64",
+            "--data-encoding",
+            "base64",
+            "--compression",
+            "raw",
+            "--output-file",
+            "encrypted_password",
+            "--group-len",
+            "0",
+            "--line-len",
+            "0",
+            "--padding",
+            "0",
+        ]
+
+        result = runner.invoke(cli, args=args)
+        assert result.exit_code == 0
+
+        args = [
+            "decrypt-secret",
+            "private_key_protected",
+            "encrypted_password",
+            "--key-passphrase",
+            passphrase,
+            "--key-encoding",
+            "base64",
+            "--data-encoding",
+            "base64",
+            "--compression",
+            "raw",
+        ]
+
         result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
@@ -327,7 +560,7 @@ def test_encrypt_password(password: str) -> None:
             "--compression",
             "raw",
             "--output-file",
-            "encrypted",
+            "encrypted_password",
             "--group-len",
             "0",
             "--line-len",
@@ -335,13 +568,14 @@ def test_encrypt_password(password: str) -> None:
             "--padding",
             "0",
         ]
+
         result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
 
         args = [
             "decrypt-password",
             "password",
-            "encrypted",
+            "encrypted_password",
             "--kdf-profile",
             "interactive",
             "--data-encoding",
@@ -349,6 +583,7 @@ def test_encrypt_password(password: str) -> None:
             "--compression",
             "raw",
         ]
+
         result = runner.invoke(cli, args=args)
         assert result.exit_code == 0
         assert result.stdout.strip() == password
@@ -356,6 +591,7 @@ def test_encrypt_password(password: str) -> None:
 
 def test_encode_cmd(private_key: str, private_key_b36: str) -> None:
     runner = CliRunner()
+
     args = [
         "encode",
         "base64",
@@ -368,9 +604,103 @@ def test_encode_cmd(private_key: str, private_key_b36: str) -> None:
         "0",
         "-",
     ]
+
     result = runner.invoke(cli, args=args, input=private_key)
     assert result.exit_code == 0
     assert result.stdout.strip() == private_key_b36
+
+
+def test_kdf(password: str, private_key: str) -> None:
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        with open("password", "w", encoding="utf-8") as fd:
+            fd.write(password)
+
+        args = [
+            "kdf",
+            "password",
+            "--encoding",
+            "base64",
+            "--profile",
+            "interactive",
+            "--group-len",
+            "0",
+            "--line-len",
+            "0",
+            "--padding",
+            "0",
+        ]
+
+        result = runner.invoke(cli, args=args)
+        assert result.exit_code == 0
+        assert result.stdout.strip() == private_key
+
+
+@pytest.mark.slow
+def test_kdf_passphrase(password: str, passphrase: str, private_key: str) -> None:
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        with open("password", "w", encoding="utf-8") as fd:
+            fd.write(password)
+
+        args = [
+            "kdf",
+            "password",
+            "--key-passphrase",
+            passphrase,
+            "--encoding",
+            "base64",
+            "--profile",
+            "interactive",
+            "--output-file",
+            "protected_key",
+            "--group-len",
+            "0",
+            "--line-len",
+            "0",
+            "--padding",
+            "0",
+        ]
+
+        result = runner.invoke(cli, args=args)
+        assert result.exit_code == 0
+
+        with open("passphrase", "w", encoding="utf-8") as fd:
+            fd.write(passphrase)
+
+        args = [
+            "decrypt-password",
+            "passphrase",
+            "protected_key",
+            "--kdf-profile",
+            "sensitive",
+            "--data-encoding",
+            "base64",
+            "--compression",
+            "raw",
+            "--output-file",
+            "unprotected_key",
+        ]
+
+        result = runner.invoke(cli, args=args)
+        assert result.exit_code == 0
+
+        args = [
+            "encode",
+            "binary",
+            "base64",
+            "unprotected_key",
+            "--group-len",
+            "0",
+            "--line-len",
+            "0",
+            "--padding",
+            "0",
+        ]
+
+        result = runner.invoke(cli, args=args)
+        assert result.exit_code == 0
+        assert result.stdout.strip() == private_key
 
 
 def test_google_auth(private_key_b32: str) -> None:

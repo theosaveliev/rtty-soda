@@ -36,8 +36,8 @@ A PyNaCl frontend with custom encodings, compression, and key derivation.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.4.0
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.4.0-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.5.0
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.5.0-tools
 ```
 
 
@@ -79,10 +79,10 @@ are equivalent.
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-mOt04MbA6qxppzrUSKAC4EuidNnZKTPPJBZop3b8zks=
+TA2HmPTPbxSXy5o7Kn9ADXreTMMOtdAEkh0JkqfPrSI=
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-E6rKTHGtjvZJh9HniEGtmyGBjjua3zFiYZIXRSjy/Xw=
+9NFjEFqBa6uWpy0JuLHdSgaOIvKux9RI4CYF34z0Wik=
 
 % soda genkey -h
 Usage: soda genkey [OPTIONS]
@@ -90,13 +90,14 @@ Usage: soda genkey [OPTIONS]
   Generate Private Key.
 
 Options:
-  -e, --encoding ENCODING  See `soda encodings`.  [default: base64]
-  -o, --output-file FILE   Write output to file.
-  -g, --group-len INTEGER  [default: 0]
-  --line-len INTEGER       [default: 80]
-  --padding INTEGER        [default: 0]
-  -v, --verbose            Show verbose output.
-  -h, --help               Show this message and exit.
+  -s, --key-passphrase TEXT  Private Key passphrase.
+  -e, --encoding ENCODING    See `soda encodings`.  [default: base64]
+  -o, --output-file FILE     Write output to file.
+  -g, --group-len INTEGER    [default: 0]
+  --line-len INTEGER         [default: 80]
+  --padding INTEGER          [default: 0]
+  -v, --verbose              Show verbose output.
+  -h, --help                 Show this message and exit.
 ```
 
 #### Encryption
@@ -111,7 +112,7 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 (c) Wikipedia
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-b+HK0EA3U6LNhfV9QzHoLBHSIBLm8INx2AwVEAKCyOw8iY391D+aWr/HNd4kte0clQ0lG372r709wS6g
+aWsx1GWUyMUuCqhthKQTVn7btZGvlSDXevGBn8nWl21o8TFMBlC3AEcKShCNtMfPGQBcQpMvIewSxfYu
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
@@ -122,6 +123,7 @@ Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
 Options:
   -t, --text                     Treat message as text (binary if not
                                  specified).
+  -s, --key-passphrase TEXT      Private Key passphrase.
   --key-encoding ENCODING        See `soda encodings`.  [default: base64]
   -e, --data-encoding ENCODING   See `soda encodings`.  [default: base64]
   -c, --compression COMPRESSION  See `soda compression`.  [default: brotli]
@@ -177,14 +179,15 @@ Usage: soda kdf [OPTIONS] PASSWORD_FILE
   Key Derivation Function.
 
 Options:
-  -e, --encoding ENCODING  See `soda encodings`.  [default: base64]
-  -p, --profile PROFILE    See `soda kdf-profiles`.  [default: sensitive]
-  -o, --output-file FILE   Write output to file.
-  -g, --group-len INTEGER  [default: 0]
-  --line-len INTEGER       [default: 80]
-  --padding INTEGER        [default: 0]
-  -v, --verbose            Show verbose output.
-  -h, --help               Show this message and exit.
+  -s, --key-passphrase TEXT  Private Key passphrase.
+  -e, --encoding ENCODING    See `soda encodings`.  [default: base64]
+  -p, --profile PROFILE      See `soda kdf-profiles`.  [default: sensitive]
+  -o, --output-file FILE     Write output to file.
+  -g, --group-len INTEGER    [default: 0]
+  --line-len INTEGER         [default: 80]
+  --padding INTEGER          [default: 0]
+  -v, --verbose              Show verbose output.
+  -h, --help                 Show this message and exit.
 ```
 
 ![KDF diagram](https://github.com/theosaveliev/rtty-soda/raw/main/diagram/kdf.png)
@@ -240,10 +243,10 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-73H0X A388D I3PUG C9ZP4 FJSRR Y8R2F KGB0Y KHO0Q 56J5L NW1S3 697NH 9OVRN SNQDD
-VIB7O GNX0W J7UOS K9EVC 2H8Y7 FTUCB MDA18 NKEJ6 ZWAFH PMKE7 DA55U 11JEY 9LQPR
-Y03ON BNZOJ YH6B4 8DLX6 6LTC9 3MXSF PY616 79QNS EJDKN 8JV1N FDZQJ V6EON 7BG3J
-2PWP4 D315Z 69UGO MOPA5 VLS4V W3BHK XLBWI UGDBB FRRKF WSA64 0U6
+5TH9B DBC9X OOQT2 DTWR7 7RU2A K7ITN 7N11B 2JY8X XGFPT 6UISU YNLQD 12IAW D1LD9
+NZNLN 2VYL7 YD657 SE2WR 2NXV7 A9MRE 8FZNM XT2Z6 9OT73 RALD4 J64EC 5S032 WSWML
+6ESBX Q78L1 U6I9X UTXTA 6ANS1 K93EG K82MG E4J5Y C8AKH 0QJ6T MVBDQ 27U6B WISAE
+8ACNF H0AR4 2AVVP O0GYP 3ZV7T X198W 201EF WILB7 09XWU PHRJE PAE
 ```
 
 
@@ -252,8 +255,9 @@ Y03ON BNZOJ YH6B4 8DLX6 6LTC9 3MXSF PY616 79QNS EJDKN 8JV1N FDZQJ V6EON 7BG3J
 Common options can be set in the environment variables:
 
 ```
-% cat ~/.soda/bin.env
+% cat ~/.soda/example.env
 SODA_TEXT=0
+SODA_KEY_PASSPHRASE="Speed has never killed anyone. Suddenly becoming stationary, that's what gets you."
 SODA_KEY_ENCODING=binary
 SODA_DATA_ENCODING=binary
 SODA_COMPRESSION=brotli
@@ -263,6 +267,21 @@ SODA_LINE_LEN=0
 SODA_PADDING=0
 SODA_VERBOSE=0
 ```
+
+
+## Private/Secret Key passphrase
+
+The key can be protected with an additional passphrase, similar to SSH keys.
+When `--key-passphrase <passphrase>` is used, the private key is automatically
+encrypted or decrypted using the same parameters as the following command:
+
+```
+soda encrypt-password <passphrase> <key> --kdf-profile sensitive
+```
+
+This process is slow, and there is limited room for making it faster.
+RFC 9106 recommends using Argon2id with 2 GiB of memory and 1 pass,
+while soda uses half that memory (1 GiB) and compensates with 4 passes.
 
 
 ## Alternative usage
@@ -303,9 +322,9 @@ SODA_VERBOSE=0
 - Google Authenticator keyer
   ```
   % soda genkey -e base32 | tee totp_key
-  JNNQXAXSZSRTOIRAHG6WG4N2XNJXNOKXA33TSPBSA5RJG7KDNKBA====
+  K7M6LD5KFFQD52FKFMC4ZWKI6CSYJ6USG7SDAOOYAJKTYXCH4S7A====
   % soda ga totp_key
-  824 430 (expires in 10s)
+  766 042 (expires in 19s)
   ```
 
 

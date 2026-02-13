@@ -63,6 +63,16 @@ class CliOptions:
         )(function)
 
     @staticmethod
+    def key_passphrase(function: FC) -> FC:
+        return click.option(
+            "--key-passphrase",
+            "-s",
+            type=click.STRING,
+            envvar="SODA_KEY_PASSPHRASE",
+            help="Private Key passphrase.",
+        )(function)
+
+    @staticmethod
     def kdf_profile(function: FC) -> FC:
         return click.option(
             "--kdf-profile",

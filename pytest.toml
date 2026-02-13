@@ -1,0 +1,4 @@
+[pytest]
+minversion = "9.0"
+testpaths = ["tests"]
+markers = ["slow: mark test as slow."]

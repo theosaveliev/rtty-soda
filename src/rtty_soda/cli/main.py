@@ -24,6 +24,7 @@ def cli() -> None:
 
 
 @cli.command()  # pyright: ignore[reportAny]
+@CliOptions.key_passphrase
 @CliOptions.short_key_encoding
 @CliOptions.output_file
 @CliOptions.group_len
@@ -31,6 +32,7 @@ def cli() -> None:
 @CliOptions.padding
 @CliOptions.verbose
 def genkey_cmd(
+    key_passphrase: str | None,
     encoding: str,
     output_file: Path | None,
     group_len: int,
@@ -42,11 +44,12 @@ def genkey_cmd(
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = KeyService(encoding, formatter, writer, verbose)
-    service.genkey()
+    service.genkey(passphrase=key_passphrase)
 
 
 @cli.command()  # pyright: ignore[reportAny]
 @click.argument("private_key_file", type=CliTypes.IN_PATH)
+@CliOptions.key_passphrase
 @CliOptions.short_key_encoding
 @CliOptions.output_file
 @CliOptions.group_len
@@ -55,6 +58,7 @@ def genkey_cmd(
 @CliOptions.verbose
 def pubkey_cmd(
     private_key_file: Path,
+    key_passphrase: str | None,
     encoding: str,
     output_file: Path | None,
     group_len: int,
@@ -66,12 +70,13 @@ def pubkey_cmd(
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = KeyService(encoding, formatter, writer, verbose)
-    priv = CliReader(private_key_file)
-    service.pubkey(priv)
+    private_key = CliReader(private_key_file)
+    service.pubkey(private_key=private_key, passphrase=key_passphrase)
 
 
 @cli.command()  # pyright: ignore[reportAny]
 @click.argument("password_file", type=CliTypes.IN_PATH)
+@CliOptions.key_passphrase
 @CliOptions.short_key_encoding
 @CliOptions.short_kdf_profile
 @CliOptions.output_file
@@ -81,6 +86,7 @@ def pubkey_cmd(
 @CliOptions.verbose
 def kdf_cmd(
     password_file: Path,
+    key_passphrase: str | None,
     encoding: str,
     profile: str,
     output_file: Path | None,
@@ -94,7 +100,7 @@ def kdf_cmd(
     writer = CliWriter(output_file)
     service = KeyService(encoding, formatter, writer, verbose)
     password = CliReader(password_file)
-    service.kdf(password=password, kdf_profile=profile)
+    service.kdf(password=password, kdf_profile=profile, passphrase=key_passphrase)
 
 
 @cli.command(aliases=["e"])  # pyright: ignore[reportAny]
@@ -102,6 +108,7 @@ def kdf_cmd(
 @click.argument("public_key_file", type=CliTypes.IN_PATH)
 @click.argument("message_file", type=CliTypes.IN_PATH)
 @CliOptions.text
+@CliOptions.key_passphrase
 @CliOptions.key_encoding
 @CliOptions.data_encoding
 @CliOptions.compression
@@ -115,6 +122,7 @@ def encrypt_public_cmd(
     public_key_file: Path,
     message_file: Path,
     text: bool,
+    key_passphrase: str | None,
     key_encoding: str,
     data_encoding: str,
     compression: str,
@@ -136,16 +144,22 @@ def encrypt_public_cmd(
         writer=writer,
         verbose=verbose,
     )
-    priv = CliReader(private_key_file)
-    pub = CliReader(public_key_file)
+    private_key = CliReader(private_key_file)
+    public_key = CliReader(public_key_file)
     message = CliReader(message_file)
-    service.encrypt_public(private_key=priv, public_key=pub, message=message)
+    service.encrypt_public(
+        private_key=private_key,
+        passphrase=key_passphrase,
+        public_key=public_key,
+        message=message,
+    )
 
 
 @cli.command(aliases=["es"])  # pyright: ignore[reportAny]
 @click.argument("key_file", type=CliTypes.IN_PATH)
 @click.argument("message_file", type=CliTypes.IN_PATH)
 @CliOptions.text
+@CliOptions.key_passphrase
 @CliOptions.key_encoding
 @CliOptions.data_encoding
 @CliOptions.compression
@@ -158,6 +172,7 @@ def encrypt_secret_cmd(
     key_file: Path,
     message_file: Path,
     text: bool,
+    key_passphrase: str | None,
     key_encoding: str,
     data_encoding: str,
     compression: str,
@@ -181,7 +196,7 @@ def encrypt_secret_cmd(
     )
     key = CliReader(key_file)
     message = CliReader(message_file)
-    service.encrypt_secret(key, message)
+    service.encrypt_secret(key=key, passphrase=key_passphrase, message=message)
 
 
 @cli.command(aliases=["ep"])  # pyright: ignore[reportAny]
@@ -231,6 +246,7 @@ def encrypt_password_cmd(
 @click.argument("public_key_file", type=CliTypes.IN_PATH)
 @click.argument("message_file", type=CliTypes.IN_PATH)
 @CliOptions.text
+@CliOptions.key_passphrase
 @CliOptions.key_encoding
 @CliOptions.data_encoding
 @CliOptions.compression
@@ -240,6 +256,7 @@ def decrypt_public_cmd(
     public_key_file: Path,
     message_file: Path,
     text: bool,
+    key_passphrase: str | None,
     key_encoding: str,
     data_encoding: str,
     compression: str,
@@ -256,16 +273,22 @@ def decrypt_public_cmd(
         writer=writer,
         verbose=False,
     )
-    priv = CliReader(private_key_file)
-    pub = CliReader(public_key_file)
+    private_key = CliReader(private_key_file)
+    public_key = CliReader(public_key_file)
     message = CliReader(message_file)
-    service.decrypt_public(private_key=priv, public_key=pub, message=message)
+    service.decrypt_public(
+        private_key=private_key,
+        passphrase=key_passphrase,
+        public_key=public_key,
+        message=message,
+    )
 
 
 @cli.command(aliases=["ds"])  # pyright: ignore[reportAny]
 @click.argument("key_file", type=CliTypes.IN_PATH)
 @click.argument("message_file", type=CliTypes.IN_PATH)
 @CliOptions.text
+@CliOptions.key_passphrase
 @CliOptions.key_encoding
 @CliOptions.data_encoding
 @CliOptions.compression
@@ -274,6 +297,7 @@ def decrypt_secret_cmd(
     key_file: Path,
     message_file: Path,
     text: bool,
+    key_passphrase: str | None,
     key_encoding: str,
     data_encoding: str,
     compression: str,
@@ -292,7 +316,7 @@ def decrypt_secret_cmd(
     )
     key = CliReader(key_file)
     message = CliReader(message_file)
-    service.decrypt_secret(key, message)
+    service.decrypt_secret(key=key, passphrase=key_passphrase, message=message)
 
 
 @cli.command(aliases=["dp"])  # pyright: ignore[reportAny]

@@ -5,6 +5,7 @@ from click import Command
 cli: Command
 
 def genkey_cmd(
+    key_passphrase: str | None,
     encoding: str,
     output_file: Path | None,
     group_len: int,
@@ -14,6 +15,7 @@ def genkey_cmd(
 ) -> None: ...
 def pubkey_cmd(
     private_key_file: Path,
+    key_passphrase: str | None,
     encoding: str,
     output_file: Path | None,
     group_len: int,
@@ -23,6 +25,7 @@ def pubkey_cmd(
 ) -> None: ...
 def kdf_cmd(
     password_file: Path,
+    key_passphrase: str | None,
     encoding: str,
     profile: str,
     output_file: Path | None,
@@ -36,6 +39,7 @@ def encrypt_public_cmd(
     public_key_file: Path,
     message_file: Path,
     text: bool,
+    key_passphrase: str | None,
     key_encoding: str,
     data_encoding: str,
     compression: str,
@@ -49,6 +53,7 @@ def encrypt_secret_cmd(
     key_file: Path,
     message_file: Path,
     text: bool,
+    key_passphrase: str | None,
     key_encoding: str,
     data_encoding: str,
     compression: str,
@@ -76,6 +81,7 @@ def decrypt_public_cmd(
     public_key_file: Path,
     message_file: Path,
     text: bool,
+    key_passphrase: str | None,
     key_encoding: str,
     data_encoding: str,
     compression: str,
@@ -85,6 +91,7 @@ def decrypt_secret_cmd(
     key_file: Path,
     message_file: Path,
     text: bool,
+    key_passphrase: str | None,
     key_encoding: str,
     data_encoding: str,
     compression: str,
@@ -109,3 +116,7 @@ def encode_cmd(
     padding: int,
     verbose: bool,
 ) -> None: ...
+def google_auth_cmd(key_file: Path) -> None: ...
+def encodings_cmd() -> None: ...
+def compression_cmd() -> None: ...
+def kdf_profiles_cmd() -> None: ...

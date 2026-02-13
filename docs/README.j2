@@ -178,9 +178,24 @@ The rtty-soda supports various encodings:
 Common options can be set in the environment variables:
 
 ```
-% cat ~/.soda/bin.env
-{{ "cat docker/bin.env" | shell | trim }}
+% cat ~/.soda/example.env
+{{ "cat docs/example.env" | shell | trim }}
 ```
+
+
+## Private/Secret Key passphrase
+
+The key can be protected with an additional passphrase, similar to SSH keys.
+When `--key-passphrase <passphrase>` is used, the private key is automatically
+encrypted or decrypted using the same parameters as the following command:
+
+```
+soda encrypt-password <passphrase> <key> --kdf-profile sensitive
+```
+
+This process is slow, and there is limited room for making it faster.
+RFC 9106 recommends using Argon2id with 2 GiB of memory and 1 pass,
+while soda uses half that memory (1 GiB) and compensates with 4 passes.
 
 
 ## Alternative usage

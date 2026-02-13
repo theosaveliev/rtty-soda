@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol
 
 from nacl.encoding import RawEncoder
 from nacl.secret import SecretBox
@@ -6,8 +6,13 @@ from nacl.secret import SecretBox
 if TYPE_CHECKING:
     from nacl.utils import EncryptedMessage
 
+__all__ = ["SecretKeyOp", "decrypt", "encrypt"]
 
-__all__ = ["decrypt", "encrypt"]
+
+class SecretKeyOp(Protocol):
+    """Performs a Secret Key operation of encryption or decryption."""
+
+    def __call__(self, key: bytes, data: bytes) -> bytes: ...
 
 
 def encrypt(key: bytes, data: bytes) -> EncryptedMessage:
