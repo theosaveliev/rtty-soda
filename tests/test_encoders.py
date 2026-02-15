@@ -30,3 +30,16 @@ def test_encoders() -> None:
 
     assert Base94Encoder.encode(b"\x64") == "\"'"
     assert Base94Encoder.decode("\"'") == b"\x64"
+
+
+def test_encoders_edge() -> None:
+    scope = (Base10Encoder, Base26Encoder, Base31Encoder, Base36Encoder, Base94Encoder)
+    for enc in scope:
+        assert enc.encode(b"") == ""
+        assert enc.decode("") == b""
+
+        assert enc.decode(enc.zero) == b"\x00"
+        assert enc.decode(enc.zero + enc.zero) == b"\x00\x00"
+
+        one = enc.alphabet[1]
+        assert enc.decode(enc.zero + enc.zero + one) == b"\x00\x00\x01"

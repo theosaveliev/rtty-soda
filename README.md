@@ -5,8 +5,8 @@ A PyNaCl frontend with custom encodings, compression, and key derivation.
 
 #### Features
 
-- Public Key encryption (Curve25519-XSalsa20-Poly1305)
-- Secret Key encryption (XSalsa20-Poly1305)
+- Public key encryption (Curve25519-XSalsa20-Poly1305)
+- Secret key encryption (XSalsa20-Poly1305)
 - Key derivation (Argon2id-Blake2b)
 - Text compression (brotli, zstd, zlib, bz2, lzma)
 - Custom encodings:
@@ -36,8 +36,8 @@ A PyNaCl frontend with custom encodings, compression, and key derivation.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.5.0
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.5.0-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.6.0
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.6.0-tools
 ```
 
 
@@ -74,15 +74,15 @@ Some commands have aliases, so `% soda encrypt-password ...` and `% soda ep ...`
 are equivalent.
 
 
-## Public Key encryption
+## Public key encryption
 #### Key generation
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-TA2HmPTPbxSXy5o7Kn9ADXreTMMOtdAEkh0JkqfPrSI=
+iEMYcstMIKdqx00YpAchg8snksQSZmgvv50euagKK0c=
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-9NFjEFqBa6uWpy0JuLHdSgaOIvKux9RI4CYF34z0Wik=
+GQM/Xbap6E5OdSAB0l94Ii/p9+HCpUPIATmNdB33zHs=
 
 % soda genkey -h
 Usage: soda genkey [OPTIONS]
@@ -112,7 +112,7 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 (c) Wikipedia
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-aWsx1GWUyMUuCqhthKQTVn7btZGvlSDXevGBn8nWl21o8TFMBlC3AEcKShCNtMfPGQBcQpMvIewSxfYu
+1SV7RXHycN5N3xVK38KeUJYIDSjaOHOojI5pSaIVvXSbXF+cFWovKCsCR934HbECYqLsmNHEEia+9GAK
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
@@ -146,7 +146,7 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 ```
 
 
-## Secret Key encryption
+## Secret key encryption
 
 Alice and Bob share a key for symmetric encryption:
 
@@ -168,6 +168,11 @@ Another day, they share a password:
 
 The KDF function derives the key from the password.
 It accepts different profiles: interactive, moderate, and sensitive.
+
+rtty-soda intentionally uses deterministic key derivation.
+The tool does not embed metadata, salt, or format headers
+into ciphertext in order to avoid recognizable message structure.
+As a result, identical passwords derive identical keys.
 
 ```
 % echo qwerty | soda kdf - -p interactive
@@ -243,10 +248,10 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-5TH9B DBC9X OOQT2 DTWR7 7RU2A K7ITN 7N11B 2JY8X XGFPT 6UISU YNLQD 12IAW D1LD9
-NZNLN 2VYL7 YD657 SE2WR 2NXV7 A9MRE 8FZNM XT2Z6 9OT73 RALD4 J64EC 5S032 WSWML
-6ESBX Q78L1 U6I9X UTXTA 6ANS1 K93EG K82MG E4J5Y C8AKH 0QJ6T MVBDQ 27U6B WISAE
-8ACNF H0AR4 2AVVP O0GYP 3ZV7T X198W 201EF WILB7 09XWU PHRJE PAE
+5NCEH YMX53 9OAWO VPK60 IYDCQ L57CT AH5DP K2UZ7 QM0TJ QEHSB 49JHG HCUX5 UW4MC
+FO097 A0L45 YNWNJ 2JXS7 7OHM8 QV31N EVDLU Z1F1B BFSVX C6TFS BAMCQ VKC3V K8B9B
+10WK6 MH7SG 2UKSF AAI08 9LEBM V3IQ3 F5MOV HHQHR IP6WU W8937 JV9QK 8VB0N 5U717
+V79T2 BJIP5 YLXTU 3DN05 LZ7OL ANAB9 7GCEG K3DLY 8N3RF ABQ3N 9GT
 ```
 
 
@@ -269,14 +274,14 @@ SODA_VERBOSE=0
 ```
 
 
-## Private/Secret Key passphrase
+## Private/Secret key passphrase
 
 The key can be protected with an additional passphrase, similar to SSH keys.
 When `--key-passphrase <passphrase>` is used, the private key is automatically
 encrypted or decrypted using the same parameters as the following command:
 
 ```
-soda encrypt-password <passphrase> <key> --kdf-profile sensitive
+% soda encrypt-password <passphrase> <key> --kdf-profile sensitive --data-encoding binary --compression raw
 ```
 
 This process is slow, and there is limited room for making it faster.
@@ -322,9 +327,9 @@ while soda uses half that memory (1 GiB) and compensates with 4 passes.
 - Google Authenticator keyer
   ```
   % soda genkey -e base32 | tee totp_key
-  K7M6LD5KFFQD52FKFMC4ZWKI6CSYJ6USG7SDAOOYAJKTYXCH4S7A====
+  JPULDHN3DOON2B327RQHT4ZEOULCCJ6UXDCTFNOW5LGTF5PNMWOQ====
   % soda ga totp_key
-  766 042 (expires in 19s)
+  857 273 (expires in 28s)
   ```
 
 

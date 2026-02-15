@@ -1,12 +1,16 @@
-from .base10_encoder import Base10Encoder
-from .base26_encoder import Base26Encoder
-from .base31_encoder import Base31Encoder
-from .base32_encoder import Base32Encoder
-from .base36_encoder import Base36Encoder
-from .base64_encoder import Base64Encoder
-from .base94_encoder import Base94Encoder
+from .concrete import (
+    Base10Encoder,
+    Base26Encoder,
+    Base31Encoder,
+    Base32Encoder,
+    Base36Encoder,
+    Base64Encoder,
+    Base94Encoder,
+    decode_bytes,
+    encode_str,
+)
 from .encoder import Encoder
-from .functions import decode_bytes, encode_str
+from .encoder_base import EncoderBase
 from .scsu import scsu_decode, scsu_encode
 
 __all__ = [
@@ -19,6 +23,7 @@ __all__ = [
     "Base64Encoder",
     "Base94Encoder",
     "Encoder",
+    "EncoderBase",
     "decode_bytes",
     "encode_str",
     "scsu_decode",

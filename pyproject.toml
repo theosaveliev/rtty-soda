@@ -1,6 +1,6 @@
 [project]
 name = "rtty-soda"
-version = "0.5.0"
+version = "0.6.0"
 description = "A PyNaCl frontend with custom encodings, compression, and key derivation"
 readme = "README.md"
 license = { text = "MIT" }

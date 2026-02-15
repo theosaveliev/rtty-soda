@@ -5,8 +5,8 @@ A PyNaCl frontend with custom encodings, compression, and key derivation.
 
 #### Features
 
-- Public Key encryption (Curve25519-XSalsa20-Poly1305)
-- Secret Key encryption (XSalsa20-Poly1305)
+- Public key encryption (Curve25519-XSalsa20-Poly1305)
+- Secret key encryption (XSalsa20-Poly1305)
 - Key derivation (Argon2id-Blake2b)
 - Text compression (brotli, zstd, zlib, bz2, lzma)
 - Custom encodings:
@@ -54,7 +54,7 @@ Some commands have aliases, so `% soda encrypt-password ...` and `% soda ep ...`
 are equivalent.
 
 
-## Public Key encryption
+## Public key encryption
 #### Key generation
 
 ```
@@ -92,7 +92,7 @@ Alice sends the message to Bob:
 ```
 
 
-## Secret Key encryption
+## Secret key encryption
 
 Alice and Bob share a key for symmetric encryption:
 
@@ -123,6 +123,11 @@ Another day, they share a password:
 
 The KDF function derives the key from the password.
 It accepts different profiles: interactive, moderate, and sensitive.
+
+rtty-soda intentionally uses deterministic key derivation.
+The tool does not embed metadata, salt, or format headers
+into ciphertext in order to avoid recognizable message structure.
+As a result, identical passwords derive identical keys.
 
 ```
 % echo qwerty | soda kdf - -p interactive
@@ -183,14 +188,14 @@ Common options can be set in the environment variables:
 ```
 
 
-## Private/Secret Key passphrase
+## Private/Secret key passphrase
 
 The key can be protected with an additional passphrase, similar to SSH keys.
 When `--key-passphrase <passphrase>` is used, the private key is automatically
 encrypted or decrypted using the same parameters as the following command:
 
 ```
-soda encrypt-password <passphrase> <key> --kdf-profile sensitive
+% soda encrypt-password <passphrase> <key> --kdf-profile sensitive --data-encoding binary --compression raw
 ```
 
 This process is slow, and there is limited room for making it faster.
