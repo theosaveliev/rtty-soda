@@ -99,6 +99,39 @@ wheels = [
 ]
 
 [[package]]
+name = "gmpy2"
+version = "2.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/57/57/86fd2ed7722cddfc7b1aa87cc768ef89944aa759b019595765aff5ad96a7/gmpy2-2.3.0.tar.gz", hash = "sha256:2d943cc9051fcd6b15b2a09369e2f7e18c526bc04c210782e4da61b62495eb4a", size = 302252, upload-time = "2026-02-08T00:57:42.808Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/db/2b/183a5a60974c284ea70d6c30dc32f3575c3b215f4a026c6cd128b14e5f7b/gmpy2-2.3.0-cp314-cp314-macosx_10_15_x86_64.whl", hash = "sha256:bf9ac69c1346a6dc21e62261d916325be74d1aee97e87e14c90eedbb0171feba", size = 858117, upload-time = "2026-02-08T00:56:58.914Z" },
+    { url = "https://files.pythonhosted.org/packages/6a/22/2e254d93393c5d17b691bb5dacf13e5a25af1b3a389d451ed180a6170785/gmpy2-2.3.0-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:0a42ced3bc8a679daa46fba0d7b46f5549c5c1400adc005da76a9420821ad959", size = 710234, upload-time = "2026-02-08T00:57:00.69Z" },
+    { url = "https://files.pythonhosted.org/packages/37/e8/8c3a9b16281180d9f0910ba738817d2e523167dcc4f11745d2d5d1be603e/gmpy2-2.3.0-cp314-cp314-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:17770d7a8fb06159563d63a69b95e9c935f94d078ec5b1876e64ae2f233cc97b", size = 1663100, upload-time = "2026-02-08T00:57:02.006Z" },
+    { url = "https://files.pythonhosted.org/packages/d8/7c/acda4d717e1612aa7bdd58271e724c7dfb1b648cf8d55b16ec54ab1a9de7/gmpy2-2.3.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:566861a586dabffc4913b3a99f611240c966e9d5fab71cdb3147e759a035ebd2", size = 1766955, upload-time = "2026-02-08T00:57:03.62Z" },
+    { url = "https://files.pythonhosted.org/packages/9c/3a/b19226a5da1584b4de866beeb57bd80264cf033a62f29f4e06372dda25d2/gmpy2-2.3.0-cp314-cp314-musllinux_1_2_aarch64.whl", hash = "sha256:04112c8c572499877aa785e91a1b06a90ac65138638d8d331b78032b2fe76dd9", size = 1682426, upload-time = "2026-02-08T00:57:04.918Z" },
+    { url = "https://files.pythonhosted.org/packages/a1/d4/c8e0987602cd2bb7a52f86d0288c77f444c6aaf565f329c6ee5c569a0e2d/gmpy2-2.3.0-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:404f1c46e9e3871c482d485f661b8b94e7b8bb7837e582d2dad961a3c8a9aa81", size = 1720961, upload-time = "2026-02-08T00:57:06.321Z" },
+    { url = "https://files.pythonhosted.org/packages/cb/a8/02eaf120e6d4379a68937c3c8af6974bbb71f59afa487fb41db168802bef/gmpy2-2.3.0-cp314-cp314-win_amd64.whl", hash = "sha256:9cedc4e27c543fa811175a00765bd284114fc6f813fcca2dbb24b383173115e2", size = 1262433, upload-time = "2026-02-08T00:57:09.459Z" },
+    { url = "https://files.pythonhosted.org/packages/4b/2b/d729eb8b27ea66cdb4cdff69935b2b9fd119ef0dfd10a6ea073c5515a044/gmpy2-2.3.0-cp314-cp314-win_arm64.whl", hash = "sha256:51051b7327f384cbd6e3fecdb31280c3aab5648cc5f49a79d447b9851840eb65", size = 878764, upload-time = "2026-02-08T00:57:10.781Z" },
+    { url = "https://files.pythonhosted.org/packages/4b/27/466e68e414a8393daed986b7115d5af279b7c7898265d0489f0a7d48550d/gmpy2-2.3.0-cp314-cp314t-macosx_10_15_x86_64.whl", hash = "sha256:23235c78f75f5d5349c5a28ba747abdabf8e43cb6c3e2d7296d9be07d5ee150c", size = 872741, upload-time = "2026-02-08T00:57:12.292Z" },
+    { url = "https://files.pythonhosted.org/packages/6b/df/cdb5ca9310e76ab13172f058b6bc555b26d500e935c86c37bfd82dbc6e9e/gmpy2-2.3.0-cp314-cp314t-macosx_11_0_arm64.whl", hash = "sha256:884b200343db4eca4a918cff602ecd1686a8dfc44f4b0b7e7df21747edf4e168", size = 724203, upload-time = "2026-02-08T00:57:13.599Z" },
+    { url = "https://files.pythonhosted.org/packages/81/78/8dc4d19701ddd0c121a5c98731ddb2cba353bc6fd2cee4136016ccfa910b/gmpy2-2.3.0-cp314-cp314t-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:9d7cae51c2613884192901b3b7cf6546e4c70548589b58ef9eec7d3aaea88783", size = 1586697, upload-time = "2026-02-08T00:57:14.976Z" },
+    { url = "https://files.pythonhosted.org/packages/99/55/4293bb1d180a74389cab9ef9dcc5337de0ca7b1254da395f8b41a4b63b99/gmpy2-2.3.0-cp314-cp314t-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:399d8ed2168075837c9b8817808532d5d3fc197cd7b121822e97e8add3e60f7f", size = 1682178, upload-time = "2026-02-08T00:57:16.356Z" },
+    { url = "https://files.pythonhosted.org/packages/7e/4f/c6d1104e4420e3d6a568653e4e3ee11fa368d1292f715e9b54cfc01bddc1/gmpy2-2.3.0-cp314-cp314t-musllinux_1_2_aarch64.whl", hash = "sha256:a5713e51e244470e986051ac2be4aa4d0594067216f07d76cd07234f8c25a2c6", size = 1600481, upload-time = "2026-02-08T00:57:17.638Z" },
+    { url = "https://files.pythonhosted.org/packages/ef/0d/c9a1e7115822f1685958b29b05118d9b741a6670b5b80a40eaf39286afe3/gmpy2-2.3.0-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:baf62ccecb76a0c922af2f01c7fbb0b0f7606ed41fd7d59458656898a0dad5c9", size = 1639960, upload-time = "2026-02-08T00:57:18.895Z" },
+    { url = "https://files.pythonhosted.org/packages/40/2d/9f5e6b7aa5a8d5ff09b9a2be01d6e6a8e79047c6362c12bd3c8a3d529d25/gmpy2-2.3.0-cp314-cp314t-win_amd64.whl", hash = "sha256:8b6399d2dd1229242b0e24ebf525f70fee0efa98f366990c7efafd32ce90855c", size = 1293163, upload-time = "2026-02-08T00:57:20.261Z" },
+    { url = "https://files.pythonhosted.org/packages/96/40/4d55a2e094e203e89ad966903ed887bd379008c39ec94b6474260472b7f1/gmpy2-2.3.0-cp314-cp314t-win_arm64.whl", hash = "sha256:3c13f1078b30bbb95472f38e6213fb269be55ef37ede94fb9695fb1173e568a4", size = 882976, upload-time = "2026-02-08T00:57:21.712Z" },
+]
+
+[[package]]
+name = "gmpy2-stubs"
+version = "2.2.1.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/58/36/2339da62e9af9a1bb12f2fbc1b4225a8c62c837b2115cb732b89eaed0764/gmpy2_stubs-2.2.1.5.tar.gz", hash = "sha256:9bcd5ab0bfbe881d39664f6b63046258dd91e38593a4cd930244874aaf82c770", size = 14715, upload-time = "2025-04-09T09:27:12.273Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/77/d8/1444c88c3dd1e3eaea85a6c917fee9481f833a5ba805e87b59c4a1a565d8/gmpy2_stubs-2.2.1.5-py3-none-any.whl", hash = "sha256:8d6c6db2603628e1c9d65e49db8f99e2a592e99a0eecee2591084b18a193b4fe", size = 12234, upload-time = "2025-04-09T09:27:11.092Z" },
+]
+
+[[package]]
 name = "iniconfig"
 version = "2.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -408,10 +441,12 @@ wheels = [
 
 [[package]]
 name = "rtty-soda"
-version = "0.6.0"
+version = "0.7.0"
 source = { editable = "." }
 dependencies = [
     { name = "brotli" },
+    { name = "gmpy2" },
+    { name = "gmpy2-stubs" },
     { name = "pynacl" },
     { name = "pyotp" },
     { name = "scsu" },
@@ -439,6 +474,8 @@ requires-dist = [
     { name = "brotli", specifier = ">=1.2.0,<2.0.0" },
     { name = "click", marker = "extra == 'cli'", specifier = ">=8.3.1,<9.0.0" },
     { name = "click-aliases", marker = "extra == 'cli'", specifier = ">=1.0.5,<2.0.0" },
+    { name = "gmpy2", specifier = ">=2.3.0,<3.0.0" },
+    { name = "gmpy2-stubs", specifier = ">=2.2.1.5,<3.0.0.0" },
     { name = "pynacl", specifier = ">=1.6.2,<2.0.0" },
     { name = "pyotp", specifier = ">=2.9.0,<3.0.0" },
     { name = "scsu", specifier = ">=1.1.1,<2.0.0" },

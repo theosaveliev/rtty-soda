@@ -1,6 +1,6 @@
 [project]
 name = "rtty-soda"
-version = "0.6.0"
+version = "0.7.0"
 description = "A PyNaCl frontend with custom encodings, compression, and key derivation"
 readme = "README.md"
 license = { text = "MIT" }
@@ -25,6 +25,8 @@ requires-python = ">=3.14,<4.0"
 
 dependencies = [
     "brotli>=1.2.0,<2.0.0",
+    "gmpy2>=2.3.0,<3.0.0",
+    "gmpy2-stubs>=2.2.1.5,<3.0.0.0",
     "pynacl>=1.6.2,<2.0.0",
     "pyotp>=2.9.0,<3.0.0",
     "scsu>=1.1.1,<2.0.0",

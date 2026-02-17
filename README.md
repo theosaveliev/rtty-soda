@@ -36,8 +36,8 @@ A PyNaCl frontend with custom encodings, compression, and key derivation.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.6.0
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.6.0-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.0
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.0-tools
 ```
 
 
@@ -79,10 +79,10 @@ are equivalent.
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-iEMYcstMIKdqx00YpAchg8snksQSZmgvv50euagKK0c=
+ACXd5nCLbiNRimfiFzvPOiAYGVESorUM6zGBwUfMhi8=
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-GQM/Xbap6E5OdSAB0l94Ii/p9+HCpUPIATmNdB33zHs=
+W6UbJ/MCk6hZI2kBjfeG7hmltdk+LCT3LX/biumC2hY=
 
 % soda genkey -h
 Usage: soda genkey [OPTIONS]
@@ -112,7 +112,7 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 (c) Wikipedia
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-1SV7RXHycN5N3xVK38KeUJYIDSjaOHOojI5pSaIVvXSbXF+cFWovKCsCR934HbECYqLsmNHEEia+9GAK
+kj8AKqlT+IOkCgl0AvtOsLLJ8oW4//+uqj+UayCJfnvSXqUYlJ3YB7L+vV+0ySWChkKxNQpUm8EYO6PK
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
@@ -248,10 +248,10 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-5NCEH YMX53 9OAWO VPK60 IYDCQ L57CT AH5DP K2UZ7 QM0TJ QEHSB 49JHG HCUX5 UW4MC
-FO097 A0L45 YNWNJ 2JXS7 7OHM8 QV31N EVDLU Z1F1B BFSVX C6TFS BAMCQ VKC3V K8B9B
-10WK6 MH7SG 2UKSF AAI08 9LEBM V3IQ3 F5MOV HHQHR IP6WU W8937 JV9QK 8VB0N 5U717
-V79T2 BJIP5 YLXTU 3DN05 LZ7OL ANAB9 7GCEG K3DLY 8N3RF ABQ3N 9GT
+17H2B R6W06 41BFL HPSQH 6FOQM VKBJ5 DB8P1 V5QL1 M1T2E ZBVON BZRJN Q0PKH IB2VA
+FT1EI NT16E ODI4I 6HFEX 6ZB82 1LESF 7O0G0 TL129 JM76U 97FJA 5MTD8 8ZPOF SUEHJ
+ZFWG1 BVV8Q 2DC0M T16AZ HVH5M 422VN FLVOK A9CJG GH0Q0 7IA8B OYN3I CX26T 74H8A
+CTMYW AY1DQ RIUCB 7QGEB M4ZWM D6L85 AW5F7 6HT1B NRHCW 353A5 RGA
 ```
 
 
@@ -327,9 +327,9 @@ while soda uses half that memory (1 GiB) and compensates with 4 passes.
 - Google Authenticator keyer
   ```
   % soda genkey -e base32 | tee totp_key
-  JPULDHN3DOON2B327RQHT4ZEOULCCJ6UXDCTFNOW5LGTF5PNMWOQ====
+  ISJBJCPLB6HS5ISQ5JX4SQDMEGAMGSXYLPFCIIESB7SCPUNA2WDA====
   % soda ga totp_key
-  857 273 (expires in 28s)
+  316 412 (expires in 5s)
   ```
 
 
