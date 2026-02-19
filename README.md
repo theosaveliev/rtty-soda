@@ -8,16 +8,22 @@ A PyNaCl frontend with custom encodings, compression, and key derivation.
 - Public key encryption (Curve25519-XSalsa20-Poly1305)
 - Secret key encryption (XSalsa20-Poly1305)
 - Key derivation (Argon2id-Blake2b)
-- Text compression (brotli, zstd, zlib, bz2, lzma)
+- Text compression:
+  - brotli (Brotli, best ratio, default)
+  - zstd (Zstandard, fast, good ratio)
+  - zlib (Deflate, used by gzip)
+  - bz2 (Bzip2, used in tar.bz2)
+  - lzma (LZMA, good ratio on large data)
+  - raw (No compression, improves security)
 - Custom encodings:
-  - Base10 (Decimal)
-  - Base26 (Latin)
-  - Base31 (Cyrillic)
-  - Base32 (RFC 4648)
-  - Base36 (Latin with numbers)
-  - Base64 (RFC 4648)
-  - Base94 (ASCII printable)
-  - Binary
+  - base10 (Decimal)
+  - base26 (Latin)
+  - base31 (Cyrillic)
+  - base32 (RFC 4648)
+  - base36 (Latin with digits)
+  - base64 (RFC 4648)
+  - base94 (ASCII printable)
+  - binary (Raw bytes)
 
 
 ## Installation
@@ -36,8 +42,8 @@ A PyNaCl frontend with custom encodings, compression, and key derivation.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.0
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.0-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.1
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.1-tools
 ```
 
 
@@ -55,19 +61,19 @@ Options:
 
 Commands:
   compression            List supported compression libs.
-  decrypt-password (dp)  Decrypt Message (Password).
-  decrypt-public (d)     Decrypt Message (Public).
-  decrypt-secret (ds)    Decrypt Message (Secret).
-  encode                 Encode File.
+  decrypt-password (dp)  Decrypt message (password).
+  decrypt-public (d)     Decrypt message (public).
+  decrypt-secret (ds)    Decrypt message (secret).
+  encode                 Encode file.
   encodings              List supported encodings.
-  encrypt-password (ep)  Encrypt Message (Password).
-  encrypt-public (e)     Encrypt Message (Public).
-  encrypt-secret (es)    Encrypt Message (Secret).
-  genkey                 Generate Private Key.
+  encrypt-password (ep)  Encrypt message (password).
+  encrypt-public (e)     Encrypt message (public).
+  encrypt-secret (es)    Encrypt message (secret).
+  genkey                 Generate private/secret key.
   google-auth (ga)       Google Authenticator TOTP.
-  kdf                    Key Derivation Function.
+  kdf                    Key derivation function.
   kdf-profiles           List supported KDF profiles.
-  pubkey                 Get Public Key.
+  pubkey                 Get public key.
 ```
 
 Some commands have aliases, so `% soda encrypt-password ...` and `% soda ep ...`
@@ -79,18 +85,18 @@ are equivalent.
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-ACXd5nCLbiNRimfiFzvPOiAYGVESorUM6zGBwUfMhi8=
+8hFMSwo/6pTCRQfNqYxkSpDI/0v92zkESYj4mN2eXXk=
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-W6UbJ/MCk6hZI2kBjfeG7hmltdk+LCT3LX/biumC2hY=
+SlwXUXlbgVEMC51KUjWBfa0+XtFY4JhVXJ1Ogu4BnUk=
 
 % soda genkey -h
 Usage: soda genkey [OPTIONS]
 
-  Generate Private Key.
+  Generate private/secret key.
 
 Options:
-  -s, --key-passphrase TEXT  Private Key passphrase.
+  -s, --key-passphrase TEXT  Private/secret key passphrase.
   -e, --encoding ENCODING    See `soda encodings`.  [default: base64]
   -o, --output-file FILE     Write output to file.
   -g, --group-len INTEGER    [default: 0]
@@ -112,18 +118,18 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 (c) Wikipedia
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-kj8AKqlT+IOkCgl0AvtOsLLJ8oW4//+uqj+UayCJfnvSXqUYlJ3YB7L+vV+0ySWChkKxNQpUm8EYO6PK
+2d0w2ZYvGoRHXHJk/WT8NepRGyC+Bm1v7f1Vjmm9ZFLx1dW7mnzqT2uXfFIpP2sKP5QISVVsb/WidEcH
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
                            MESSAGE_FILE
 
-  Encrypt Message (Public).
+  Encrypt message (public).
 
 Options:
   -t, --text                     Treat message as text (binary if not
                                  specified).
-  -s, --key-passphrase TEXT      Private Key passphrase.
+  -s, --key-passphrase TEXT      Private/secret key passphrase.
   --key-encoding ENCODING        See `soda encodings`.  [default: base64]
   -e, --data-encoding ENCODING   See `soda encodings`.  [default: base64]
   -c, --compression COMPRESSION  See `soda compression`.  [default: brotli]
@@ -166,13 +172,21 @@ Another day, they share a password:
 
 ## Key derivation
 
-The KDF function derives the key from the password.
-It accepts different profiles: interactive, moderate, and sensitive.
+The KDF function derives the key from the password using Argon2id, a memory-hard
+algorithm that makes brute-force attacks expensive by requiring large amounts of
+memory.
 
-rtty-soda intentionally uses deterministic key derivation.
-The tool does not embed metadata, salt, or format headers
-into ciphertext in order to avoid recognizable message structure.
-As a result, identical passwords derive identical keys.
+It accepts different profiles: 
+- interactive (64 MiB, 2 passes)
+- moderate (256 MiB, 3 passes)
+- sensitive (1 GiB, 4 passes)
+
+The top profile uses 1 GiB - half the memory of the RFC 9106 recommendation for
+practical use. The profiles are defined by libsodium.
+
+The KDF function is deterministic, so identical passwords produce identical keys.
+No metadata is stored or asked of the user to keep the interface simple.
+The trade-off is that password strength is critical.
 
 ```
 % echo qwerty | soda kdf - -p interactive
@@ -181,10 +195,10 @@ HqbvUXflAG+no3YS9njezZ3leyr8IwERAyeNoG2l41U=
 % soda kdf -h
 Usage: soda kdf [OPTIONS] PASSWORD_FILE
 
-  Key Derivation Function.
+  Key derivation function.
 
 Options:
-  -s, --key-passphrase TEXT  Private Key passphrase.
+  -s, --key-passphrase TEXT  Private/secret key passphrase.
   -e, --encoding ENCODING    See `soda encodings`.  [default: base64]
   -p, --profile PROFILE      See `soda kdf-profiles`.  [default: sensitive]
   -o, --output-file FILE     Write output to file.
@@ -248,10 +262,10 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-17H2B R6W06 41BFL HPSQH 6FOQM VKBJ5 DB8P1 V5QL1 M1T2E ZBVON BZRJN Q0PKH IB2VA
-FT1EI NT16E ODI4I 6HFEX 6ZB82 1LESF 7O0G0 TL129 JM76U 97FJA 5MTD8 8ZPOF SUEHJ
-ZFWG1 BVV8Q 2DC0M T16AZ HVH5M 422VN FLVOK A9CJG GH0Q0 7IA8B OYN3I CX26T 74H8A
-CTMYW AY1DQ RIUCB 7QGEB M4ZWM D6L85 AW5F7 6HT1B NRHCW 353A5 RGA
+2T4XT IVK0M UBUQR NPP9X U0HAU JH44C DEJ8L MV4EK HAS15 09JXO 6EYB3 5CAAB 4H3BW
+0O8EO 9CQ9M 93O0C 8IKYI FW9EZ HWMSR GZSUR AZBGV 9Y26D Q63JA P3OK1 HLEM8 KZJ3D
+ZX7QU DP9WT FTZUP KIA9L 53LTP 6FB8A HSO9B Y8IJ0 3ZWXI ZO2VX 9B3RP 2Z7DR T9IBE
+AI404 D2282 PGX6G WT85T WSCNF WD4DF 9RDHF OXRUA TYS2I 45LJ1 05W
 ```
 
 
@@ -262,7 +276,7 @@ Common options can be set in the environment variables:
 ```
 % cat ~/.soda/example.env
 SODA_TEXT=0
-SODA_KEY_PASSPHRASE="Speed has never killed anyone. Suddenly becoming stationary, that's what gets you."
+SODA_KEY_PASSPHRASE="He in a few minutes ravished this fair creature, or at least would have ravished her, if she had not, by a timely compliance, prevented him."
 SODA_KEY_ENCODING=binary
 SODA_DATA_ENCODING=binary
 SODA_COMPRESSION=brotli
@@ -274,19 +288,15 @@ SODA_VERBOSE=0
 ```
 
 
-## Private/Secret key passphrase
+## Private/secret key passphrase
 
 The key can be protected with an additional passphrase, similar to SSH keys.
-When `--key-passphrase <passphrase>` is used, the private key is automatically
+When `--key-passphrase <passphrase>` is used, the key is automatically
 encrypted or decrypted using the same parameters as the following command:
 
 ```
 % soda encrypt-password <passphrase> <key> --kdf-profile sensitive --data-encoding binary --compression raw
 ```
-
-This process is slow, and there is limited room for making it faster.
-RFC 9106 recommends using Argon2id with 2 GiB of memory and 1 pass,
-while soda uses half that memory (1 GiB) and compensates with 4 passes.
 
 
 ## Alternative usage
@@ -327,9 +337,9 @@ while soda uses half that memory (1 GiB) and compensates with 4 passes.
 - Google Authenticator keyer
   ```
   % soda genkey -e base32 | tee totp_key
-  ISJBJCPLB6HS5ISQ5JX4SQDMEGAMGSXYLPFCIIESB7SCPUNA2WDA====
-  % soda ga totp_key
-  316 412 (expires in 5s)
+  CEC265QHHVCWNRG2CP5J4P4BTRKYLBIF2CXSUEVOM3HJYRRCJBEA====
+  % soda google-auth totp_key
+  106 072 (expires in 8s)
   ```
 
 

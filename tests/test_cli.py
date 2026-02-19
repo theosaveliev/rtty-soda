@@ -12,25 +12,25 @@ def password() -> str:
 
 @pytest.fixture
 def private_key() -> str:
-    """Return the Private key derived from the password."""
+    """Return the private key derived from the password."""
     return "HqbvUXflAG+no3YS9njezZ3leyr8IwERAyeNoG2l41U="
 
 
 @pytest.fixture
 def private_key_b32() -> str:
-    """Return the Private key in base32."""
+    """Return the private key in base32."""
     return "D2TO6ULX4UAG7J5DOYJPM6G6ZWO6K6ZK7QRQCEIDE6G2A3NF4NKQ===="
 
 
 @pytest.fixture
 def private_key_b36() -> str:
-    """Return the Private key in base36."""
+    """Return the private key in base36."""
     return "RI3SPTQ4MKW711QVZJYE9WIIG8HNBAE3ZFNQVM2QBN6S250ET"
 
 
 @pytest.fixture
 def private_key_protected() -> str:
-    """Return the Private key protected with passphrase."""
+    """Return the private key protected with passphrase."""
     return (
         "bD+krNPhHdeZ4X6g6nNS07CRRdQzDTxv5XGv3okabpYraq2/BqGJ/mp3zVtFDfg4K3OGmrvd"
         "aH5sBqiGI1wN0l+VY5N6hIUe"
@@ -45,13 +45,13 @@ def passphrase() -> str:
 
 @pytest.fixture
 def public_key() -> str:
-    """Return the Public key for the Private key."""
+    """Return the public key for the private key."""
     return "oRwsrjBbIWddLRrpZ+HlX6eErIEzn9PiAj8TL6B4uh4="
 
 
 @pytest.fixture
 def encrypted_public() -> str:
-    """Return the password encrypted with the Public module."""
+    """Return the password encrypted with the public module."""
     return "ZGDZTg5dUxd8GBxDXQlNuoVmjaJk5dPWboCgqnnZRbtBsFrFp11Wri69CbLFyA=="
 
 

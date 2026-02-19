@@ -69,7 +69,7 @@ class CliOptions:
             "-s",
             type=click.STRING,
             envvar="SODA_KEY_PASSPHRASE",
-            help="Private Key passphrase.",
+            help="Private/secret key passphrase.",
         )(function)
 
     @staticmethod

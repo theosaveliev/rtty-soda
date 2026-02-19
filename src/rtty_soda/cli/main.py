@@ -40,7 +40,7 @@ def genkey_cmd(
     padding: int,
     verbose: bool,
 ) -> None:
-    """Generate Private Key."""
+    """Generate private/secret key."""
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = KeyService(encoding, formatter, writer, verbose)
@@ -66,7 +66,7 @@ def pubkey_cmd(
     padding: int,
     verbose: bool,
 ) -> None:
-    """Get Public Key."""
+    """Get public key."""
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = KeyService(encoding, formatter, writer, verbose)
@@ -95,7 +95,7 @@ def kdf_cmd(
     padding: int,
     verbose: bool,
 ) -> None:
-    """Key Derivation Function."""
+    """Key derivation function."""
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = KeyService(encoding, formatter, writer, verbose)
@@ -132,7 +132,7 @@ def encrypt_public_cmd(
     padding: int,
     verbose: bool,
 ) -> None:
-    """Encrypt Message (Public)."""
+    """Encrypt message (public)."""
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = EncryptionService(
@@ -182,7 +182,7 @@ def encrypt_secret_cmd(
     padding: int,
     verbose: bool,
 ) -> None:
-    """Encrypt Message (Secret)."""
+    """Encrypt message (secret)."""
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = EncryptionService(
@@ -224,7 +224,7 @@ def encrypt_password_cmd(
     padding: int,
     verbose: bool,
 ) -> None:
-    """Encrypt Message (Password)."""
+    """Encrypt message (password)."""
     formatter = FixedFormatter(group_len, line_len, padding)
     writer = CliWriter(output_file)
     service = EncryptionService(
@@ -262,7 +262,7 @@ def decrypt_public_cmd(
     compression: str,
     output_file: Path | None,
 ) -> None:
-    """Decrypt Message (Public)."""
+    """Decrypt message (public)."""
     writer = CliWriter(output_file)
     service = EncryptionService(
         text_mode=text,
@@ -303,7 +303,7 @@ def decrypt_secret_cmd(
     compression: str,
     output_file: Path | None,
 ) -> None:
-    """Decrypt Message (Secret)."""
+    """Decrypt message (secret)."""
     writer = CliWriter(output_file)
     service = EncryptionService(
         text_mode=text,
@@ -336,7 +336,7 @@ def decrypt_password_cmd(
     compression: str,
     output_file: Path | None,
 ) -> None:
-    """Decrypt Message (Password)."""
+    """Decrypt message (password)."""
     writer = CliWriter(output_file)
     service = EncryptionService(
         text_mode=text,
@@ -371,7 +371,7 @@ def encode_cmd(
     padding: int,
     verbose: bool,
 ) -> None:
-    """Encode File.
+    """Encode file.
 
     See `soda encodings` for available encodings.
     """
@@ -394,6 +394,8 @@ def google_auth_cmd(key_file: Path) -> None:
     """Google Authenticator TOTP.
 
     Key must be Base32-encoded.
+
+    When importing the key into Google Authenticator, strip the trailing '=' characters.
     """
     key = CliReader(key_file)
     totp = GoogleAuthenticator(key)
@@ -408,10 +410,12 @@ def encodings_cmd() -> None:
     base26 (Latin)
     base31 (Cyrillic)
     base32 (RFC 4648)
-    base36 (Latin with numbers)
+    base36 (Latin with digits)
     base64 (RFC 4648)
     base94 (ASCII printable)
-    binary
+    binary (Raw bytes)
+
+    Use binary or base64 for files larger than 1 MiB.
     """
     click.echo(help_text)
 
@@ -420,12 +424,12 @@ def encodings_cmd() -> None:
 def compression_cmd() -> None:
     """List supported compression libs."""
     help_text = """
-    brotli
-    zstd
-    zlib
-    bz2
-    lzma
-    raw
+    brotli (Brotli, best ratio, default)
+    zstd (Zstandard, fast, good ratio)
+    zlib (Deflate, used by gzip)
+    bz2 (Bzip2, used in tar.bz2)
+    lzma (LZMA, good ratio on large data)
+    raw (No compression, improves security)
     """
     click.echo(help_text)
 
@@ -434,9 +438,9 @@ def compression_cmd() -> None:
 def kdf_profiles_cmd() -> None:
     """List supported KDF profiles."""
     help_text = """
-    interactive (Fastest)
-    moderate
-    sensitive (Slowest)
+    interactive (64 MiB, 2 passes)
+    moderate (256 MiB, 3 passes)
+    sensitive (1 GiB, 4 passes)
     """
     click.echo(help_text)
 
