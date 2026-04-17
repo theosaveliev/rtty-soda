@@ -42,8 +42,8 @@ A PyNaCl frontend with custom encodings, compression, and key derivation.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.2
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.2-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.3
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.3-tools
 ```
 
 
@@ -85,10 +85,10 @@ are equivalent.
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-RaC6B8WxmRg6v/i+KstJ0Z6WZhojJ7uSzSbs9lBCpgo=
+ygWRMoE336samW9N8/vM2eUX+0Y2AwWGWTJDQdQ3WDQ=
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-GyD/5idil82XuWl+mNI6UEAia7umqLfO2KRyQ7GRnnk=
+rLv7pWR5Yh8eymnFXGDsyzcVEI03QPusF0tlsb9GDiY=
 
 % soda genkey -h
 Usage: soda genkey [OPTIONS]
@@ -118,7 +118,7 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 (c) Wikipedia
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-BW/kpYym30Jtrgw+1WjoSn0fzy6cyl0L2TLNmafrnG4VIyajo4h+1/13gNi2T5T5ztkg0c0Ixu0dKQnS
+WyPRox/lUIFsGWK2bGq1JaKjLqFfXrHPCr8QIBBhA+1okT5TfOZLCjR9dJgyt17uVoswJfkVRDPuDY2I
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
@@ -262,10 +262,10 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-1J2YT 8ZTFH RG74O BUII8 CNO3H 80YR2 JDV1I 4NXZZ VVRBA FDWH9 I5KOB PJ0SN FM2UT
-Q6FXE SQ108 Q3WCA LUV8O RTYJ8 9NJ2W XGNVU P3XZA WLQLN K7TV2 0TLCU TQP2U SB2P4
-NZ6CT PWL6V HRWV5 S0ZGF 9SPHD EZFNP PN6RT 5WR1E 3CTG2 GANRW 1JFUY DCK0V XE8CL
-TRIBO KH8G4 O7KC0 CX1BK 1DVV2 6VX9P JTKUN EXCHZ U3PJI VDQAZ FWD
+3N9BA PDM4B T4UPA ZR6FY MUXD4 ZL2V6 D8AFH 1LME0 E4DX5 8W9UR PH5TV ZD2DG QW680
+JGU17 WRYJJ SK670 96UHH QCFPB 3U2D3 A6MJO VSX6I ABUSG 231CH XHAAY 4Y9H9 VY4QA
+9R6V6 SAWVF XFG9N T7LS0 BKZC2 XO1RR WAX9M TVU6E X51GT SO91H 5C7NN EFS9T TOVG7
+6AE8S 181LQ 6HUWW 8XX7R NOSQ7 FZE5E WUSF0 0RYD4 YIW97 SD619 SS4
 ```
 
 
@@ -337,9 +337,9 @@ encrypted or decrypted using the same parameters as the following command:
 - Google Authenticator keyer
   ```
   % soda genkey -e base32 | tee totp_key
-  I5VFDHWPUWWRAQFVV5TXXAZ72S2GKVRBD2YMLHM6UR37G5KQFVDQ====
+  I2SY7OWIQVIFMMJEKWV3PCB6SX3543XRYZBNDBNYPL6RVKREPXRQ====
   % soda google-auth totp_key
-  001 912 (expires in 20s)
+  418 543 (expires in 19s)
   ```
 
 
