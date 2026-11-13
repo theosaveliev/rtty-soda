@@ -14,7 +14,7 @@ __all__ = ["CliTypes"]
 
 
 class CliTypes:
-    IN_PATH: ParamType = click.Path(
+    IN_PATH: ParamType[Path] = click.Path(
         exists=True,
         file_okay=True,
         dir_okay=False,
@@ -23,10 +23,12 @@ class CliTypes:
         path_type=Path,
     )
 
-    OUT_PATH: ParamType = click.Path(
+    OUT_PATH: ParamType[Path] = click.Path(
         file_okay=True, dir_okay=False, writable=True, allow_dash=True, path_type=Path
     )
 
-    ENCODING: ParamType = click.Choice(ENCODERS.keys(), case_sensitive=False)
-    COMPRESSION: ParamType = click.Choice(ARCHIVERS.keys(), case_sensitive=False)
-    KDF_PROFILE: ParamType = click.Choice(KDF_PROFILES.keys(), case_sensitive=False)
+    ENCODING: ParamType[str] = click.Choice(ENCODERS.keys(), case_sensitive=False)
+    COMPRESSION: ParamType[str] = click.Choice(ARCHIVERS.keys(), case_sensitive=False)
+    KDF_PROFILE: ParamType[str] = click.Choice(
+        KDF_PROFILES.keys(), case_sensitive=False
+    )

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:noble
+FROM ubuntu:resolute
 
 RUN yes | unminimize
 RUN apt-get update -y \
@@ -12,7 +12,7 @@ USER ubuntu:ubuntu
 WORKDIR /app
 ENV LANG="en_US.UTF-8"
 ENV HOME="/home/ubuntu"
-ENV PYTHON_GIL=1
+ENV PYTHON_GIL=0
 
 ADD --chown=ubuntu:ubuntu vimrc $HOME/.vim/vimrc
 
