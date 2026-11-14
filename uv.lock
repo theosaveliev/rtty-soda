@@ -472,7 +472,7 @@ sdist = { url = "https://files.pythonhosted.org/packages/05/8e/961c0007c59b8dd77
 
 [[package]]
 name = "rtty-soda"
-version = "0.7.4"
+version = "0.7.5"
 source = { editable = "." }
 dependencies = [
     { name = "brotli" },

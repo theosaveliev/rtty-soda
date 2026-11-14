@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from nacl.public import PrivateKey, PublicKey
 
 from rtty_soda.archivers import ARCHIVERS, UNARCHIVERS
-from rtty_soda.cryptography import public, secret
+from rtty_soda.cryptography import public, secret, short_nonce
 from rtty_soda.encoders import ENCODERS, encode_str, scsu_decode, scsu_encode
 
 from .key_service import KeyService
@@ -29,10 +29,12 @@ class EncryptionService(Service):
         compression: str,
         formatter: Formatter | None,
         writer: Writer,
+        short_nonce: bool,
         verbose: bool,
     ) -> None:
         super().__init__(formatter, writer, verbose)
         self.text_mode = text_mode
+        self.short_nonce = short_nonce
         self.key_encoder = ENCODERS.get(key_encoding)
         self.data_encoder = ENCODERS.get(data_encoding)
         self.archiver = ARCHIVERS.get(compression)
@@ -78,6 +80,10 @@ class EncryptionService(Service):
         pub_key = PublicKey(pub_bytes)
 
         def encrypt(data: bytes) -> bytes:
+            if self.short_nonce:
+                return short_nonce.encrypt_public(
+                    private=priv_key, public=pub_key, data=data
+                )
             return public.encrypt(private=priv_key, public=pub_key, data=data)
 
         self.encryption_flow(message, encrypt)
@@ -88,6 +94,8 @@ class EncryptionService(Service):
         key_bytes = self.read_private_key(key=key, passphrase=passphrase)
 
         def encrypt(data: bytes) -> bytes:
+            if self.short_nonce:
+                return short_nonce.encrypt_secret(key=key_bytes, data=data)
             return secret.encrypt(key=key_bytes, data=data)
 
         self.encryption_flow(message, encrypt)
@@ -98,6 +106,8 @@ class EncryptionService(Service):
         key_bytes = KeyService.derive_key(password, kdf_profile)
 
         def encrypt(data: bytes) -> bytes:
+            if self.short_nonce:
+                return short_nonce.encrypt_secret(key=key_bytes, data=data)
             return secret.encrypt(key_bytes, data)
 
         self.encryption_flow(message, encrypt)
@@ -126,6 +136,10 @@ class EncryptionService(Service):
         pub_key = PublicKey(pub_bytes)
 
         def decrypt(data: bytes) -> bytes:
+            if self.short_nonce:
+                return short_nonce.decrypt_public(
+                    private=priv_key, public=pub_key, data=data
+                )
             return public.decrypt(private=priv_key, public=pub_key, data=data)
 
         self.decryption_flow(message, decrypt)
@@ -136,6 +150,8 @@ class EncryptionService(Service):
         key_bytes = self.read_private_key(key=key, passphrase=passphrase)
 
         def decrypt(data: bytes) -> bytes:
+            if self.short_nonce:
+                return short_nonce.decrypt_secret(key=key_bytes, data=data)
             return secret.decrypt(key=key_bytes, data=data)
 
         self.decryption_flow(message, decrypt)
@@ -146,6 +162,8 @@ class EncryptionService(Service):
         key_bytes = KeyService.derive_key(password, kdf_profile)
 
         def decrypt(data: bytes) -> bytes:
+            if self.short_nonce:
+                return short_nonce.decrypt_secret(key=key_bytes, data=data)
             return secret.decrypt(key_bytes, data)
 
         self.decryption_flow(message, decrypt)

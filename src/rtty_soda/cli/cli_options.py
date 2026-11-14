@@ -119,6 +119,15 @@ class CliOptions:
         )(function)
 
     @staticmethod
+    def short_nonce(function: FC) -> FC:
+        return click.option(
+            "--short-nonce",
+            is_flag=True,
+            envvar="SODA_SHORT_NONCE",
+            help="Use a 12-byte nonce instead of 24.",
+        )(function)
+
+    @staticmethod
     def group_len(function: FC) -> FC:
         return click.option(
             "--group-len", "-g", default=0, show_default=True, envvar="SODA_GROUP_LEN"

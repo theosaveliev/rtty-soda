@@ -47,6 +47,7 @@ def encrypt_public_cmd(
     group_len: int,
     line_len: int,
     padding: int,
+    short_nonce: bool,
     verbose: bool,
 ) -> None: ...
 def encrypt_secret_cmd(
@@ -61,6 +62,7 @@ def encrypt_secret_cmd(
     group_len: int,
     line_len: int,
     padding: int,
+    short_nonce: bool,
     verbose: bool,
 ) -> None: ...
 def encrypt_password_cmd(
@@ -74,6 +76,7 @@ def encrypt_password_cmd(
     group_len: int,
     line_len: int,
     padding: int,
+    short_nonce: bool,
     verbose: bool,
 ) -> None: ...
 def decrypt_public_cmd(
@@ -86,6 +89,7 @@ def decrypt_public_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
+    short_nonce: bool,
 ) -> None: ...
 def decrypt_secret_cmd(
     key_file: Path,
@@ -96,6 +100,7 @@ def decrypt_secret_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
+    short_nonce: bool,
 ) -> None: ...
 def decrypt_password_cmd(
     password_file: Path,
@@ -105,6 +110,7 @@ def decrypt_password_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
+    short_nonce: bool,
 ) -> None: ...
 def encode_cmd(
     in_encoding: str,

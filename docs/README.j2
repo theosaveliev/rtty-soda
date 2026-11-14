@@ -265,6 +265,38 @@ encrypted or decrypted using the same parameters as the following command:
   ```
 
 
+## Tutorial for the Underground Moscow Museum
+
+```
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/{{ project.name }}:{{ project.version }}-tools
+
+% source ~/.soda/museum.env
+% soda genkey | tee 173-закрытый | soda pubkey - | tee 173-публичный
+{{ "
+set -a
+. docker/museum.env
+soda genkey | tee docs/173-закрытый | soda pubkey - | tee docs/173-публичный
+" | trim | shell | trim }}
+% soda genkey | tee 305-закрытый | soda pubkey - | tee 305-публичный
+{{ "
+set -a
+. docker/museum.env
+soda genkey | tee docs/305-закрытый | soda pubkey - | tee docs/305-публичный
+" | trim | shell | trim }}
+
+% cat телеграмма
+{{ "cat docs/телеграмма" | shell | trim }}
+
+% soda e 173-закрытый 305-публичный телеграмма -v
+{{ "
+set -a
+. docker/museum.env
+soda e docs/173-закрытый docs/305-публичный docs/телеграмма -v
+" | trim | shell | trim }}
+{% set _ = "rm docs/173-закрытый docs/173-публичный docs/305-закрытый docs/305-публичный" | shell -%}
+```
+
+
 ## Compatibility
 
 During the initial development (versions prior to 1.0.0),

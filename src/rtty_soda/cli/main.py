@@ -1,3 +1,5 @@
+# pyright: reportAny=false
+
 from typing import TYPE_CHECKING
 
 import click
@@ -23,7 +25,7 @@ def cli() -> None:
     pass
 
 
-@cli.command()  # pyright: ignore[reportAny]
+@cli.command()
 @CliOptions.key_passphrase
 @CliOptions.short_key_encoding
 @CliOptions.output_file
@@ -47,7 +49,7 @@ def genkey_cmd(
     service.genkey(passphrase=key_passphrase)
 
 
-@cli.command()  # pyright: ignore[reportAny]
+@cli.command()
 @click.argument("private_key_file", type=CliTypes.IN_PATH)
 @CliOptions.key_passphrase
 @CliOptions.short_key_encoding
@@ -74,7 +76,7 @@ def pubkey_cmd(
     service.pubkey(private_key=private_key, passphrase=key_passphrase)
 
 
-@cli.command()  # pyright: ignore[reportAny]
+@cli.command()
 @click.argument("password_file", type=CliTypes.IN_PATH)
 @CliOptions.key_passphrase
 @CliOptions.short_key_encoding
@@ -103,7 +105,7 @@ def kdf_cmd(
     service.kdf(password=password, kdf_profile=profile, passphrase=key_passphrase)
 
 
-@cli.command(aliases=["e"])  # pyright: ignore[reportAny]
+@cli.command(aliases=["e"])
 @click.argument("private_key_file", type=CliTypes.IN_PATH)
 @click.argument("public_key_file", type=CliTypes.IN_PATH)
 @click.argument("message_file", type=CliTypes.IN_PATH)
@@ -116,6 +118,7 @@ def kdf_cmd(
 @CliOptions.group_len
 @CliOptions.line_len
 @CliOptions.padding
+@CliOptions.short_nonce
 @CliOptions.verbose
 def encrypt_public_cmd(
     private_key_file: Path,
@@ -130,6 +133,7 @@ def encrypt_public_cmd(
     group_len: int,
     line_len: int,
     padding: int,
+    short_nonce: bool,
     verbose: bool,
 ) -> None:
     """Encrypt message (public)."""
@@ -142,6 +146,7 @@ def encrypt_public_cmd(
         compression=compression,
         formatter=formatter,
         writer=writer,
+        short_nonce=short_nonce,
         verbose=verbose,
     )
     private_key = CliReader(private_key_file)
@@ -155,7 +160,7 @@ def encrypt_public_cmd(
     )
 
 
-@cli.command(aliases=["es"])  # pyright: ignore[reportAny]
+@cli.command(aliases=["es"])
 @click.argument("key_file", type=CliTypes.IN_PATH)
 @click.argument("message_file", type=CliTypes.IN_PATH)
 @CliOptions.text
@@ -167,6 +172,7 @@ def encrypt_public_cmd(
 @CliOptions.group_len
 @CliOptions.line_len
 @CliOptions.padding
+@CliOptions.short_nonce
 @CliOptions.verbose
 def encrypt_secret_cmd(
     key_file: Path,
@@ -180,6 +186,7 @@ def encrypt_secret_cmd(
     group_len: int,
     line_len: int,
     padding: int,
+    short_nonce: bool,
     verbose: bool,
 ) -> None:
     """Encrypt message (secret)."""
@@ -192,6 +199,7 @@ def encrypt_secret_cmd(
         compression=compression,
         formatter=formatter,
         writer=writer,
+        short_nonce=short_nonce,
         verbose=verbose,
     )
     key = CliReader(key_file)
@@ -199,7 +207,7 @@ def encrypt_secret_cmd(
     service.encrypt_secret(key=key, passphrase=key_passphrase, message=message)
 
 
-@cli.command(aliases=["ep"])  # pyright: ignore[reportAny]
+@cli.command(aliases=["ep"])
 @click.argument("password_file", type=CliTypes.IN_PATH)
 @click.argument("message_file", type=CliTypes.IN_PATH)
 @CliOptions.text
@@ -210,6 +218,7 @@ def encrypt_secret_cmd(
 @CliOptions.group_len
 @CliOptions.line_len
 @CliOptions.padding
+@CliOptions.short_nonce
 @CliOptions.verbose
 def encrypt_password_cmd(
     password_file: Path,
@@ -222,6 +231,7 @@ def encrypt_password_cmd(
     group_len: int,
     line_len: int,
     padding: int,
+    short_nonce: bool,
     verbose: bool,
 ) -> None:
     """Encrypt message (password)."""
@@ -234,6 +244,7 @@ def encrypt_password_cmd(
         compression=compression,
         formatter=formatter,
         writer=writer,
+        short_nonce=short_nonce,
         verbose=verbose,
     )
     pw = CliReader(password_file)
@@ -241,7 +252,7 @@ def encrypt_password_cmd(
     service.encrypt_password(password=pw, message=message, kdf_profile=kdf_profile)
 
 
-@cli.command(aliases=["d"])  # pyright: ignore[reportAny]
+@cli.command(aliases=["d"])
 @click.argument("private_key_file", type=CliTypes.IN_PATH)
 @click.argument("public_key_file", type=CliTypes.IN_PATH)
 @click.argument("message_file", type=CliTypes.IN_PATH)
@@ -251,6 +262,7 @@ def encrypt_password_cmd(
 @CliOptions.data_encoding
 @CliOptions.compression
 @CliOptions.output_file
+@CliOptions.short_nonce
 def decrypt_public_cmd(
     private_key_file: Path,
     public_key_file: Path,
@@ -261,6 +273,7 @@ def decrypt_public_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
+    short_nonce: bool,
 ) -> None:
     """Decrypt message (public)."""
     writer = CliWriter(output_file)
@@ -271,6 +284,7 @@ def decrypt_public_cmd(
         compression=compression,
         formatter=None,
         writer=writer,
+        short_nonce=short_nonce,
         verbose=False,
     )
     private_key = CliReader(private_key_file)
@@ -284,7 +298,7 @@ def decrypt_public_cmd(
     )
 
 
-@cli.command(aliases=["ds"])  # pyright: ignore[reportAny]
+@cli.command(aliases=["ds"])
 @click.argument("key_file", type=CliTypes.IN_PATH)
 @click.argument("message_file", type=CliTypes.IN_PATH)
 @CliOptions.text
@@ -293,6 +307,7 @@ def decrypt_public_cmd(
 @CliOptions.data_encoding
 @CliOptions.compression
 @CliOptions.output_file
+@CliOptions.short_nonce
 def decrypt_secret_cmd(
     key_file: Path,
     message_file: Path,
@@ -302,6 +317,7 @@ def decrypt_secret_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
+    short_nonce: bool,
 ) -> None:
     """Decrypt message (secret)."""
     writer = CliWriter(output_file)
@@ -312,6 +328,7 @@ def decrypt_secret_cmd(
         compression=compression,
         formatter=None,
         writer=writer,
+        short_nonce=short_nonce,
         verbose=False,
     )
     key = CliReader(key_file)
@@ -319,7 +336,7 @@ def decrypt_secret_cmd(
     service.decrypt_secret(key=key, passphrase=key_passphrase, message=message)
 
 
-@cli.command(aliases=["dp"])  # pyright: ignore[reportAny]
+@cli.command(aliases=["dp"])
 @click.argument("password_file", type=CliTypes.IN_PATH)
 @click.argument("message_file", type=CliTypes.IN_PATH)
 @CliOptions.text
@@ -327,6 +344,7 @@ def decrypt_secret_cmd(
 @CliOptions.data_encoding
 @CliOptions.compression
 @CliOptions.output_file
+@CliOptions.short_nonce
 def decrypt_password_cmd(
     password_file: Path,
     message_file: Path,
@@ -335,6 +353,7 @@ def decrypt_password_cmd(
     data_encoding: str,
     compression: str,
     output_file: Path | None,
+    short_nonce: bool,
 ) -> None:
     """Decrypt message (password)."""
     writer = CliWriter(output_file)
@@ -345,6 +364,7 @@ def decrypt_password_cmd(
         compression=compression,
         formatter=None,
         writer=writer,
+        short_nonce=short_nonce,
         verbose=False,
     )
     pw = CliReader(password_file)
@@ -352,7 +372,7 @@ def decrypt_password_cmd(
     service.decrypt_password(password=pw, message=message, kdf_profile=kdf_profile)
 
 
-@cli.command()  # pyright: ignore[reportAny]
+@cli.command()
 @click.argument("in_encoding", type=CliTypes.ENCODING, metavar="IN_ENCODING")
 @click.argument("out_encoding", type=CliTypes.ENCODING, metavar="OUT_ENCODING")
 @click.argument("file", type=CliTypes.IN_PATH)
@@ -388,7 +408,7 @@ def encode_cmd(
     service.encode(data)
 
 
-@cli.command(aliases=["ga"])  # pyright: ignore[reportAny]
+@cli.command(aliases=["ga"])
 @click.argument("key_file", type=CliTypes.IN_PATH)
 def google_auth_cmd(key_file: Path) -> None:
     """Google Authenticator TOTP.
@@ -402,7 +422,7 @@ def google_auth_cmd(key_file: Path) -> None:
     click.echo(f"{totp.get_code()} (expires in {totp.get_remaining_seconds()}s)")
 
 
-@cli.command()  # pyright: ignore[reportAny]
+@cli.command()
 def encodings_cmd() -> None:
     """List supported encodings."""
     help_text = """
@@ -420,7 +440,7 @@ def encodings_cmd() -> None:
     click.echo(help_text)
 
 
-@cli.command()  # pyright: ignore[reportAny]
+@cli.command()
 def compression_cmd() -> None:
     """List supported compression libs."""
     help_text = """
@@ -434,7 +454,7 @@ def compression_cmd() -> None:
     click.echo(help_text)
 
 
-@cli.command()  # pyright: ignore[reportAny]
+@cli.command()
 def kdf_profiles_cmd() -> None:
     """List supported KDF profiles."""
     help_text = """

@@ -42,8 +42,8 @@ A PyNaCl frontend with custom encodings, compression, and key derivation.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.4
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.4-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.5
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.5-tools
 ```
 
 
@@ -85,10 +85,10 @@ are equivalent.
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-jWeGSSmKjwcgsaucUnMdFWUAjyYKHtBSCHMMFBezwHg=
+C3V5OctfZpdZ/Jyb23D6g8dYQY247xDuVM+1B6soRgA=
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-VSBeTOhu/p4EmZIPBFm0WZaldBR5W4GVAlJc5t+wOC4=
+1uRs9G4Fgariscqz/RttRX3WyUHrp/O/dYICMAWCq3s=
 
 % soda genkey -h
 Usage: soda genkey [OPTIONS]
@@ -118,7 +118,7 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 (c) Wikipedia
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-bK8tvUaC7FVHzAgcXKmNtw5FrHUR552z8GizgxmJnbvoh40hDPfx3VgpzW079GV29xuB2fExN2H85ru6
+WUe26CkIBBi6XV29CfB+JnFQaVGdzH+ep16RoUneemLAaQPW9bUXanI28x2dFt7fFSjHP0Gl7UFeCHBh
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
@@ -137,6 +137,7 @@ Options:
   -g, --group-len INTEGER        [default: 0]
   --line-len INTEGER             [default: 80]
   --padding INTEGER              [default: 0]
+  --short-nonce                  Use a 12-byte nonce instead of 24.
   -v, --verbose                  Show verbose output.
   -h, --help                     Show this message and exit.
 ```
@@ -262,10 +263,10 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-25CCO 61BIY 9KCY9 XBDX1 FENCM RQ4T7 Y7PAE 9FF07 0FVDK 4OG9D D3AGL OKKOE JJTZ9
-RHXVT D5FNP UCDHN UCIKG YZJN4 K85HS E6AI2 JWLAP 1JMIP YTEU7 LPIW2 K82JH THXYT
-66L7B WRET2 O6SVG 042UU U0ZPL P3LM3 KLK59 X12P4 7SLVA AV1UO Y18WJ 68E96 LZQ7H
-4PA9M 4ZIVE JLC1F 2E2OC ZDS9C 56V8O K03EZ 0HOS3 52SWS BOZJH YQQ
+7AHZ9 V9BFE U211B EW9JZ SA0JX WZW7C MP2FW YUGEN H3E1E 58DRN 8AULR 08IBY 5BJF3
+SXK2J BGCKQ UAXIE PTJCC HXSZA KLW3J HUPJK NGCYB UQ4BU KJM38 GIAZP ZZVKA DAN4C
+N74OD 0JOAM KSXSG ZDD6Y 55BJS 49BNS 0IJBO D8AZN T9VFG ALUL3 Y2XB5 3YOMO UTNFF
+7ARJ9 6QGSQ I90TC 7DNDB 1SE95 ZY09U UUQ9K 1GMMM P90P5 AKD6Z B0Z
 ```
 
 
@@ -284,6 +285,7 @@ SODA_KDF_PROFILE=sensitive
 SODA_GROUP_LEN=0
 SODA_LINE_LEN=0
 SODA_PADDING=0
+SODA_SHORT_NONCE=0
 SODA_VERBOSE=0
 ```
 
@@ -337,10 +339,45 @@ encrypted or decrypted using the same parameters as the following command:
 - Google Authenticator keyer
   ```
   % soda genkey -e base32 | tee totp_key
-  WKCUYRQJL2WPOTJZXG5QZ43ENCRPEAUJALFRSE7JZNX7HUOFQI2Q====
+  OXGBCBYZ755TNN6DNAOAXHCHSBAR52GWRWRIALWBHQTMO3QUMPZQ====
   % soda google-auth totp_key
-  399 662 (expires in 30s)
+  537 004 (expires in 7s)
   ```
+
+
+## Tutorial for the Underground Moscow Museum
+
+```
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.5-tools
+
+% source ~/.soda/museum.env
+% soda genkey | tee 173-закрытый | soda pubkey - | tee 173-публичный
+ЖЯКВЬ ЮКЭЧШ ГПРВО ЮЩГЫК ВЫНБФ ААСЭД ХАГЭЕ ПЩЛНЭ ТИХСТ ЫССДЫ МЩ
+% soda genkey | tee 305-закрытый | soda pubkey - | tee 305-публичный
+ЗЬХВГ КЯЫИЧ ПФЗЖН ФМСВЭ ДНКЧЮ УЬЕЕЦ УКДПЬ МЕХЦТ БЮЧЗР МРНБА ЫЫ
+
+% cat телеграмма
+Телетайп — стартстопный приёмно-передающий телеграфный аппарат с клавиатурой
+как у пищущей машинки, применявшийся также в качестве терминала устройств
+вычислительной техники.
+Наиболее совершенные телетайпы являются полностью электронными устройствами
+и используют дисплей вместо принтера.
+(c) Wikipedia
+
+% soda e 173-закрытый 305-публичный телеграмма -v
+КЭРЗЖ СЬТЭЧ ЗКЫМГ ЩККУЮ ХЭЩЖВ АШЖЗС БЧУСЫ ЩЙБДА ЙПРПШ КВЙФШ РЕЯПЕ
+ШНАТЫ МИЮРК ЖЦЫШЛ КОРЩВ ХЭФШФ ПНВЬК ЯКДВД КШГЙБ АЕЮРЮ ПЖРДШ ЕТХЬА
+ЧЙБЗЫ ЧЯЛЧЦ БУЧПУ ОГЛЫЭ ФМОЦК ПАГФЧ ЩЮКЮЩ ФЛФЮГ ЕЕЯШТ ЬКЫЯЫ ГЫБВЗ
+ТХРМГ ЯУХЩП ЮЗКМЭ ЧХЩЖЛ ДЖПХУ УЫЫПС РСЮЕУ ЫНЛФГ ЬНЯИУ АЕДМТ ПЧУЖЖ
+УУШЖА ЮБЫЫУ ЬЩХВД РУНЧЦ НЭОЗВ ТЯАОЕ БУОШЩ ЕЩТКУ САЕЬЦ ЯДХМЮ ОЖПИТ
+УНУИН ЦООСЩ ИЮЩНЯ ЫРРФЦ СЯАДК УШЕИЩ АЮУЬЕ ЗЙЦКЬ ЕРЮЩИ ЧПАЖЫ БВЧЭХ
+ШЗЦВЕ ЕИЫДС ШЙТЖИ ЙЩХЮУ ЩПУДЗ УЮВЮЩ УВГЯБ УЬХЕФ БРЧПЛ ЯДЮЮД ЯШЭХХ
+НЯЭОЫ МЬЬЕУ ЖЯЧН
+Plaintext: 302
+Ciphertext: 399
+Overhead: 1.321
+Groups: 80
+```
 
 
 ## Compatibility
