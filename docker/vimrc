@@ -8,3 +8,32 @@ set nomodeline
 set secure
 set nofixendofline
 set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
+
+command! -nargs=+ -complete=file Soda call s:Soda(<q-args>)
+
+function! s:Soda(args) abort
+  let l:v = a:args =~# '^\s*\%(e\|ep\|es\|encrypt-\%(public\|password\|secret\)\)\s' ? ' -v' : ''
+  let l:pos = getpos('.')
+  let l:errf = tempname()
+  silent! execute '%!soda ' . a:args . ' -' . l:v . ' 2>' . shellescape(l:errf)
+  let l:rc = v:shell_error
+  let l:err = filereadable(l:errf) ? readfile(l:errf) : []
+  call delete(l:errf)
+
+  if l:rc != 0
+    silent undo
+    call setpos('.', l:pos)
+    let l:msgs = filter(copy(l:err), 'v:val =~ "\\S"')
+    call s:Fail('soda failed (exit ' . l:rc . '): ' . get(l:msgs, -1, ''))
+    return
+  endif
+  call append(line('$'), l:err)
+endfunction
+
+function! s:Fail(msg, ...) abort
+  if a:0 == 0
+    call timer_start(0, function('s:Fail', [a:msg]))
+    return
+  endif
+  echohl ErrorMsg | echomsg a:msg | echohl None
+endfunction

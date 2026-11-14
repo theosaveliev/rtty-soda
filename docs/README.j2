@@ -267,8 +267,10 @@ encrypted or decrypted using the same parameters as the following command:
 
 ## Tutorial for the Underground Moscow Museum
 
+https://asciinema.org/a/1272454
+
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/{{ project.name }}:{{ project.version }}-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/{{ project.name }}:{{ project.version }}
 
 % source ~/.soda/museum.env
 % soda genkey | tee 173-закрытый | soda pubkey - | tee 173-публичный

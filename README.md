@@ -85,10 +85,10 @@ are equivalent.
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-C3V5OctfZpdZ/Jyb23D6g8dYQY247xDuVM+1B6soRgA=
+GJVBxFZF+3hRFEyl20NDG1uRa2Lr78V5DJNslvBqpFQ=
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-1uRs9G4Fgariscqz/RttRX3WyUHrp/O/dYICMAWCq3s=
+AqbaJjhK4e5gr6gtZcg/mInOwyFD5jOLMu+lvuYSKzg=
 
 % soda genkey -h
 Usage: soda genkey [OPTIONS]
@@ -118,7 +118,7 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 (c) Wikipedia
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-WUe26CkIBBi6XV29CfB+JnFQaVGdzH+ep16RoUneemLAaQPW9bUXanI28x2dFt7fFSjHP0Gl7UFeCHBh
+wy0swcDCUJCEWfzk4vnJRms729v4m33Mb6H/L/XW6XJqN1UpBgwTlqBYQ4AqwNddQKboLgAIuqGrJMzn
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
@@ -263,10 +263,10 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-7AHZ9 V9BFE U211B EW9JZ SA0JX WZW7C MP2FW YUGEN H3E1E 58DRN 8AULR 08IBY 5BJF3
-SXK2J BGCKQ UAXIE PTJCC HXSZA KLW3J HUPJK NGCYB UQ4BU KJM38 GIAZP ZZVKA DAN4C
-N74OD 0JOAM KSXSG ZDD6Y 55BJS 49BNS 0IJBO D8AZN T9VFG ALUL3 Y2XB5 3YOMO UTNFF
-7ARJ9 6QGSQ I90TC 7DNDB 1SE95 ZY09U UUQ9K 1GMMM P90P5 AKD6Z B0Z
+418Q6 5QBX0 05LZJ 3YRTF 2GV66 LDQP4 NFNCG 8VRAH BS66K R8AKA MGGWR XXXNL EWM32
+GZ9CY GXCAE IPVTT 77519 FP5S4 M9UP3 42VGY DJ7WN HDILV 4N186 KWSJ8 IST9M 4D95Y
+GVY5X K301Y ZQ9BK MTC3P ETMUU RNXU9 6F2DL 8NHAL SW5NH 2TXB7 66I8N YM5WW 3XI5W
+JK1NL VXGCY 7XMT4 PG45P 543HW Z4BD5 M53WW MWWMC Q091L S97PP LPM
 ```
 
 
@@ -339,22 +339,24 @@ encrypted or decrypted using the same parameters as the following command:
 - Google Authenticator keyer
   ```
   % soda genkey -e base32 | tee totp_key
-  OXGBCBYZ755TNN6DNAOAXHCHSBAR52GWRWRIALWBHQTMO3QUMPZQ====
+  RWODIBXIBA2AKZURCXSCVELDIQHVWY3DAVSYAAUB6WHIKRYAWVUA====
   % soda google-auth totp_key
-  537 004 (expires in 7s)
+  120 002 (expires in 16s)
   ```
 
 
 ## Tutorial for the Underground Moscow Museum
 
+https://asciinema.org/a/1272454
+
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.5-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.5
 
 % source ~/.soda/museum.env
 % soda genkey | tee 173-закрытый | soda pubkey - | tee 173-публичный
-ЖЯКВЬ ЮКЭЧШ ГПРВО ЮЩГЫК ВЫНБФ ААСЭД ХАГЭЕ ПЩЛНЭ ТИХСТ ЫССДЫ МЩ
+БНХЮЙ ХФИТВ ФНФСВ ЮЧХПД ЩДШЯЖ ММЦЩП ФЧДУБ ЗИЩЧМ УАЯНЯ ОЩКИЭ ЮБ
 % soda genkey | tee 305-закрытый | soda pubkey - | tee 305-публичный
-ЗЬХВГ КЯЫИЧ ПФЗЖН ФМСВЭ ДНКЧЮ УЬЕЕЦ УКДПЬ МЕХЦТ БЮЧЗР МРНБА ЫЫ
+ЙЭНЮЬ УЦЬОС ЗРЫЦФ ЯТДЯИ АВЛТТ КАХЕС ЗУЫЛХ ЙЮЛОЫ ПЙЮМС ТТЕХЫ МН
 
 % cat телеграмма
 Телетайп — стартстопный приёмно-передающий телеграфный аппарат с клавиатурой
@@ -365,14 +367,14 @@ encrypted or decrypted using the same parameters as the following command:
 (c) Wikipedia
 
 % soda e 173-закрытый 305-публичный телеграмма -v
-КЭРЗЖ СЬТЭЧ ЗКЫМГ ЩККУЮ ХЭЩЖВ АШЖЗС БЧУСЫ ЩЙБДА ЙПРПШ КВЙФШ РЕЯПЕ
-ШНАТЫ МИЮРК ЖЦЫШЛ КОРЩВ ХЭФШФ ПНВЬК ЯКДВД КШГЙБ АЕЮРЮ ПЖРДШ ЕТХЬА
-ЧЙБЗЫ ЧЯЛЧЦ БУЧПУ ОГЛЫЭ ФМОЦК ПАГФЧ ЩЮКЮЩ ФЛФЮГ ЕЕЯШТ ЬКЫЯЫ ГЫБВЗ
-ТХРМГ ЯУХЩП ЮЗКМЭ ЧХЩЖЛ ДЖПХУ УЫЫПС РСЮЕУ ЫНЛФГ ЬНЯИУ АЕДМТ ПЧУЖЖ
-УУШЖА ЮБЫЫУ ЬЩХВД РУНЧЦ НЭОЗВ ТЯАОЕ БУОШЩ ЕЩТКУ САЕЬЦ ЯДХМЮ ОЖПИТ
-УНУИН ЦООСЩ ИЮЩНЯ ЫРРФЦ СЯАДК УШЕИЩ АЮУЬЕ ЗЙЦКЬ ЕРЮЩИ ЧПАЖЫ БВЧЭХ
-ШЗЦВЕ ЕИЫДС ШЙТЖИ ЙЩХЮУ ЩПУДЗ УЮВЮЩ УВГЯБ УЬХЕФ БРЧПЛ ЯДЮЮД ЯШЭХХ
-НЯЭОЫ МЬЬЕУ ЖЯЧН
+СЩТБШ ТДПЖТ ИЩЗБА ЕЮУНЙ ЖЖРЭЖ ШСЭСИ ФЧЭША ДЩБПВ ВЖЦГЬ ЮЛОРШ КЖЙЭЧ
+ЯЙВХД ЫЬЙТЯ БГАРТ МСКХЬ МББЩШ ЗУБУС СЗБЙФ МКИИЭ ЙУЦЫС ЭИТЙЩ МЗВФУ
+ЦДФХМ НГХВР ГОГЕУ ТЧЗЗА ВДЩЦД ЩЙФЧД УСКЛК ЕСНПЮ ЗДПЕЯ РТЬЗЧ ЭЙФЭД
+ВАГДЯ ЭКЭИМ ЫЯШЖЮ ЗТООУ ЩРНБП ЯАТЯП ХЩЩГЙ МВШХК РЖИЗП ГБЛСГ ЗЧЬЛЛ
+ЗАХЫЕ ЭАЬЕЛ ШЧДИК ФШОИВ ШЙИТГ ЬЮУЖЦ ВЭУТЙ ДИЧОЙ НУРНЕ АЮАЭЧ ОФЧНЭ
+ЖХЭЭГ ЧЙТОБ ТГЫЛО ГУПСЭ УНПТЛ ТДМЛБ ПЭЮБЙ ЙГВЩГ ШТШГЮ СИТЩЦ ИЦЬИТ
+ККНЦЗ НШШФЙ ЬЙЦЦЩ КЧДЦЮ ЩДИАФ ТЖШФЙ ЮЧХЗЙ ОУШЛВ ДИЙДЗ ИУГЦА ЧШТГИ
+ЕПЛЧЬ РЗЯКК ЮБЦЧ
 Plaintext: 302
 Ciphertext: 399
 Overhead: 1.321
