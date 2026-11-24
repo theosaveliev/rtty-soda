@@ -3,7 +3,7 @@ FROM ubuntu:resolute
 
 RUN apt-get update -y \
     && apt-get upgrade -y \
-    && apt-get install -y --no-install-recommends build-essential ca-certificates locales curl vim \
+    && apt-get install -y --no-install-recommends build-essential ca-certificates locales curl vim keepassxc-minimal \
     && rm -Rf /var/lib/apt/lists/* \
     && locale-gen "en_US.UTF-8"
 

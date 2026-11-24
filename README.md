@@ -42,8 +42,7 @@ A PyNaCl frontend with custom encodings, compression, and key derivation.
 #### Docker
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.5
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.5-tools
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.6
 ```
 
 
@@ -85,10 +84,10 @@ are equivalent.
 
 ```
 % soda genkey | tee alice | soda pubkey - | tee alice_pub
-GJVBxFZF+3hRFEyl20NDG1uRa2Lr78V5DJNslvBqpFQ=
+xOlp6HvEWqv8HcIg5cEY3q7dB9zgqGzuXwR06KNeFhY=
 
 % soda genkey | tee bob | soda pubkey - | tee bob_pub
-AqbaJjhK4e5gr6gtZcg/mInOwyFD5jOLMu+lvuYSKzg=
+xxJ50v1duP3f0ettKdLgTN4v6IQehrOwxC6RL2qfEjE=
 
 % soda genkey -h
 Usage: soda genkey [OPTIONS]
@@ -118,7 +117,7 @@ The first telegraph key was invented by Alfred Vail, an associate of Samuel Mors
 (c) Wikipedia
 
 % soda encrypt-public alice bob_pub message | tee encrypted | cut -c 1-80
-wy0swcDCUJCEWfzk4vnJRms729v4m33Mb6H/L/XW6XJqN1UpBgwTlqBYQ4AqwNddQKboLgAIuqGrJMzn
+LEMPR+q2jA+zeYdSb4KbROUjv2JUVJTrqCN7BUw1amZFepq4lTyJVYs3H3MPKEKrtlYp5gfgiBTvL2Wa
 
 % soda encrypt-public -h
 Usage: soda encrypt-public [OPTIONS] PRIVATE_KEY_FILE PUBLIC_KEY_FILE
@@ -263,10 +262,10 @@ The rtty-soda supports various encodings:
 
 ```
 % soda encrypt-public alice bob_pub message --data-encoding base36 --group-len 5 --text
-418Q6 5QBX0 05LZJ 3YRTF 2GV66 LDQP4 NFNCG 8VRAH BS66K R8AKA MGGWR XXXNL EWM32
-GZ9CY GXCAE IPVTT 77519 FP5S4 M9UP3 42VGY DJ7WN HDILV 4N186 KWSJ8 IST9M 4D95Y
-GVY5X K301Y ZQ9BK MTC3P ETMUU RNXU9 6F2DL 8NHAL SW5NH 2TXB7 66I8N YM5WW 3XI5W
-JK1NL VXGCY 7XMT4 PG45P 543HW Z4BD5 M53WW MWWMC Q091L S97PP LPM
+2FDZ4 FWMBP E4LDH XIMH5 HA4VP 8W06J QKMOA SKWQ9 3K302 Z23SZ OPF98 Q4QA7 YHJJZ
+MO7RQ SG7W4 7GOQA JR1EY WHJR8 NBBVL UCEOE D68JC 7NHDB 9ZDYZ HUH69 R7E9N PRUUD
+9POVN PARJT 6APHL KMX9U Z6TIQ TCJF7 YJF7L W8FD9 ICS37 6GZWT 68CWK IWQL0 7GW9J
+LIE25 XBM80 DJ4DL 6I03E LH70Q 85KG4 918JG C2XAS 2CTLL U0KS1 3A7
 ```
 
 
@@ -339,9 +338,9 @@ encrypted or decrypted using the same parameters as the following command:
 - Google Authenticator keyer
   ```
   % soda genkey -e base32 | tee totp_key
-  RWODIBXIBA2AKZURCXSCVELDIQHVWY3DAVSYAAUB6WHIKRYAWVUA====
+  YLCFUQRCNQRHYNRE4FM6WGE4LIJ3JV5PTWTL5F6G6J3MR5LYQIGA====
   % soda google-auth totp_key
-  120 002 (expires in 16s)
+  105 052 (expires in 29s)
   ```
 
 
@@ -350,13 +349,13 @@ encrypted or decrypted using the same parameters as the following command:
 https://asciinema.org/a/1272454
 
 ```
-% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.5
+% docker run -it --rm -h rtty-soda -v .:/app/host nett/rtty-soda:0.7.6
 
 % source ~/.soda/museum.env
 % soda genkey | tee 173-закрытый | soda pubkey - | tee 173-публичный
-БНХЮЙ ХФИТВ ФНФСВ ЮЧХПД ЩДШЯЖ ММЦЩП ФЧДУБ ЗИЩЧМ УАЯНЯ ОЩКИЭ ЮБ
+ЗЧЕНГ ЮЮЛПУ ПФБЫИ ГТПША ЮЛЦЦЮ ШУФЗС ЩКУГО ЫСМКП ЩХЩЩЯ ЗЦБИВ МТ
 % soda genkey | tee 305-закрытый | soda pubkey - | tee 305-публичный
-ЙЭНЮЬ УЦЬОС ЗРЫЦФ ЯТДЯИ АВЛТТ КАХЕС ЗУЫЛХ ЙЮЛОЫ ПЙЮМС ТТЕХЫ МН
+ВБЮЭЮ ЖУЖФЭ ЮОФГФ УРЫШР ДШЗЮИ ЧЖЯЦЕ ХЦМОЫ БЬОРХ ОЬКФЬ ХВФЫК ЕП
 
 % cat телеграмма
 Телетайп — стартстопный приёмно-передающий телеграфный аппарат с клавиатурой
@@ -367,14 +366,14 @@ https://asciinema.org/a/1272454
 (c) Wikipedia
 
 % soda e 173-закрытый 305-публичный телеграмма -v
-СЩТБШ ТДПЖТ ИЩЗБА ЕЮУНЙ ЖЖРЭЖ ШСЭСИ ФЧЭША ДЩБПВ ВЖЦГЬ ЮЛОРШ КЖЙЭЧ
-ЯЙВХД ЫЬЙТЯ БГАРТ МСКХЬ МББЩШ ЗУБУС СЗБЙФ МКИИЭ ЙУЦЫС ЭИТЙЩ МЗВФУ
-ЦДФХМ НГХВР ГОГЕУ ТЧЗЗА ВДЩЦД ЩЙФЧД УСКЛК ЕСНПЮ ЗДПЕЯ РТЬЗЧ ЭЙФЭД
-ВАГДЯ ЭКЭИМ ЫЯШЖЮ ЗТООУ ЩРНБП ЯАТЯП ХЩЩГЙ МВШХК РЖИЗП ГБЛСГ ЗЧЬЛЛ
-ЗАХЫЕ ЭАЬЕЛ ШЧДИК ФШОИВ ШЙИТГ ЬЮУЖЦ ВЭУТЙ ДИЧОЙ НУРНЕ АЮАЭЧ ОФЧНЭ
-ЖХЭЭГ ЧЙТОБ ТГЫЛО ГУПСЭ УНПТЛ ТДМЛБ ПЭЮБЙ ЙГВЩГ ШТШГЮ СИТЩЦ ИЦЬИТ
-ККНЦЗ НШШФЙ ЬЙЦЦЩ КЧДЦЮ ЩДИАФ ТЖШФЙ ЮЧХЗЙ ОУШЛВ ДИЙДЗ ИУГЦА ЧШТГИ
-ЕПЛЧЬ РЗЯКК ЮБЦЧ
+ВЫФБТ ХВЗТГ ЛРЦНЦ ХЦАУЬ ЫФЯЦХ ЯЧФРУ ТЩЧФЧ ДАДЕЯ НВРОЛ ТЛНШО ГЛДЭС
+ЖЭМГК ШНЮЛК ШКЭЮЩ ЗЙЛЛЛ ПЕУЮГ ФКЩГА ИЙЦЬМ ВГИНЛ ЮЖНРЧ БЮИБВ ЮЦЕЗШ
+ЯЭЙНЭ ЭЭЯПЖ ДУСШР ЗДЬЕК ГБОНР УШЕУЩ РЕШИЗ ГЮСЛР ААЙЧМ ЖСХПЫ БРЧЯЭ
+ЖВТМК ЕЙЩЭС ОВЧНШ ЦЯЦУН ЩФДФО ЖМКПА ЩЛЛЗР ЧЦБОР ЬРРЯБ ИВМПЗ ЯСУЧУ
+ЧДСЬШ БЩЙЕО ЦЕИГВ САШЧИ РТОШР ВИЖДЖ БЕДББ ЧЬШХЗ ЩЕКБХ ЭПОЭС ЩЛГГП
+ЭШУЙЭ ЙВЫАЩ МЦЭПМ ЖЦЯТФ ЬАЭАА ТВЬБП ДЫВЦЛ ШРИЭЦ ГХЖЫД БЕЫРШ ИФЫЭТ
+ГУФЦМ ЯГЙЖО УТЧЮЮ КЦЙДЬ ЕФСХЬ ЯХЙЭЦ ЫФМЩХ ЗРЕБЗ БЕЦГЙ ФСЛБР ЕВРХА
+НПЛЧШ ЬЧЗБЦ ФБУН
 Plaintext: 302
 Ciphertext: 399
 Overhead: 1.321

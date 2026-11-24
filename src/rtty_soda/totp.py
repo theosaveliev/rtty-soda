@@ -2,7 +2,7 @@ import hashlib
 import time
 from typing import TYPE_CHECKING
 
-from pyotp import TOTP
+from pyotp.totp import TOTP
 
 if TYPE_CHECKING:
     from rtty_soda.interfaces import Reader

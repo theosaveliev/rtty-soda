@@ -1,5 +1,5 @@
 line-length = 88
-target-version = "py314"
+target-version = "py315"
 
 [lint]
 select = [
@@ -41,6 +41,7 @@ select = [
 ]
 
 ignore = [
+    "B010",
     "COM812",
     "D100",
     "D101",
@@ -54,6 +55,8 @@ ignore = [
     "PLR0913",
     "PLR0917",
     "PTH123",
+    "UP046",
+    "UP047",
 ]
 
 [lint.per-file-ignores]
